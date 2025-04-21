@@ -1,0 +1,49 @@
+# Technology Stack & Official Documentation
+Refer to the official documentation and follow the latest guidelines.
+
+# Frontend
+- Next.js (App Router, Server Components)
+  https://nextjs.org/docs
+- React (Concurrent Features, latest Hooks)
+  https://react.dev/
+- TypeScript (Typed JavaScript)
+  https://www.typescriptlang.org/docs/
+- TailwindCSS (Utility-first CSS framework)
+  https://tailwindcss.com/docs
+- shadcn/ui (Radix UI-based component library)
+  https://ui.shadcn.com/docs
+- Framer Motion (Animations)
+  https://www.framer.com/motion/
+
+# Authentication / Security
+- Edge Middleware (Basic Auth, URL restrictions, early access protection)
+  https://nextjs.org/docs/app/building-your-application/routing/middleware
+
+# State Management
+- React Context API (Lightweight global state management)
+  https://react.dev/reference/react/useContext
+- Zustand (Redux alternative)
+  https://docs.pmnd.rs/zustand/getting-started/introduction
+
+# DevOps / CI/CD
+- Vercel (Next.js deployment)
+  https://vercel.com/docs
+- GitHub Actions (CI/CD automation)
+  https://docs.github.com/en/actions
+
+# Tools
+- ESLint (Code linting tool)
+  https://eslint.org/docs/latest/
+- Prettier (Code formatter)
+  https://prettier.io/docs/en/
+- Husky (Git hook manager)
+  https://typicode.github.io/husky/#/
+
+  # Content & Rendering
+  - MDX / react-markdown (Markdown rendering)
+    https://github.com/remarkjs/react-markdown
+
+# Project Structure
+- Use `app/` directory (Next.js App Router)
+- Components in `components/` should be functional and scoped
+- Shared types under `types/`, constants in `lib/constants.ts`
