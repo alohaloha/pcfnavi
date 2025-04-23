@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./app/**/*.{js,ts,jsx,tsx,mdx}'],
+  content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {
       colors: {
@@ -9,6 +9,11 @@ module.exports = {
         secondary:'#91be6f',
         cta:      '#f9c54e',
         cream:    '#f4f1e8',
+      },
+      fontFamily: {
+        sans: ['var(--font-inter)', 'var(--font-noto-sans-jp)', 'sans-serif'],
+        jp: ['var(--font-noto-sans-jp)', 'sans-serif'],
+        display: ['var(--font-rubik)', 'system-ui', 'sans-serif'],
       },
     },
   },
