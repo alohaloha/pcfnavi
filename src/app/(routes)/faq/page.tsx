@@ -1,6 +1,6 @@
 import { Section } from "@/components/Section";
 import FaqItem from "@/components/FaqItem";
-import { fetchFaq } from "@/lib/faq";
+import { fetchFaqList } from "@/lib/faq";
 import { FAQ_CATEGORIES } from "@/lib/constants";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function FaqPage() {
-  const faqList = await fetchFaq();
+  const faqList = await fetchFaqList();
 
   return (
     <Section className="bg-gray-50 py-12">

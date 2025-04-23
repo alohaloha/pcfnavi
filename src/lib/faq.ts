@@ -11,7 +11,7 @@ export type FaqItem = {
     category: FaqCategoryName[]
 }
 
-export async function fetchFaq(): Promise<FaqItem[]> {
+export async function fetchFaqList(): Promise<FaqItem[]> {
     const res = await fetch(`${NOTION_URL}/${FAQ_DB_ID}/query`, {
         method: 'POST',
         headers: {

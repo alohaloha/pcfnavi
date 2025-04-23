@@ -71,7 +71,7 @@ export type FaqItem = {
   category: FaqCategory
 }
 
-export const fetchFaq = cache(async (): Promise<FaqItem[]> => {
+export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
   const NOTION_DB_ID = process.env.NOTION_FAQ_DB_ID!
   const NOTION_TOKEN = process.env.NOTION_API_SECRET!
 
@@ -97,11 +97,11 @@ export const fetchFaq = cache(async (): Promise<FaqItem[]> => {
 ## Rendering (app/faq/page.tsx)
 
 ```tsx
-import { fetchFaq } from '@/lib/faq'
+import { fetchFaqList } from '@/lib/faq'
 import FaqItem from '@/components/FaqItem'
 
 export default async function FaqPage() {
-  const faqList = await fetchFaq()
+  const faqList = await fetchFaqList()
   const categories = [...new Set(faqList.map(f => f.category))]
 
   return (
