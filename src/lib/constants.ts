@@ -36,7 +36,7 @@ export type FaqCategoryPath = typeof FAQ_CATEGORIES[number]['path']
 
 // API関連
 export const API_CONFIG = {
-NOTION_API_URL: 'https://api.notion.com/v1/databases',
+  NOTION_API_URL: 'https://api.notion.com/v1',
   NOTION_VERSION: '2022-06-28',
   NOTION_API_SECRET: process.env.NOTION_API_SECRET,
   NOTION_FAQ_DB_ID: process.env.NOTION_FAQ_DB_ID,

@@ -1,3 +1,4 @@
+'use server'
 import {API_CONFIG, FaqCategoryName} from './constants'
 
 const NOTION_URL = API_CONFIG.NOTION_API_URL!
@@ -9,10 +10,11 @@ export type FaqItem = {
     question: string
     answer: string
     category: FaqCategoryName[]
+    id: string
 }
 
 export async function fetchFaqList(): Promise<FaqItem[]> {
-    const res = await fetch(`${NOTION_URL}/${FAQ_DB_ID}/query`, {
+    const res = await fetch(`${NOTION_URL}/databases/${FAQ_DB_ID}/query`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${NOTION_TOKEN}`,
@@ -25,8 +27,24 @@ export async function fetchFaqList(): Promise<FaqItem[]> {
 
     console.log(data.results[0]);
     return data.results.map((row: any) => ({
+        id: row.id,
         question: row.properties.question.title[0]?.plain_text || '',
         answer: row.properties.answer.rich_text[0]?.plain_text || '',
         category: row.properties.category.multi_select.map((item: any) => item.name as FaqCategoryName) || [],
     })).filter((item: FaqItem) => item.question && item.answer && item.category.length > 0)
+}
+
+export async function fetchFaqDetail(pageId: string): Promise<any[]> {
+  const res = await fetch(`${NOTION_URL}/blocks/${pageId}/children`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${NOTION_TOKEN}`,
+      'Notion-Version': `${API_VERSION}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+  console.log({data});
+  return data.results;
 }
