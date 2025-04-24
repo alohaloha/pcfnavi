@@ -38,7 +38,7 @@ export default function BlogCard({blog}: BlogCardProps) {
                     )}
                     {blog.isNew && (
                         <div
-                            className="absolute top-3 right-3 bg-gradient-to-r from-[var(--ruby)] to-[var(--coral)] text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm backdrop-blur-sm backdrop-filter opacity-90 transform transition-all duration-300 hover:scale-105">
+                            className="absolute top-3 right-3 bg-red-400 text-white text-xs font-medium px-3 py-1 rounded-full shadow-sm backdrop-blur-sm backdrop-filter opacity-90 transform transition-all duration-300 hover:scale-105">
                             NEW
                         </div>
                     )}
@@ -50,13 +50,13 @@ export default function BlogCard({blog}: BlogCardProps) {
                             blog.category.map((cat, index) => (
                                 <span
                                     key={`${cat}-${index}`}
-                                    className="inline-block bg-cream text-primary text-xs px-2 py-1 rounded"
+                                    className="inline-block bg-yellow-300 text-xs px-2 py-1 rounded shadow-sm"
                                 >
                                     {cat}
                                 </span>
                             ))
                         ) : (
-                            <span className="inline-block bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
+                            <span className="inline-block bg-secondary text-primary text-xs px-2 py-1 rounded">
                                 カテゴリなし
                             </span>
                         )}
