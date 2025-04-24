@@ -1,12 +1,7 @@
 'use client'
 
 import React from 'react'
-
-type NotionBlock = {
-  type: string;
-  id: string;
-  [key: string]: any;
-};
+import { NotionBlock } from '@/lib/faq'
 
 export function parseNotionBlocks(blocks: NotionBlock[]): React.ReactNode[] {
   return blocks.map((block, index) => {

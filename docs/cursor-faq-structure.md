@@ -7,14 +7,20 @@ src/
 ├── app/
 │   ├── layout.tsx
 │   ├── page.tsx
-│   ├── rules/page.tsx
-│   ├── events/page.tsx
-│   ├── gallery/page.tsx
-│   ├── posts/[slug]/page.tsx
-│   ├── posts/page.tsx
-│   ├── about/page.tsx
-│   ├── privacy-policy/page.tsx
-│   └── faq/page.tsx              # FAQ page (Notion DB-driven, filterable by category)
+│   ├── (routes)/
+│   │   ├── rules/page.tsx
+│   │   ├── events/page.tsx
+│   │   ├── gallery/page.tsx
+│   │   ├── posts/[slug]/page.tsx
+│   │   ├── posts/page.tsx
+│   │   ├── about/page.tsx
+│   │   ├── privacy-policy/page.tsx
+│   │   └── faq/page.tsx          # FAQ page (Notion DB-driven, filterable by category)
+│   └── api/                      # API Route Handlers
+│       └── faq/                  # FAQ related APIs
+│           ├── route.ts          # GET - FAQ list endpoint
+│           └── detail/[id]/      # Dynamic route for FAQ details
+│               └── route.ts      # GET - FAQ details by ID
 │
 ├── components/
 │   ├── Header.tsx
@@ -23,15 +29,18 @@ src/
 │   ├── InfoCard.tsx
 │   ├── PostCard.tsx
 │   ├── SectionTitle.tsx
-│   └── FaqItem.tsx               # Accordion-style Q&A component
+│   ├── FaqList.tsx               # Container component for FAQ items by category
+│   └── FaqItem.tsx               # Accordion-style Q&A component with detail view
 │
 ├── lib/
 │   ├── posts.ts
-│   └── faq.ts                    # Fetches categorized FAQ data from Notion Database API
+│   ├── constants.ts              # Shared constants including API configs
+│   ├── faq.ts                    # Server actions for fetching FAQ data (uses the API routes)
+│   └── notionParser.tsx          # Shared utility for rendering Notion blocks to React components
 │
 ├── types/
 │   ├── post.ts
-│   └── faq.ts                    # type FaqItem = { question: string; answer: string; category: FaqCategory }
+│   └── faq.ts                    # type FaqItem = { id: string; question: string; answer: string; category: FaqCategory[] }
 │
 ├── content/
 │   └── posts/                    # Markdown articles
@@ -46,7 +55,7 @@ src/
 - Create a Notion **database** with the following properties:
   - `question`: title field
   - `answer`: rich text
-  - `category`: select field (use exact match to predefined values below)
+  - `category`: multi-select field (use exact match to predefined values)
 - Share the database publicly for reading access
 
 ### FAQ Categories (used for filtering):
@@ -58,87 +67,51 @@ src/
 - `All Japan`
 - `Other`
 
-## Data Fetching (`lib/faq.ts`)
+## Data Fetching Architecture
 
-Use the official Notion API with a secret token (stored in `.env.local`):
+1. **API Routes (`app/api/faq/`)**
+   - `route.ts` - handles the GET request for the FAQ list
+   - `detail/[id]/route.ts` - handles the GET request for specific FAQ details
 
-```ts
-export type FaqCategory = 'General' | 'Events' | 'Teams' | 'Starting' | 'Support' | 'All Japan' | 'Other'
+2. **Server Actions (`lib/faq.ts`)**
+   - `fetchFaqList` - cached server action that calls the FAQ list API
+   - `fetchFaqDetail` - cached server action that calls the FAQ detail API
 
+3. **Client/Server Components**
+   - `app/(routes)/faq/page.tsx` - Server Component that fetches the initial FAQ list
+   - `components/FaqList.tsx` - Client Component for category filtering
+   - `components/FaqItem.tsx` - Client Component for accordion behavior and detail fetching
+
+4. **Shared Utility**
+   - `lib/notionParser.tsx` - Utility component for rendering Notion blocks consistently
+
+## Type Definitions
+
+```tsx
+// src/lib/faq.ts
 export type FaqItem = {
+  id: string
   question: string
   answer: string
-  category: FaqCategory
+  category: FaqCategoryName[]
 }
 
-export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
-  const NOTION_DB_ID = process.env.NOTION_FAQ_DB_ID!
-  const NOTION_TOKEN = process.env.NOTION_API_SECRET!
+export type NotionBlock = {
+  id: string
+  type: string
+  [key: string]: any
+}
 
-  const res = await fetch(`https://api.notion.com/v1/databases/${NOTION_DB_ID}/query`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${NOTION_TOKEN}`,
-      'Notion-Version': '2022-06-28',
-      'Content-Type': 'application/json',
-    },
-  })
-
-  const data = await res.json()
-
-  return data.results.map((row: any) => ({
-    question: row.properties.question.title[0]?.plain_text || '',
-    answer: row.properties.answer.rich_text[0]?.plain_text || '',
-    category: row.properties.category.select.name as FaqCategory,
-  })).filter(f => f.question && f.answer && f.category)
-})
-```
-
-## Rendering (app/faq/page.tsx)
-
-```tsx
-import { fetchFaqList } from '@/lib/faq'
-import FaqItem from '@/components/FaqItem'
-
-export default async function FaqPage() {
-  const faqList = await fetchFaqList()
-  const categories = [...new Set(faqList.map(f => f.category))]
-
-  return (
-    <main className="max-w-2xl mx-auto px-4 py-12">
-      <h1 className="text-3xl font-bold mb-6">よくある質問</h1>
-      {categories.map(category => (
-        <section key={category} className="mb-8">
-          <h2 className="text-xl font-semibold mb-2">{category}</h2>
-          {faqList.filter(f => f.category === category).map((faq, i) => (
-            <FaqItem key={i} {...faq} />
-          ))}
-        </section>
-      ))}
-    </main>
-  )
+export type FaqDetail = {
+  blocks: NotionBlock[]
 }
 ```
 
-## FaqItem Component
+## Caching Strategy
 
-```tsx
-'use client'
-import { useState } from 'react'
-import type { FaqItem as Faq } from '@/lib/faq'
-
-export default function FaqItem({ question, answer }: Faq) {
-  const [open, setOpen] = useState(false)
-  return (
-    <div className="mb-4 border-b pb-2">
-      <button className="text-left w-full font-semibold text-lg" onClick={() => setOpen(!open)}>
-        {question}
-      </button>
-      {open && <p className="mt-2 text-gray-700">{answer}</p>}
-    </div>
-  )
-}
-```
+- API routes use `next: { revalidate: 3600 }` for 1-hour cache
+- Server actions use React's `cache()` for request deduplication
+- Tags-based invalidation for fine-grained cache control
 
 # Cursor Instructions
 

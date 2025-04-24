@@ -1,50 +1,53 @@
 'use server'
-import {API_CONFIG, FaqCategoryName} from './constants'
-
-const NOTION_URL = API_CONFIG.NOTION_API_URL!
-const NOTION_TOKEN = API_CONFIG.NOTION_API_SECRET!
-const FAQ_DB_ID = API_CONFIG.NOTION_FAQ_DB_ID!
-const API_VERSION = API_CONFIG.NOTION_VERSION!
+import { cache } from 'react';
+import { API_CONFIG, FaqCategoryName } from './constants'
 
 export type FaqItem = {
+    id: string
     question: string
     answer: string
     category: FaqCategoryName[]
+}
+
+export type NotionBlock = {
     id: string
+    type: string
+    [key: string]: any
 }
 
-export async function fetchFaqList(): Promise<FaqItem[]> {
-    const res = await fetch(`${NOTION_URL}/databases/${FAQ_DB_ID}/query`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${NOTION_TOKEN}`,
-            'Notion-Version': `${API_VERSION}`,
-            'Content-Type': 'application/json',
-        },
-    })
-
-    const data = await res.json()
-
-    console.log(data.results[0]);
-    return data.results.map((row: any) => ({
-        id: row.id,
-        question: row.properties.question.title[0]?.plain_text || '',
-        answer: row.properties.answer.rich_text[0]?.plain_text || '',
-        category: row.properties.category.multi_select.map((item: any) => item.name as FaqCategoryName) || [],
-    })).filter((item: FaqItem) => item.question && item.answer && item.category.length > 0)
+export type FaqDetail = {
+    blocks: NotionBlock[]
 }
 
-export async function fetchFaqDetail(pageId: string): Promise<any[]> {
-  const res = await fetch(`${NOTION_URL}/blocks/${pageId}/children`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${NOTION_TOKEN}`,
-      'Notion-Version': `${API_VERSION}`,
-      'Content-Type': 'application/json',
-    },
-  });
+export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/faq`, {
+            method: 'GET',
+            next: { tags: ['faq-list'] }
+        });
+        
+        if (!res.ok) throw new Error('FAQ一覧の取得に失敗しました');
+        
+        const data = await res.json();
+        return data.items;
+    } catch (error) {
+        console.error('FAQの取得エラー:', error);
+        return [];
+    }
+});
 
-  const data = await res.json();
-  console.log({data});
-  return data.results;
-}
+export const fetchFaqDetail = cache(async (id: string): Promise<FaqDetail> => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/faq/detail/${id}`, {
+            method: 'GET',
+            next: { tags: [`faq-detail-${id}`] }
+        });
+        
+        if (!res.ok) throw new Error('FAQ詳細の取得に失敗しました');
+        
+        return await res.json();
+    } catch (error) {
+        console.error('FAQ詳細の取得エラー:', error);
+        return { blocks: [] };
+    }
+});
