@@ -8,14 +8,6 @@ const API_VERSION = API_CONFIG.NOTION_VERSION!;
 
 export async function GET() {
     try {
-        console.log('APIパラメータ確認:', {
-            NOTION_URL,
-            BLOG_DB_ID,
-            API_VERSION,
-            TOKEN_LENGTH: NOTION_TOKEN ? NOTION_TOKEN.length : 0
-        });
-
-        // フィルタと並び替えを再度追加
         const res = await fetch(`${NOTION_URL}/databases/${BLOG_DB_ID}/query`, {
             method: 'POST',
             headers: {
@@ -24,7 +16,6 @@ export async function GET() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                // statusプロパティが存在する場合のみフィルターを適用
                 filter: {
                     property: 'status',
                     select: {
@@ -43,24 +34,18 @@ export async function GET() {
 
         if (!res.ok) {
             const errorData = await res.text();
-            console.error(`Notion API error: ${res.status}`, errorData);
             throw new Error(`Notion API error: ${res.status} - ${errorData}`);
         }
 
         const data = await res.json();
-        console.log('ブログデータ件数:', data.results?.length || 0);
-
-        // データベース構造を検証
-        if (data.results && data.results.length > 0) {
-            const firstItem = data.results[0];
-            // formulaプロパティの構造を確認するためのログ
-            console.log('isNewプロパティの構造:', firstItem.properties.isNew);
-            console.log('最初の項目のプロパティ:', Object.keys(firstItem.properties));
-        }
 
         return NextResponse.json({
             items: data.results.map((row: any) => {
                 try {
+                    // カテゴリの抽出処理（タイプミスも考慮）
+                    const categoryProp = row.properties.category || row.properties.cateogry;
+                    const categories = categoryProp?.multi_select?.map((item: any) => item.name) || [];
+                    
                     return {
                         id: row.id,
                         title: row.properties.title?.title?.[0]?.plain_text || '',
@@ -68,7 +53,7 @@ export async function GET() {
                         summary: row.properties.summary?.rich_text?.[0]?.plain_text || '',
                         cover: row.properties.cover?.files?.[0]?.file?.url ||
                             row.properties.cover?.files?.[0]?.external?.url || '',
-                        category: row.properties.category?.multi_select?.map((item: any) => item.name) || [],
+                        category: categories,
                         publishedAt: row.properties.publishedAt?.date?.start || '',
                         featured: row.properties.featured?.checkbox || false,
                         isNew: row.properties.isNew?.formula?.boolean || false,

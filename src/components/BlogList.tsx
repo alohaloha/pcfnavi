@@ -13,16 +13,71 @@ export default function BlogList({ blogs }: BlogListProps) {
   const [filteredBlogs, setFilteredBlogs] = useState<BlogItem[]>(blogs);
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
-  const handleCategoryFilter = (category: string) => {
-    setActiveCategory(category);
+  // デバッグ: カテゴリー情報を詳細に表示
+  useEffect(() => {
+    console.log('定義されているカテゴリ:', BLOG_CATEGORIES);
     
-    if (category === 'all') {
+    // 受け取ったブログデータの詳細を表示
+    console.log(`受け取ったブログ記事数: ${blogs.length}`);
+    
+    // 各ブログのカテゴリを表示
+    blogs.forEach((blog, index) => {
+      console.log(`ブログ[${index}] ID:${blog.id} - カテゴリ:`, 
+        Array.isArray(blog.category) ? blog.category : '配列ではない');
+    });
+    
+    // カテゴリの種類をまとめて表示
+    const allCategories = blogs.flatMap(blog => blog.category || []);
+    const uniqueCategories = [...new Set(allCategories)];
+    console.log('ブログ記事に存在するカテゴリ一覧:', uniqueCategories);
+  }, [blogs]);
+
+  const handleCategoryFilter = (categoryName: string) => {
+    console.log('選択したカテゴリー:', categoryName);
+    setActiveCategory(categoryName);
+    
+    if (categoryName === 'all') {
       setFilteredBlogs(blogs);
-    } else {
-      setFilteredBlogs(
-        blogs.filter(blog => blog.category.includes(category as BlogCategoryName))
-      );
+      console.log('全ブログ表示:', blogs.length);
+      return;
     }
+    
+    // デバッグ: 全記事のカテゴリを表示
+    blogs.forEach((blog, index) => {
+      console.log(`フィルタリング前のブログ[${index}] ID:${blog.id} カテゴリ:`, 
+        Array.isArray(blog.category) ? blog.category : 'array以外', 
+        blog.category);
+    });
+    
+    // カテゴリでフィルタリング（デバッグ情報付き）
+    const filtered = blogs.filter(blog => {
+      // カテゴリが配列でない場合の対策
+      if (!Array.isArray(blog.category)) {
+        console.log(`ブログID ${blog.id}: カテゴリが配列ではありません`, blog.category);
+        return false;
+      }
+      
+      // 空配列の場合（カテゴリが未設定）はフィルタに含めない
+      if (blog.category.length === 0) {
+        console.log(`ブログID ${blog.id}: カテゴリが空配列です`);
+        return false;
+      }
+      
+      // カテゴリ名での一致を確認
+      const hasCategory = blog.category.some(catName => {
+        const matched = catName === categoryName;
+        if (matched) {
+          console.log(`ブログID ${blog.id}: カテゴリ「${categoryName}」に一致しました`);
+        }
+        return matched;
+      });
+      
+      return hasCategory;
+    });
+    
+    console.log(`カテゴリー「${categoryName}」に一致する記事数:`, filtered.length);
+    console.log('フィルタリング結果:', filtered.map(b => b.id));
+    setFilteredBlogs(filtered);
   };
 
   useEffect(() => {
@@ -36,7 +91,7 @@ export default function BlogList({ blogs }: BlogListProps) {
           onClick={() => handleCategoryFilter('all')}
           className={`px-3 py-1 rounded-full text-sm font-medium transition ${
             activeCategory === 'all'
-              ? 'bg-blue-600 text-white'
+              ? 'bg-[var(--primary-custom)] text-white'
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
@@ -49,7 +104,7 @@ export default function BlogList({ blogs }: BlogListProps) {
             onClick={() => handleCategoryFilter(category.name)}
             className={`px-3 py-1 rounded-full text-sm font-medium transition ${
               activeCategory === category.name
-                ? 'bg-blue-600 text-white'
+                ? 'bg-[var(--primary-custom)] text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >

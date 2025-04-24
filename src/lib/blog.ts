@@ -1,6 +1,6 @@
 'use server'
 import {cache} from 'react';
-import {BlogCategoryName} from './constants'
+import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
 
 export type BlogItem = {
     id: string
@@ -8,7 +8,7 @@ export type BlogItem = {
     slug: string
     summary: string
     cover: string
-    category: BlogCategoryName[]
+    category: string[]
     publishedAt: string
     featured: boolean
     isNew: boolean
@@ -26,8 +26,11 @@ export type BlogDetail = {
     title: string
     summary: string
     cover: string
-    category: BlogCategoryName[]
+    category: string[]
     publishedAt: string
+    status?: string
+    isNew?: boolean
+    featured?: boolean
 }
 
 export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
@@ -47,7 +50,26 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
 
         const data = await res.json();
         console.log('取得したブログ記事数:', data.items?.length || 0);
-        console.log('ブログデータ:', data.items);
+        
+        if (data.items && data.items.length > 0) {
+            const validCategoryNames = BLOG_CATEGORIES.map(cat => cat.name);
+            console.log('有効なカテゴリー名:', validCategoryNames);
+            
+            data.items.forEach((item: any, index: number) => {
+                if (item.category) {
+                    console.log(`記事[${index}] ID:${item.id} カテゴリ:`, item.category);
+                    
+                    if (!Array.isArray(item.category)) {
+                        console.warn(`記事ID:${item.id}のカテゴリが配列ではありません`, item.category);
+                        item.category = [];
+                    }
+                } else {
+                    console.warn(`記事ID:${item.id}にカテゴリがありません`);
+                    item.category = [];
+                }
+            });
+        }
+        
         return data.items;
     } catch (error) {
         console.error('ブログの取得エラー:', error);

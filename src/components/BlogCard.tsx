@@ -46,14 +46,20 @@ export default function BlogCard({blog}: BlogCardProps) {
 
                 <div className="p-4">
                     <div className="flex flex-wrap gap-1 mb-2">
-                        {blog.category.map((cat) => (
-                            <span
-                                key={cat}
-                                className="inline-block bg-cream text-primary text-xs px-2 py-1 rounded"
-                            >
-                {cat}
-              </span>
-                        ))}
+                        {Array.isArray(blog.category) && blog.category.length > 0 ? (
+                            blog.category.map((cat, index) => (
+                                <span
+                                    key={`${cat}-${index}`}
+                                    className="inline-block bg-cream text-primary text-xs px-2 py-1 rounded"
+                                >
+                                    {cat}
+                                </span>
+                            ))
+                        ) : (
+                            <span className="inline-block bg-gray-100 text-gray-500 text-xs px-2 py-1 rounded">
+                                カテゴリなし
+                            </span>
+                        )}
                     </div>
 
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{blog.title}</h3>
