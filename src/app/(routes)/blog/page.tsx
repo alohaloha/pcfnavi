@@ -1,29 +1,24 @@
-import { Section } from "@/components/Section";
-import { Grid } from "@/components/Grid";
+import React from 'react';
+import { Metadata } from 'next';
+import { fetchBlogList } from '@/lib/blog';
+import BlogList from '@/components/BlogList';
 
-export const metadata = {
-  title: "ブログ | PCF Navi",
-  description: "パワーチェアフットボールに関する最新記事",
+export const metadata: Metadata = {
+  title: 'ブログ | PCF NAVI',
+  description: '電動車椅子サッカーに関する最新情報や役立つ記事をご紹介します。',
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const blogs = await fetchBlogList();
+  
   return (
-    <Section>
-      <h1 className="text-3xl md:text-4xl font-bold mb-6">ブログ</h1>
-      <Grid cols={3} gap={6} className="mt-8">
-        {/* ここにブログカードが入ります */}
-        <div className="border rounded-lg overflow-hidden shadow-sm">
-          <div className="aspect-video bg-gray-200">
-            {/* サムネイル画像 */}
-          </div>
-          <div className="p-4">
-            <h2 className="font-bold text-xl mb-2">記事タイトル</h2>
-            <p className="text-gray-600 mb-2">2024年4月19日</p>
-            <p className="line-clamp-3">記事の要約がここに入ります。</p>
-          </div>
-        </div>
-        {/* 他のブログカード */}
-      </Grid>
-    </Section>
+    <main className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">ブログ</h1>
+        <p className="text-gray-600">電動車椅子サッカーに関する最新情報や役立つ記事をご紹介します。</p>
+      </div>
+      
+      <BlogList blogs={blogs} />
+    </main>
   );
 } 
