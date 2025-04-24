@@ -117,5 +117,5 @@ function renderRichText(text: any, key: number): React.ReactNode {
     );
   }
   
-  return className ? <span key={key} className={className}>{plain_text}</span> : <>{plain_text}</>;
+  return className ? <span key={key} className={className}>{plain_text}</span> : <span key={key}>{plain_text}</span>;
 } 
