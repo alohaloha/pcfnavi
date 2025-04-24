@@ -57,7 +57,7 @@ Notion上に以下のデータベースを作成：
   - `publishedAt`: 公開日 (date)
   - `featured`: 注目記事か (checkbox)
   - `status`: 公開状態 (select) - 「公開」「下書き」「非公開」など
-  - `isNew`: 新着かどうか（checkbox）
+  - `isNew`: 新着かどうか（formula）
 
 ## 実装の流れ
 

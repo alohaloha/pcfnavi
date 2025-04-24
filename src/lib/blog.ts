@@ -1,6 +1,6 @@
 'use server'
-import { cache } from 'react';
-import { BlogCategoryName } from './constants'
+import {cache} from 'react';
+import {BlogCategoryName} from './constants'
 
 export type BlogItem = {
     id: string
@@ -12,6 +12,7 @@ export type BlogItem = {
     publishedAt: string
     featured: boolean
     isNew: boolean
+    status: string
 }
 
 export type NotionBlock = {
@@ -32,20 +33,21 @@ export type BlogDetail = {
 export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     try {
         console.log('API Base URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
-        
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blog`, {
             method: 'GET',
-            next: { tags: ['blog-list'] }
+            next: {tags: ['blog-list']}
         });
-        
+
         if (!res.ok) {
             const errorText = await res.text();
             console.error('API応答エラー:', res.status, errorText);
             throw new Error('ブログ一覧の取得に失敗しました');
         }
-        
+
         const data = await res.json();
         console.log('取得したブログ記事数:', data.items?.length || 0);
+        console.log('ブログデータ:', data.items);
         return data.items;
     } catch (error) {
         console.error('ブログの取得エラー:', error);
@@ -57,14 +59,14 @@ export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> =
     try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blog/${slug}`, {
             method: 'GET',
-            next: { tags: [`blog-detail-${slug}`] }
+            next: {tags: [`blog-detail-${slug}`]}
         });
-        
+
         if (!res.ok) throw new Error('ブログ詳細の取得に失敗しました');
-        
+
         return await res.json();
     } catch (error) {
         console.error('ブログ詳細の取得エラー:', error);
-        return { blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: '' };
+        return {blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: ''};
     }
 }); 

@@ -13,6 +13,8 @@ export async function GET(
   const slug = params.slug;
   
   try {
+    console.log('ブログ詳細取得:', { slug });
+    
     // まずスラッグからページIDを取得
     const dbRes = await fetch(`${NOTION_URL}/databases/${BLOG_DB_ID}/query`, {
       method: 'POST',
@@ -23,32 +25,25 @@ export async function GET(
       },
       body: JSON.stringify({
         filter: {
-          and: [
-            {
-              property: 'slug',
-              rich_text: {
-                equals: slug
-              }
-            },
-            {
-              property: 'status',
-              select: {
-                equals: '公開'
-              }
-            }
-          ]
+          property: 'slug',
+          rich_text: {
+            equals: slug
+          }
         }
       }),
       next: { revalidate: 3600 } // 1時間キャッシュ
     });
 
     if (!dbRes.ok) {
-      throw new Error(`Notion API error: ${dbRes.status}`);
+      const errorText = await dbRes.text();
+      console.error(`Notion API error: ${dbRes.status}`, errorText);
+      throw new Error(`Notion API error: ${dbRes.status} - ${errorText}`);
     }
 
     const dbData = await dbRes.json();
+    console.log('スラッグに一致する記事件数:', dbData.results?.length || 0);
     
-    if (dbData.results.length === 0) {
+    if (!dbData.results || dbData.results.length === 0) {
       return NextResponse.json({ error: 'ブログ記事が見つかりません' }, { status: 404 });
     }
     
@@ -67,18 +62,28 @@ export async function GET(
     });
 
     if (!contentRes.ok) {
-      throw new Error(`Notion API error: ${contentRes.status}`);
+      const errorText = await contentRes.text();
+      console.error(`Notion API error: ${contentRes.status}`, errorText);
+      throw new Error(`Notion API error: ${contentRes.status} - ${errorText}`);
     }
 
     const contentData = await contentRes.json();
+    console.log('ブロック数:', contentData.results?.length || 0);
+    
+    // 詳細構造の確認
+    console.log('ページデータプロパティ:', Object.keys(pageData.properties));
     
     return NextResponse.json({ 
       blocks: contentData.results,
-      title: pageData.properties.title.title[0]?.plain_text || '',
-      summary: pageData.properties.summary.rich_text[0]?.plain_text || '',
-      cover: pageData.properties.cover.files[0]?.file?.url || pageData.properties.cover.files[0]?.external?.url || '',
-      category: pageData.properties.category.multi_select.map((item: any) => item.name) || [],
-      publishedAt: pageData.properties.publishedAt.date?.start || ''
+      title: pageData.properties.title?.title?.[0]?.plain_text || '',
+      summary: pageData.properties.summary?.rich_text?.[0]?.plain_text || '',
+      cover: pageData.properties.cover?.files?.[0]?.file?.url || 
+             pageData.properties.cover?.files?.[0]?.external?.url || '',
+      category: pageData.properties.category?.multi_select?.map((item: any) => item.name) || [],
+      publishedAt: pageData.properties.publishedAt?.date?.start || '',
+      status: pageData.properties.status?.select?.name || '',
+      isNew: pageData.properties.isNew?.formula?.boolean || false,
+      featured: pageData.properties.featured?.checkbox || false
     });
   } catch (error) {
     console.error('ブログ詳細の取得に失敗しました', error);

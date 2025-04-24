@@ -29,6 +29,8 @@ const config: Config = {
         secondary: '#91be6f',
         cta: '#f9c54e',
         cream: '#f4f1e8',
+        ruby: '#e94a4a',
+        coral: '#ff7b7b',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

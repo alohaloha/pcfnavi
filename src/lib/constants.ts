@@ -39,7 +39,7 @@ export const BLOG_CATEGORIES = [
     {name: '体験', key: 'experience'},
     {name: '教育', key: 'education'},
     {name: '普及', key: 'promotion'},
-    {name: '広告', key: 'promotion'},
+    {name: 'コラボ', key: 'collaboration'},
     {name: 'その他', key: 'other'}
 ] as const
 
