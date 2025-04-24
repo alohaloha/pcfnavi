@@ -13,17 +13,20 @@ type FaqListProps = {
         answer: string;
         category: FaqCategoryName[];
     }>;
-    categories: Array<{
-        name: FaqCategoryName;
-        path: string;
+    categories?: ReadonlyArray<{
+        readonly name: FaqCategoryName;
+        readonly path: string;
     }>;
     apiUrl?: string; // APIのURLを渡す
 }
 
-export default function FaqList({faqs}: FaqListProps) {
+export default function FaqList({
+    faqs, 
+    categories = FAQ_CATEGORIES // デフォルト値として定数を使用
+}: FaqListProps) {
     return (
         <div className="space-y-12">
-            {FAQ_CATEGORIES.map((category) => {
+            {categories.map((category) => {
                 // このカテゴリーに属するFAQ項目をフィルタリング
                 const categoryFaqs = faqs.filter(faq =>
                     faq.category.includes(category.name)
