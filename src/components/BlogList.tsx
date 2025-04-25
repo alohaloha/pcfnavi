@@ -14,6 +14,8 @@ export default function BlogList({blogs}: BlogListProps) {
     const [activeCategory, setActiveCategory] = useState<string>('all');
 
     // デバッグ: カテゴリー情報を詳細に表示
+    console.log('Vercel Debug | TOKEN:', process.env.NOTION_API_SECRET ? 'present' : 'missing');
+    console.log('Vercel Debug | URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
     useEffect(() => {
         console.log('定義されているカテゴリ:', BLOG_CATEGORIES);
 
