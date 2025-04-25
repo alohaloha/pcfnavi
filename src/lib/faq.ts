@@ -1,5 +1,6 @@
 'use server'
 import {cache} from 'react';
+import {FaqCategoryName, FAQ_CATEGORIES} from './constants'
 
 export type FaqItem = {
     id: string
