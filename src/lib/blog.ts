@@ -36,7 +36,8 @@ export type BlogDetail = {
 // export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
 export async function fetchBlogList(): Promise<BlogItem[]> {
     try {
-        const url = `${process.env.API_BASE_URL}/api/blog`;
+        const baseUrl = `${process.env.API_BASE_URL}/api/blog` || '';
+        const url = `${baseUrl}/api/blog`;
         console.log('ブログ一覧取得API URL:', url);
 
         const res = await fetch(url, {
