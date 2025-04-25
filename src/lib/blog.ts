@@ -41,6 +41,7 @@ export async function fetchBlogList(): Promise<BlogItem[]> {
 
         const res = await fetch(url, {
             method: 'GET',
+            cache: 'no-store',
             next: {tags: ['blog-list']}
         });
         console.log('レスポンス status:', res.status);
