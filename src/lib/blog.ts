@@ -1,4 +1,3 @@
-'use server'
 import {cache} from 'react';
 import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
 
