@@ -36,12 +36,14 @@ export type BlogDetail = {
 
 export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     try {
-        console.log('API Base URL:', process.env.API_BASE_URL);
+        const url = `${process.env.API_BASE_URL}/api/blog`;
+        console.log('ブログ一覧取得API URL:', url);
 
-        const res = await fetch(`${process.env.API_BASE_URL}/api/blog`, {
+        const res = await fetch(url, {
             method: 'GET',
             next: {tags: ['blog-list']}
         });
+        console.log('レスポンス status:', res.status);
 
         if (!res.ok) {
             const errorText = await res.text();
