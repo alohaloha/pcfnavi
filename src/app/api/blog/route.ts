@@ -5,6 +5,9 @@ const NOTION_URL = API_CONFIG.NOTION_API_URL!;
 const NOTION_TOKEN = API_CONFIG.NOTION_API_SECRET!;
 const BLOG_DB_ID = API_CONFIG.NOTION_BLOG_DB_ID!;
 const API_VERSION = API_CONFIG.NOTION_VERSION!;
+console.log('Vercel Debug | URL:', NOTION_URL);
+console.log('Vercel Debug | TOKEN:', NOTION_TOKEN ? 'present' : 'missing');
+console.log('Vercel Debug | VERSION:', API_VERSION);
 
 export async function GET() {
     try {

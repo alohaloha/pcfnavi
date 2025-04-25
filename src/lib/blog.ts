@@ -2,6 +2,9 @@
 import {cache} from 'react';
 import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
 
+console.log('Vercel Debug | TOKEN:', process.env.NOTION_API_SECRET ? 'present' : 'missing');
+console.log('Vercel Debug | URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
+console.log('Vercel Debug | VERSION:', API_VERSION);
 export type BlogItem = {
     id: string
     title: string
