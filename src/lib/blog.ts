@@ -2,8 +2,6 @@
 import {cache} from 'react';
 import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
 
-console.log('Vercel Debug | TOKEN:', process.env.NOTION_API_SECRET ? 'present' : 'missing');
-console.log('Vercel Debug | URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
 export type BlogItem = {
     id: string
     title: string
@@ -38,9 +36,9 @@ export type BlogDetail = {
 
 export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     try {
-        console.log('API Base URL:', process.env.NEXT_PUBLIC_API_BASE_URL);
+        console.log('API Base URL:', process.env.API_BASE_URL);
 
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blog`, {
+        const res = await fetch(`${process.env.API_BASE_URL}/api/blog`, {
             method: 'GET',
             next: {tags: ['blog-list']}
         });
@@ -82,7 +80,7 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
 
 export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> => {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/blog/${slug}`, {
+        const res = await fetch(`${process.env.API_BASE_URL}/api/blog/${slug}`, {
             method: 'GET',
             next: {tags: [`blog-detail-${slug}`]}
         });
