@@ -2,7 +2,7 @@ import {NextResponse} from 'next/server'
 import type {NextRequest} from 'next/server'
 
 export const config = {
-    matcher: ['/((?!^/api/|^/_next/|^/favicon.ico).*)'],
+    matcher: ['/((?!api|_next|favicon\\.ico).*)'], // ← ✅ これで /api を明示的に除外
 }
 
 export function middleware(request: NextRequest) {
