@@ -38,18 +38,19 @@ export async function GET() {
         }
 
         const data = await res.json();
+        console.log('取得したブログ記事数:', data.results[0].properties);
 
         return NextResponse.json({
             items: data.results.map((row: any) => {
                 try {
-                    // カテゴリの抽出処理（タイプミスも考慮）
-                    const categoryProp = row.properties.category || row.properties.cateogry;
+                    // カテゴリの抽出処理
+                    const categoryProp = row.properties.category;
                     const categories = categoryProp?.multi_select?.map((item: any) => item.name) || [];
-                    
+
                     return {
                         id: row.id,
                         title: row.properties.title?.title?.[0]?.plain_text || '',
-                        slug: row.properties.slug?.rich_text?.[0]?.plain_text || row.id,
+                        slug: `${row.id}`,
                         summary: row.properties.summary?.rich_text?.[0]?.plain_text || '',
                         cover: row.properties.cover?.files?.[0]?.file?.url ||
                             row.properties.cover?.files?.[0]?.external?.url || '',

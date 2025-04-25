@@ -5,12 +5,13 @@ import {fetchBlogDetail, fetchBlogList} from '@/lib/blog';
 import BlogDetail from '@/components/BlogDetail';
 
 interface BlogDetailPageProps {
-    params: {
+    params: Promise<{
         slug: string;
-    };
+    }>;
 }
 
-export async function generateMetadata({params}: BlogDetailPageProps): Promise<Metadata> {
+export async function generateMetadata(props: BlogDetailPageProps): Promise<Metadata> {
+    const params = await props.params;
     const {slug} = params;
     const blog = await fetchBlogDetail(slug);
 
@@ -34,14 +35,14 @@ export async function generateMetadata({params}: BlogDetailPageProps): Promise<M
 
 export async function generateStaticParams() {
     const blogs = await fetchBlogList();
-    console.log('blogs: ', blogs);
 
     return blogs.map((blog) => ({
         slug: blog.slug,
     }));
 }
 
-export default async function BlogDetailPage({params}: BlogDetailPageProps) {
+export default async function BlogDetailPage(props: BlogDetailPageProps) {
+    const params = await props.params;
     const {slug} = params;
     const blog = await fetchBlogDetail(slug);
 

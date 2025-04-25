@@ -5,7 +5,7 @@ import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
 export type BlogItem = {
     id: string
     title: string
-    slug: string
+    slug: number
     summary: string
     cover: string
     category: string[]
@@ -25,6 +25,7 @@ export type BlogDetail = {
     blocks: NotionBlock[]
     title: string
     summary: string
+    detail: string
     cover: string
     category: string[]
     publishedAt: string
@@ -50,15 +51,15 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
 
         const data = await res.json();
         console.log('取得したブログ記事数:', data.items?.length || 0);
-        
+
         if (data.items && data.items.length > 0) {
             const validCategoryNames = BLOG_CATEGORIES.map(cat => cat.name);
             console.log('有効なカテゴリー名:', validCategoryNames);
-            
+
             data.items.forEach((item: any, index: number) => {
                 if (item.category) {
                     console.log(`記事[${index}] ID:${item.id} カテゴリ:`, item.category);
-                    
+
                     if (!Array.isArray(item.category)) {
                         console.warn(`記事ID:${item.id}のカテゴリが配列ではありません`, item.category);
                         item.category = [];
@@ -69,7 +70,7 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
                 }
             });
         }
-        
+
         return data.items;
     } catch (error) {
         console.error('ブログの取得エラー:', error);
@@ -89,6 +90,6 @@ export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> =
         return await res.json();
     } catch (error) {
         console.error('ブログ詳細の取得エラー:', error);
-        return {blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: ''};
+        return {blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: '', detail: ''};
     }
-}); 
+});
