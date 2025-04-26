@@ -320,15 +320,6 @@ export type EventCategoryKey = EventCategoryType['key'];
 export type EventStatusName = EventStatusType['name'];
 export type EventStatusKey = EventStatusType['key'];
 
-// export type FaqCategoryName = typeof FAQ_CATEGORIES[number]['name']
-// export type FaqCategoryPath = typeof FAQ_CATEGORIES[number]['path']
-// export type BlogCategoryName = typeof BLOG_CATEGORIES[number]['name']
-// export type BlogCategoryKey = typeof BLOG_CATEGORIES[number]['key']
-// export type EventCategoryName = typeof EventCategoryType[number]['name']
-// export type EventCategoryKey = typeof EventCategoryType[number]['key']
-// export type EventStatusName = typeof EventStatusType[number]['name']
-// export type EventStatusKey = typeof EventStatusType[number]['key']
-
 // API関連
 export const API_CONFIG = {
     NOTION_API_URL: 'https://api.notion.com/v1',
