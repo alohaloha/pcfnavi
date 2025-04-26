@@ -40,9 +40,13 @@ export async function fetchBlogList(): Promise<BlogItem[]> {
         console.log('ブログ一覧取得API baseURL:', baseUrl);
         const url = `${baseUrl}/api/blog`;
         console.log('ブログ一覧取得API URL:', url);
+        const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
         const res = await fetch(url, {
             method: 'GET',
+            headers: {
+                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+            },
             cache: 'no-store',
             next: {tags: ['blog-list']}
         });
