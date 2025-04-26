@@ -62,7 +62,7 @@ export async function GET(
             eventDate: contentData.properties.eventDate?.date?.start || '',
             location: contentData.properties.location?.rich_text?.[0]?.plain_text || '',
             capacity: contentData.properties.capacity?.number || 0,
-            price: contentData.properties.price?.number || 0,
+            price: contentData.properties.price?.number || null,
             organizer: contentData.properties.organizer?.rich_text?.[0]?.plain_text || '',
             source: contentData.properties.source?.url || '',
             status: contentData.properties.status?.select?.name || '',

@@ -18,9 +18,11 @@ interface EventModalProps {
 
 export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
     // 料金のフォーマット
-    const formattedPrice = event.price === 0
-        ? '無料'
-        : `¥${event.price.toLocaleString()}`;
+    const formattedPrice = event.price === null
+        ? '－'
+        : event.price === 0
+            ? '無料'
+            : `¥${event.price.toLocaleString()}`;
 
     // 日付のフォーマット
     const formatEventDate = () => {
@@ -192,7 +194,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                             <div className="flex flex-wrap gap-1.5">
                                 {event.category.map((cat) => (
                                     <Badge key={cat} variant="outline">
-                                        {cat}
+                                        {getEventCategoryName(cat)}
                                     </Badge>
                                 ))}
                             </div>
