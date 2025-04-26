@@ -23,7 +23,7 @@ export default function EventsPage() {
 
     // フィルター状態
     const [filters, setFilters] = useState<EventFilters>({
-        status: undefined,
+        status: 'scheduled',
         category: undefined,
         isFree: undefined,
     });

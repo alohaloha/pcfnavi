@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         const {searchParams} = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
         const pageSize = parseInt(searchParams.get('pageSize') || String(ITEMS_PER_PAGE));
-        const status = searchParams.get('status') || '';
+        const status = searchParams.get('status') || 'scheduled';
         const category = searchParams.get('category') || '';
         const isFree = searchParams.get('isFree') || '';
 
