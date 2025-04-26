@@ -1,5 +1,5 @@
 import {cache} from 'react';
-import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
+import {BlogCategoryName, BlogCategoryArray} from './constants'
 import {NotionBlock} from "@/types/notion";
 
 export type BlogItem = {
@@ -54,7 +54,7 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
         console.log('取得したブログ記事数:', data.items?.length || 0);
 
         if (data.items && data.items.length > 0) {
-            const validCategoryNames = BLOG_CATEGORIES.map(cat => cat.name);
+            const validCategoryNames = BlogCategoryArray.map(cat => cat.name);
             console.log('有効なカテゴリー名:', validCategoryNames);
 
             data.items.forEach((item: any, index: number) => {

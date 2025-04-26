@@ -1,6 +1,6 @@
 'use server'
 import {cache} from 'react';
-import {FaqCategoryName, FAQ_CATEGORIES} from './constants'
+import {FaqCategoryName, FaqCategoryMap} from './constants'
 import {NotionBlock} from "@/types/notion";
 
 export type FaqItem = {

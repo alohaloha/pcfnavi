@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react'
 import FaqItem from './FaqItem'
 import {FaqCategoryName} from '@/lib/constants'
 import {fetchFaqList, fetchFaqDetail} from "@/lib/faq";
-import {FAQ_CATEGORIES} from "@/lib/constants";
+import {FaqCategoryArray} from "@/lib/constants";
 
 type FaqListProps = {
     faqs: Array<{
@@ -22,7 +22,7 @@ type FaqListProps = {
 
 export default function FaqList({
     faqs, 
-    categories = FAQ_CATEGORIES // デフォルト値として定数を使用
+    categories = FaqCategoryArray // デフォルト値として定数を使用
 }: FaqListProps) {
     return (
         <div className="space-y-12">

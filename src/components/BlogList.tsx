@@ -3,7 +3,7 @@
 import React, {useState, useEffect} from 'react';
 import {BlogItem} from '@/lib/blog';
 import BlogCard from './BlogCard';
-import {BLOG_CATEGORIES, BlogCategoryName} from '@/lib/constants';
+import {BlogCategoryArray, BlogCategoryName} from '@/lib/constants';
 
 interface BlogListProps {
     blogs: BlogItem[];
@@ -15,7 +15,7 @@ export default function BlogList({blogs}: BlogListProps) {
 
     // デバッグ: カテゴリー情報を詳細に表示
     useEffect(() => {
-        console.log('定義されているカテゴリ:', BLOG_CATEGORIES);
+        console.log('定義されているカテゴリ:', BlogCategoryArray);
 
         // 受け取ったブログデータの詳細を表示
         console.log(`受け取ったブログ記事数: ${blogs.length}`);
@@ -98,7 +98,7 @@ export default function BlogList({blogs}: BlogListProps) {
                     すべて
                 </button>
 
-                {BLOG_CATEGORIES.map((category) => (
+                {BlogCategoryArray.map((category) => (
                     <button
                         key={category.key}
                         onClick={() => handleCategoryFilter(category.name)}
