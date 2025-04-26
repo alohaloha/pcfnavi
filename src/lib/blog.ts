@@ -35,9 +35,7 @@ export type BlogDetail = {
 
 export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     try {
-        const baseUrl = `${process.env.API_BASE_URL}`;
-        console.log('ブログ一覧取得API baseURL:', baseUrl);
-        const url = `${baseUrl}/api/blog`;
+        const url = `${process.env.API_BASE_URL}/api/blog`;
         console.log('ブログ一覧取得API URL:', url);
         const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 
