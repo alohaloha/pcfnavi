@@ -49,7 +49,9 @@ export const EVENT_CATEGORIES = [
     {name: '体験', key: 'experience'},
     {name: 'イベント', key: 'event'},
     {name: '大会', key: 'tournament'},
-    {name: '練習', key: 'practice'}
+    {name: '練習', key: 'practice'},
+    {name: '国内', key: 'domestic'},
+    {name: '国際', key: 'international'}
 ] as const
 
 // EVENTステータス
