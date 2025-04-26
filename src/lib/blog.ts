@@ -1,5 +1,6 @@
 import {cache} from 'react';
 import {BlogCategoryName, BLOG_CATEGORIES} from './constants'
+import {NotionBlock} from "@/types/notion";
 
 export type BlogItem = {
     id: string
@@ -12,12 +13,6 @@ export type BlogItem = {
     featured: boolean
     isNew: boolean
     status: string
-}
-
-export type NotionBlock = {
-    id: string
-    type: string
-    [key: string]: any
 }
 
 export type BlogDetail = {

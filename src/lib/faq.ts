@@ -1,18 +1,13 @@
 'use server'
 import {cache} from 'react';
 import {FaqCategoryName, FAQ_CATEGORIES} from './constants'
+import {NotionBlock} from "@/types/notion";
 
 export type FaqItem = {
     id: string
     question: string
     answer: string
     category: FaqCategoryName[]
-}
-
-export type NotionBlock = {
-    id: string
-    type: string
-    [key: string]: any
 }
 
 export type FaqDetail = {
