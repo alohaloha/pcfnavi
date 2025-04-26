@@ -12,9 +12,11 @@ interface EventCardProps {
 
 export const EventCard = ({event, onClick}: EventCardProps) => {
     // 料金のフォーマット
-    const formattedPrice = event.price === 0
-        ? '無料'
-        : `¥${event.price.toLocaleString()}`;
+    const formattedPrice = event.price === null
+        ? '－'
+        : event.price === 0
+            ? '無料'
+            : `¥${event.price.toLocaleString()}`;
 
     // 日付のフォーマット
     const formattedDate = formatDate(event.eventDate);

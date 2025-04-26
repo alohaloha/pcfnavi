@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
                     contains: category
                 }
             }));
-            
+
             // 複数カテゴリのAND条件
             if (categoryFilters.length > 1) {
                 filters.push({
@@ -136,7 +136,7 @@ export async function GET(request: NextRequest) {
                     eventDate: row.properties.eventDate?.date?.start || '',
                     location: row.properties.location?.rich_text?.[0]?.plain_text || '',
                     capacity: row.properties.capacity?.number || 0,
-                    price: row.properties.price?.number || 0,
+                    price: row.properties.price?.number || null,
                     organizer: row.properties.organizer?.rich_text?.[0]?.plain_text || '',
                     source: row.properties.source?.url || '',
                     status: row.properties.status?.select?.name || '',
