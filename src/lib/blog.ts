@@ -33,8 +33,7 @@ export type BlogDetail = {
     featured?: boolean
 }
 
-// export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
-export async function fetchBlogList(): Promise<BlogItem[]> {
+export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     try {
         const baseUrl = `${process.env.API_BASE_URL}`;
         console.log('ブログ一覧取得API baseURL:', baseUrl);
@@ -85,7 +84,7 @@ export async function fetchBlogList(): Promise<BlogItem[]> {
         console.error('ブログの取得エラー:', error);
         return [];
     }
-}
+});
 
 export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> => {
     try {
