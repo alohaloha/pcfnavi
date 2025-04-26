@@ -8,7 +8,7 @@ NotionデータベースをCMSとして利用し、イベント情報を管理�
 ### 1. Notionデータベース設計
 以下のプロパティを持つデータベースを作成してください：
 - title (タイトル): タイトル型
-- slug (URL用識別子): リッチテキスト型
+- id (URL用識別子): リッチテキスト型
 - summary (概要): リッチテキスト型
 - detail (詳細): リッチテキスト型
 - eventDate (開催日): 日付型
@@ -18,16 +18,22 @@ NotionデータベースをCMSとして利用し、イベント情報を管理�
   - 0の場合は「無料」と表示
   - 数値の場合は「¥1,000」のようにフォーマット
 - organizer (主催者): リッチテキスト型
-- source (掲載元): リッチテキスト型
+- source (掲載元): url型
   - 掲載元のURL等も含む
 - status (状態): セレクト型
-  - 募集中
-  - 募集締切
-  - 開催済み
-  - 中止
+  - 募集中（wanted）
+  - 募集締切（deadline）
+  - 開催済み（held）
+  - 中止（suspension）
+  - 不明（unknown）
 - category (カテゴリ): マルチセレクト型
+  - 体験（experience）
+  - イベント（event）
+  - 大会（tournament）
+  - 練習（practice）
 - cover (カバー画像): ファイル型
 - featured (注目): チェックボックス型
+- pinned（先頭に固定）：チェックボックス型
 - isNew (新着): 数式型（作成日から7日以内）
 
 ### 2. API実装要件
@@ -36,11 +42,17 @@ NotionデータベースをCMSとして利用し、イベント情報を管理�
    - カテゴリによるフィルタリング
    - 開催日による並び替え
    - ページネーション対応
+   - Vercelプレビュー環境対応
+     - `VERCEL_AUTOMATION_BYPASS_SECRET`の実装
+     - プレビュー環境での認証バイパス処理
 
 2. イベント詳細取得API
-   - slugによる個別イベント情報の取得
+   - idによる個別イベント情報の取得（idはpropatiesではなく直下のidを使用）
    - Notionブロックの取得と変換
    - キャッシュ制御（30分）
+   - Vercelプレビュー環境対応
+     - `VERCEL_AUTOMATION_BYPASS_SECRET`の実装
+     - プレビュー環境での認証バイパス処理
 
 ### 3. フロントエンド実装要件
 1. イベント一覧ページ
@@ -119,3 +131,52 @@ NotionデータベースをCMSとして利用し、イベント情報を管理�
 3. API設計
    - クエリパラメータでのソート対応
    - Notionデータベースのソート機能活用 
+
+### 実装例（APIクライアント）
+```typescript
+export const fetchEventList = cache(async (): Promise<EventItem[]> => {
+    try {
+        const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+        const res = await fetch(`${process.env.API_BASE_URL}/api/event`, {
+            method: 'GET',
+            headers: {
+                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+            },
+            next: {tags: ['event-list']}
+        });
+        // ... 以降の処理
+    } catch (error) {
+        console.error('Error fetching event list:', error);
+        throw error;
+    }
+});
+
+export const fetchEventDetail = cache(async (id: string): Promise<EventDetail> => {
+    try {
+        const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+        const res = await fetch(`${process.env.API_BASE_URL}/api/event/${id}`, {
+            method: 'GET',
+            headers: {
+                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+            },
+            next: {tags: [`event-detail-${id}`]}
+        });
+        // ... 以降の処理
+    } catch (error) {
+        console.error('Error fetching event detail:', error);
+        throw error;
+    }
+});
+```
+
+## 環境変数設定
+```env
+# Vercelプレビュー環境用の認証バイパス
+VERCEL_AUTOMATION_BYPASS_SECRET=
+
+# API設定
+API_BASE_URL=
+NOTION_API_SECRET=
+NOTION_VERSION=
+NOTION_EVENT_DB_ID=
+``` 
