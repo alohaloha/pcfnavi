@@ -116,6 +116,7 @@ export async function GET(request: NextRequest) {
                 const categoryProp = row.properties.category;
                 const categories = categoryProp?.multi_select?.map((item: any) => item.name) || [];
                 console.log('eventDate:', row.properties.eventDate);
+                console.log('status:', row.properties.status);
 
                 return {
                     id: row.id,

@@ -56,6 +56,7 @@ export const EVENT_CATEGORIES = [
 export const EVENT_STATUSES = [
     {name: '募集中', key: 'wanted'},
     {name: '募集締切', key: 'deadline'},
+    {name: '開催予定', key: 'scheduled'},
     {name: '開催済み', key: 'held'},
     {name: '中止', key: 'suspension'},
     {name: '不明', key: 'unknown'}

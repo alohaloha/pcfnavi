@@ -21,6 +21,7 @@ export interface EventItem {
 export interface EventDetail extends EventItem {
     detail: string;
     blocks: any[]; // NotionブロックデータはAny型で定義
+    eventDateEnd?: string;
 }
 
 export interface EventFilters {
