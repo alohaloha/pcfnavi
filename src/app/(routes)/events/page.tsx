@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useState} from 'react';
+import React, {useState, Suspense} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
 import {fetchEventList, fetchEventDetail} from '@/lib/server/event';
 import {EventCard} from '@/components/EventCard';
@@ -157,160 +157,162 @@ export default function EventsPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">イベント情報</h1>
+        <Suspense fallback={<div>Loading...</div>}>
+            <div className="container mx-auto px-4 py-8">
+                <h1 className="text-3xl font-bold mb-8">イベント情報</h1>
 
-            {/* フィルターセクション */}
-            <div className="bg-muted p-4 rounded-lg mb-8">
-                <h2 className="text-xl font-semibold mb-4">フィルター</h2>
-                <div className="flex flex-wrap gap-4">
-                    {/* ステータスフィルター */}
-                    <div>
-                        <h3 className="text-sm font-medium mb-2">状態</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {EventStatusArray.map((status) => (
-                                <button
-                                    key={status.key}
-                                    className={`px-3 py-1 rounded-full text-sm ${
-                                        filters.status === status.key
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                    }`}
-                                    onClick={() => handleFilterChange('status', status.key)}
-                                >
-                                    {status.name}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* カテゴリフィルター */}
-                    <div>
-                        <h3 className="text-sm font-medium mb-2">カテゴリ</h3>
-                        <div className="flex flex-wrap gap-2">
-                            {EventCategoryArray.map((category) => {
-                                // 選択済みのカテゴリかどうかをチェック（配列またはシングル値）
-                                const isSelected = Array.isArray(filters.category)
-                                    ? filters.category.includes(category.key)
-                                    : filters.category === category.key;
-
-                                return (
+                {/* フィルターセクション */}
+                <div className="bg-muted p-4 rounded-lg mb-8">
+                    <h2 className="text-xl font-semibold mb-4">フィルター</h2>
+                    <div className="flex flex-wrap gap-4">
+                        {/* ステータスフィルター */}
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">状態</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {EventStatusArray.map((status) => (
                                     <button
-                                        key={category.key}
+                                        key={status.key}
                                         className={`px-3 py-1 rounded-full text-sm ${
-                                            isSelected
+                                            filters.status === status.key
                                                 ? 'bg-primary text-primary-foreground'
                                                 : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
                                         }`}
-                                        onClick={() => handleFilterChange('category', category.key)}
+                                        onClick={() => handleFilterChange('status', status.key)}
                                     >
-                                        {category.name}
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* 料金フィルター */}
-                    <div>
-                        <h3 className="text-sm font-medium mb-2">料金</h3>
-                        <div className="flex gap-2">
-                            <button
-                                className={`px-3 py-1 rounded-full text-sm ${
-                                    filters.isFree === true
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                }`}
-                                onClick={() => handlePriceFilterChange(true)}
-                            >
-                                無料
-                            </button>
-                            <button
-                                className={`px-3 py-1 rounded-full text-sm ${
-                                    filters.isFree === false
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                }`}
-                                onClick={() => handlePriceFilterChange(false)}
-                            >
-                                有料
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {isLoading ? (
-                <div className="flex justify-center items-center h-64">
-                    <div className="text-xl">読み込み中...</div>
-                </div>
-            ) : (
-                <>
-                    {/* イベント一覧 */}
-                    {events.length > 0 ? (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {events.map((event) => (
-                                <EventCard
-                                    key={event.id}
-                                    event={event}
-                                    onClick={() => handleEventClick(event.id)}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12 bg-muted rounded-lg">
-                            <p className="text-xl">該当するイベントはありません。</p>
-                            <p className="text-muted-foreground mt-2">フィルター条件を変更してみてください。</p>
-                        </div>
-                    )}
-
-                    {/* ページネーション */}
-                    {totalPages > 1 && (
-                        <div className="flex justify-center mt-8">
-                            <nav className="flex items-center gap-1">
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="px-3 py-1 rounded border disabled:opacity-50"
-                                >
-                                    前へ
-                                </button>
-
-                                {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
-                                    <button
-                                        key={page}
-                                        onClick={() => setCurrentPage(page)}
-                                        className={`px-3 py-1 rounded ${
-                                            currentPage === page
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'border hover:bg-muted'
-                                        }`}
-                                    >
-                                        {page}
+                                        {status.name}
                                     </button>
                                 ))}
-
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages}
-                                    className="px-3 py-1 rounded border disabled:opacity-50"
-                                >
-                                    次へ
-                                </button>
-                            </nav>
+                            </div>
                         </div>
-                    )}
-                </>
-            )}
 
-            {/* イベント詳細モーダル */}
-            {selectedEvent && (
-                <EventModal
-                    event={selectedEvent}
-                    open={isDialogOpen}
-                    onOpenChange={handleDialogClose}
-                />
-            )}
-        </div>
+                        {/* カテゴリフィルター */}
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">カテゴリ</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {EventCategoryArray.map((category) => {
+                                    // 選択済みのカテゴリかどうかをチェック（配列またはシングル値）
+                                    const isSelected = Array.isArray(filters.category)
+                                        ? filters.category.includes(category.key)
+                                        : filters.category === category.key;
+
+                                    return (
+                                        <button
+                                            key={category.key}
+                                            className={`px-3 py-1 rounded-full text-sm ${
+                                                isSelected
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                            }`}
+                                            onClick={() => handleFilterChange('category', category.key)}
+                                        >
+                                            {category.name}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* 料金フィルター */}
+                        <div>
+                            <h3 className="text-sm font-medium mb-2">料金</h3>
+                            <div className="flex gap-2">
+                                <button
+                                    className={`px-3 py-1 rounded-full text-sm ${
+                                        filters.isFree === true
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                    }`}
+                                    onClick={() => handlePriceFilterChange(true)}
+                                >
+                                    無料
+                                </button>
+                                <button
+                                    className={`px-3 py-1 rounded-full text-sm ${
+                                        filters.isFree === false
+                                            ? 'bg-primary text-primary-foreground'
+                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                    }`}
+                                    onClick={() => handlePriceFilterChange(false)}
+                                >
+                                    有料
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {isLoading ? (
+                    <div className="flex justify-center items-center h-64">
+                        <div className="text-xl">読み込み中...</div>
+                    </div>
+                ) : (
+                    <>
+                        {/* イベント一覧 */}
+                        {events.length > 0 ? (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {events.map((event) => (
+                                    <EventCard
+                                        key={event.id}
+                                        event={event}
+                                        onClick={() => handleEventClick(event.id)}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12 bg-muted rounded-lg">
+                                <p className="text-xl">該当するイベントはありません。</p>
+                                <p className="text-muted-foreground mt-2">フィルター条件を変更してみてください。</p>
+                            </div>
+                        )}
+
+                        {/* ページネーション */}
+                        {totalPages > 1 && (
+                            <div className="flex justify-center mt-8">
+                                <nav className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1 rounded border disabled:opacity-50"
+                                    >
+                                        前へ
+                                    </button>
+
+                                    {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => setCurrentPage(page)}
+                                            className={`px-3 py-1 rounded ${
+                                                currentPage === page
+                                                    ? 'bg-primary text-primary-foreground'
+                                                    : 'border hover:bg-muted'
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+
+                                    <button
+                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                        disabled={currentPage === totalPages}
+                                        className="px-3 py-1 rounded border disabled:opacity-50"
+                                    >
+                                        次へ
+                                    </button>
+                                </nav>
+                            </div>
+                        )}
+                    </>
+                )}
+
+                {/* イベント詳細モーダル */}
+                {selectedEvent && (
+                    <EventModal
+                        event={selectedEvent}
+                        open={isDialogOpen}
+                        onOpenChange={handleDialogClose}
+                    />
+                )}
+            </div>
+        </Suspense>
     );
 }
