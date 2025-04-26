@@ -34,7 +34,7 @@ export const fetchEventList = cache(async (
         }
 
         const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-        const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/event?${params.toString()}`;
+        const url = `${process.env.API_BASE_URL}/api/event?${params.toString()}`;
 
         const res = await fetch(url, {
             method: 'GET',
