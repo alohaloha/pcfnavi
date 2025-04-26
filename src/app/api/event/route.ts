@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
             method: 'POST',
             headers,
             body: JSON.stringify(requestBody),
-            // next: {revalidate: 1800} // 30分キャッシュ
+            next: {revalidate: 1800} // 30分キャッシュ
         });
 
         if (!res.ok) {

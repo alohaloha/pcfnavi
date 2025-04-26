@@ -30,7 +30,7 @@ export async function GET(
         const contentResponse = await fetch(`${NOTION_URL}/pages/${id}`, {
             method: 'GET',
             headers,
-            // next: {revalidate: 1800} // 30分キャッシュ
+            next: {revalidate: 1800} // 30分キャッシュ
         });
 
         if (!contentResponse.ok) {
