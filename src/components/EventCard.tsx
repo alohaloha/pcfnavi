@@ -2,6 +2,8 @@ import {EventItem} from '@/types/event';
 import {EventStatusBadge} from './EventStatusBadge';
 import {CustomCard} from './layout/CustomCard';
 import {formatDate} from '@/lib/utils';
+import {EventCategoryArray, EventCategoryType} from '@/lib/constants';
+import {getEventCategoryName} from "@/lib/constant-util";
 
 interface EventCardProps {
     event: EventItem;
@@ -15,13 +17,11 @@ export const EventCard = ({event, onClick}: EventCardProps) => {
         : `¥${event.price.toLocaleString()}`;
 
     // 日付のフォーマット
-    console.log('Unformatted date:', event.eventDate);
     const formattedDate = formatDate(event.eventDate);
-    console.log('Formatted date:', formattedDate);
 
     // イベントバッジの作成
     const eventBadges = event.category.map(cat => ({
-        text: cat,
+        text: getEventCategoryName(cat),
         variant: 'outline' as const,
         className: 'text-xs'
     }));

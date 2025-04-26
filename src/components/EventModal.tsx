@@ -7,6 +7,8 @@ import {EventStatusBadge} from './EventStatusBadge';
 import {CustomDialog} from './layout/CustomDialog';
 import {formatDate} from '@/lib/utils';
 import {parseNotionBlocks} from '@/lib/notionParser';
+import {EventCategoryMap} from "@/lib/constants";
+import {getEventCategoryName} from "@/lib/constant-util";
 
 interface EventModalProps {
     event: EventDetail;
@@ -23,23 +25,23 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
     // 日付のフォーマット
     const formatEventDate = () => {
         const startDate = formatDate(event.eventDate);
-        
+
         // 終了日がある場合
         if (event.eventDateEnd) {
             const endDate = formatDate(event.eventDateEnd);
-            
+
             // 同じ日の場合は開始時間と終了時間のみ表示
             if (startDate.split(' ')[0] === endDate.split(' ')[0]) {
                 return `${startDate.split(' ')[0]} ${startDate.split(' ')[1]}～${endDate.split(' ')[1]}`;
             }
-            
+
             // 異なる日の場合は両方表示
             return `${startDate} 〜 ${endDate}`;
         }
-        
+
         return startDate;
     };
-    
+
     const formattedDate = formatEventDate();
 
     // bulletedとnumberedのリストアイテムをグループ化
@@ -50,7 +52,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
 
         // parseNotionBlocksを使用してNotionブロックをReactノードに変換
         const parsedBlocks = parseNotionBlocks(event.blocks);
-        
+
         event.blocks.forEach((block: any, index: number) => {
             if (block.type === 'bulleted_list_item' || block.type === 'numbered_list_item') {
                 const listType = block.type === 'bulleted_list_item' ? 'ul' : 'ol';
@@ -116,7 +118,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
         <span className="flex flex-wrap gap-1.5 mt-2">
             {event.category.map((cat) => (
                 <Badge key={cat} variant="outline" className="text-sm">
-                    {cat}
+                    {getEventCategoryName(cat)}
                 </Badge>
             ))}
             <EventStatusBadge status={event.status}/>
@@ -146,25 +148,25 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                     <p className="text-lg leading-relaxed text-foreground">{event.summary}</p>
                     <div className="space-y-3 bg-muted/50 p-4 rounded-lg border">
                         <div className="flex items-start gap-2">
-                            <span className="font-semibold min-w-24">日時:</span> 
+                            <span className="font-semibold min-w-24">日時:</span>
                             <span>{formattedDate}</span>
                         </div>
                         <div className="flex items-start gap-2">
-                            <span className="font-semibold min-w-24">場所:</span> 
+                            <span className="font-semibold min-w-24">場所:</span>
                             <span>{event.location}</span>
                         </div>
                         <div className="flex items-start gap-2">
-                            <span className="font-semibold min-w-24">主催:</span> 
+                            <span className="font-semibold min-w-24">主催:</span>
                             <span>{event.organizer}</span>
                         </div>
                         {event.capacity > 0 && (
                             <div className="flex items-start gap-2">
-                                <span className="font-semibold min-w-24">定員:</span> 
+                                <span className="font-semibold min-w-24">定員:</span>
                                 <span>{event.capacity}名</span>
                             </div>
                         )}
                         <div className="flex items-start gap-2">
-                            <span className="font-semibold min-w-24">料金:</span> 
+                            <span className="font-semibold min-w-24">料金:</span>
                             <span>{formattedPrice}</span>
                         </div>
                     </div>
@@ -175,10 +177,10 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                         {event.source && (
                             <div className="break-words">
                                 <span className="font-semibold block mb-1">掲載元:</span>
-                                <Link 
-                                    href={event.source} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer" 
+                                <Link
+                                    href={event.source}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className="text-primary hover:underline text-sm"
                                 >
                                     {getSourceDomain() || event.source}
@@ -197,7 +199,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                         </div>
                         <div className="mt-4">
                             <span className="font-semibold block mb-2">ステータス:</span>
-                            <EventStatusBadge status={event.status} large />
+                            <EventStatusBadge status={event.status} large/>
                         </div>
                     </div>
                 </div>
@@ -211,17 +213,22 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                     </div>
                 </div>
             )}
-            
+
             <div className="mt-8 border-t pt-4 flex justify-between">
                 <div className="flex gap-2">
-                    <button 
+                    <button
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-1 text-sm font-medium transition-colors"
                         onClick={() => {
                             const url = window.location.href;
                             navigator.clipboard.writeText(url);
                         }}
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                             className="mr-1">
+                            <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
+                            <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+                        </svg>
                         共有
                     </button>
                 </div>

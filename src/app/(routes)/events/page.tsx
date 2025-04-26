@@ -5,8 +5,7 @@ import {useSearchParams, useRouter} from 'next/navigation';
 import {fetchEventList, fetchEventDetail} from '@/lib/api-client/event';
 import {EventCard} from '@/components/EventCard';
 import {EventModal} from '@/components/EventModal';
-import {EVENT_CATEGORIES, EVENT_STATUSES} from '@/lib/constants';
-import {EventCategoryKey, EventStatusKey} from '@/lib/constants';
+import {EventCategoryType, EventStatusType, EventStatusArray, EventCategoryArray} from '@/lib/constants';
 import {EventFilters} from '@/types/event';
 
 export default function EventsPage() {
@@ -102,30 +101,30 @@ export default function EventsPage() {
                 }
                 return {...prev, [key]: value};
             }
-            
+
             // categoryフィルターの場合 - 複数選択に対応
             if (key === 'category') {
                 // 現在の選択状態を確認
-                const currentCategories = Array.isArray(prev.category) 
-                    ? [...prev.category] 
+                const currentCategories = Array.isArray(prev.category)
+                    ? [...prev.category]
                     : prev.category ? [prev.category] : [];
-                
+
                 // 既に選択されている場合は除去
                 if (currentCategories.includes(value)) {
                     const newCategories = currentCategories.filter(cat => cat !== value);
                     return {
-                        ...prev, 
+                        ...prev,
                         category: newCategories.length > 0 ? newCategories : undefined
                     };
                 }
-                
+
                 // 選択されていない場合は追加
                 return {
                     ...prev,
                     category: [...currentCategories, value]
                 };
             }
-            
+
             // その他のフィルター（isFreeなど）
             if (prev[key] === value) {
                 const newFilters = {...prev};
@@ -169,7 +168,7 @@ export default function EventsPage() {
                     <div>
                         <h3 className="text-sm font-medium mb-2">状態</h3>
                         <div className="flex flex-wrap gap-2">
-                            {EVENT_STATUSES.map((status) => (
+                            {EventStatusArray.map((status) => (
                                 <button
                                     key={status.key}
                                     className={`px-3 py-1 rounded-full text-sm ${
@@ -189,12 +188,12 @@ export default function EventsPage() {
                     <div>
                         <h3 className="text-sm font-medium mb-2">カテゴリ</h3>
                         <div className="flex flex-wrap gap-2">
-                            {EVENT_CATEGORIES.map((category) => {
+                            {EventCategoryArray.map((category) => {
                                 // 選択済みのカテゴリかどうかをチェック（配列またはシングル値）
-                                const isSelected = Array.isArray(filters.category) 
+                                const isSelected = Array.isArray(filters.category)
                                     ? filters.category.includes(category.key)
                                     : filters.category === category.key;
-                                
+
                                 return (
                                     <button
                                         key={category.key}
