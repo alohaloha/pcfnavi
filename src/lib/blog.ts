@@ -86,8 +86,12 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
 
 export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> => {
     try {
+        const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
         const res = await fetch(`${process.env.API_BASE_URL}/api/blog/${slug}`, {
             method: 'GET',
+            headers: {
+                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+            },
             next: {tags: [`blog-detail-${slug}`]}
         });
 
