@@ -16,6 +16,8 @@ export interface EventItem {
     featured: boolean;
     pinned: boolean;
     isNew: boolean;
+    notionBlockId?: string;
+    applicationUrl?: string;
 }
 
 export interface EventDetail extends EventItem {
@@ -26,7 +28,7 @@ export interface EventDetail extends EventItem {
 
 export interface EventFilters {
     status?: EventStatusKey;
-    category?: EventCategoryKey;
+    category?: EventCategoryKey | EventCategoryKey[]; // 単一または複数のカテゴリでフィルター可能に
     isFree?: boolean;
 }
 

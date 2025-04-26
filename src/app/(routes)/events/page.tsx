@@ -93,7 +93,40 @@ export default function EventsPage() {
     // フィルター変更時の処理
     const handleFilterChange = (key: keyof EventFilters, value: any) => {
         setFilters(prev => {
-            // 同じ値がすでに選択されている場合はリセット
+            // statusフィルターの場合 - 同じ値を選択したらリセット
+            if (key === 'status') {
+                if (prev[key] === value) {
+                    const newFilters = {...prev};
+                    newFilters[key] = undefined;
+                    return newFilters;
+                }
+                return {...prev, [key]: value};
+            }
+            
+            // categoryフィルターの場合 - 複数選択に対応
+            if (key === 'category') {
+                // 現在の選択状態を確認
+                const currentCategories = Array.isArray(prev.category) 
+                    ? [...prev.category] 
+                    : prev.category ? [prev.category] : [];
+                
+                // 既に選択されている場合は除去
+                if (currentCategories.includes(value)) {
+                    const newCategories = currentCategories.filter(cat => cat !== value);
+                    return {
+                        ...prev, 
+                        category: newCategories.length > 0 ? newCategories : undefined
+                    };
+                }
+                
+                // 選択されていない場合は追加
+                return {
+                    ...prev,
+                    category: [...currentCategories, value]
+                };
+            }
+            
+            // その他のフィルター（isFreeなど）
             if (prev[key] === value) {
                 const newFilters = {...prev};
                 newFilters[key] = undefined;
@@ -156,19 +189,26 @@ export default function EventsPage() {
                     <div>
                         <h3 className="text-sm font-medium mb-2">カテゴリ</h3>
                         <div className="flex flex-wrap gap-2">
-                            {EVENT_CATEGORIES.map((category) => (
-                                <button
-                                    key={category.key}
-                                    className={`px-3 py-1 rounded-full text-sm ${
-                                        filters.category === category.key
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
-                                    }`}
-                                    onClick={() => handleFilterChange('category', category.key)}
-                                >
-                                    {category.name}
-                                </button>
-                            ))}
+                            {EVENT_CATEGORIES.map((category) => {
+                                // 選択済みのカテゴリかどうかをチェック（配列またはシングル値）
+                                const isSelected = Array.isArray(filters.category) 
+                                    ? filters.category.includes(category.key)
+                                    : filters.category === category.key;
+                                
+                                return (
+                                    <button
+                                        key={category.key}
+                                        className={`px-3 py-1 rounded-full text-sm ${
+                                            isSelected
+                                                ? 'bg-primary text-primary-foreground'
+                                                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                        }`}
+                                        onClick={() => handleFilterChange('category', category.key)}
+                                    >
+                                        {category.name}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
