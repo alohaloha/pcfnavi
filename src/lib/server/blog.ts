@@ -1,5 +1,6 @@
+'use server'
 import {cache} from 'react';
-import {BlogCategoryName, BlogCategoryArray} from './constants'
+import {BlogCategoryName, BlogCategoryArray} from '../constants'
 import {NotionBlock} from "@/types/notion";
 
 export type BlogItem = {

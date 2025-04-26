@@ -3,7 +3,7 @@
 import {useState, useEffect} from 'react'
 import FaqItem from './FaqItem'
 import {FaqCategoryName} from '@/lib/constants'
-import {fetchFaqList, fetchFaqDetail} from "@/lib/faq";
+import {fetchFaqList, fetchFaqDetail} from "@/lib/server/faq";
 import {FaqCategoryArray} from "@/lib/constants";
 
 type FaqListProps = {
@@ -21,9 +21,9 @@ type FaqListProps = {
 }
 
 export default function FaqList({
-    faqs, 
-    categories = FaqCategoryArray // デフォルト値として定数を使用
-}: FaqListProps) {
+                                    faqs,
+                                    categories = FaqCategoryArray // デフォルト値として定数を使用
+                                }: FaqListProps) {
     return (
         <div className="space-y-12">
             {categories.map((category) => {

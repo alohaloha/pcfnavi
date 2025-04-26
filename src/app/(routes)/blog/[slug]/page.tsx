@@ -1,7 +1,7 @@
 import React from 'react';
 import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
-import {fetchBlogDetail, fetchBlogList} from '@/lib/blog';
+import {fetchBlogDetail, fetchBlogList} from '@/lib/server/blog';
 import BlogDetail from '@/components/BlogDetail';
 
 interface BlogDetailPageProps {

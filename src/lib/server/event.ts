@@ -1,3 +1,4 @@
+'use server'
 import {cache} from 'react';
 import {EventDetail, EventFilters, EventItem, EventListResponse} from '@/types/event';
 
@@ -69,8 +70,7 @@ export const fetchEventList = cache(async (
 export const fetchEventDetail = cache(async (id: string): Promise<EventDetail | null> => {
     try {
         const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-        const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/event/${id}`;
-
+        const url = `${process.env.API_BASE_URL}/api/event/${id}`;
         const res = await fetch(url, {
             method: 'GET',
             headers: {

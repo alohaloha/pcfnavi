@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import {parseNotionBlocks} from '@/lib/notionParser';
-import type {BlogDetail} from '@/lib/blog';
+import type {BlogDetail} from '@/lib/server/blog';
 
 interface BlogDetailProps {
     blog: BlogDetail;

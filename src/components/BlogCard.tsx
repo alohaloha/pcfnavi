@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {BlogItem} from '@/lib/blog';
+import {BlogItem} from '@/lib/server/blog';
 
 interface BlogCardProps {
     blog: BlogItem;

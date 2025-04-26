@@ -2,7 +2,7 @@
 
 import React, {useState} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
-import {fetchEventList, fetchEventDetail} from '@/lib/api-client/event';
+import {fetchEventList, fetchEventDetail} from '@/lib/server/event';
 import {EventCard} from '@/components/EventCard';
 import {EventModal} from '@/components/EventModal';
 import {EventCategoryType, EventStatusType, EventStatusArray, EventCategoryArray} from '@/lib/constants';

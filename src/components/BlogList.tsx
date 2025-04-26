@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useState, useEffect} from 'react';
-import {BlogItem} from '@/lib/blog';
+import {BlogItem} from '@/lib/server/blog';
 import BlogCard from './BlogCard';
 import {BlogCategoryArray, BlogCategoryName} from '@/lib/constants';
 

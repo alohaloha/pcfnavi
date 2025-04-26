@@ -1,6 +1,6 @@
 import {Section} from "@/components/Section";
 import FaqList from "@/components/FaqList";
-import {fetchFaqList, fetchFaqDetail} from "@/lib/faq";
+import {fetchFaqList} from "@/lib/server/faq";
 
 export const metadata = {
     title: "よくある質問 | PCF Navi",

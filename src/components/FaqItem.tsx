@@ -1,9 +1,7 @@
-'use client'
-
 import {useState} from 'react'
 import {ChevronDown} from 'lucide-react'
-import { FaqDetail } from '@/lib/faq'
-import { parseNotionBlocks } from '@/lib/notionParser'
+import {FaqDetail} from '@/lib/server/faq'
+import {parseNotionBlocks} from '@/lib/notionParser'
 
 type FaqItemProps = {
     id: string;
@@ -33,7 +31,7 @@ export default function FaqItem({id, question, summary, fetchDetail}: FaqItemPro
 
         setIsLoading(true)
         try {
-            const { blocks } = await fetchDetail(id)
+            const {blocks} = await fetchDetail(id)
             setDetailBlocks(blocks)
             setShowDetail(true)
         } catch (error) {
