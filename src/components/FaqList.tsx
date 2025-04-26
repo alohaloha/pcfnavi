@@ -1,9 +1,8 @@
 'use client'
 
-import {useState, useEffect} from 'react'
 import FaqItem from './FaqItem'
 import {FaqCategoryName} from '@/lib/constants'
-import {fetchFaqList, fetchFaqDetail} from "@/lib/server/faq";
+import {fetchFaqDetail} from "@/lib/server/faq";
 import {FaqCategoryArray} from "@/lib/constants";
 
 type FaqListProps = {
