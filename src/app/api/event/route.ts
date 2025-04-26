@@ -13,7 +13,8 @@ export async function GET(request: NextRequest) {
         const page = parseInt(searchParams.get('page') || '1');
         const pageSize = parseInt(searchParams.get('pageSize') || String(ITEMS_PER_PAGE));
         const status = searchParams.get('status') || 'scheduled';
-        const category = searchParams.get('category') || '';
+        // 複数カテゴリに対応 (同じキーで複数の値がある場合は全て取得)
+        const categories = searchParams.getAll('category');
         const isFree = searchParams.get('isFree') || '';
 
         // フィルターの作成
@@ -29,14 +30,24 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        // カテゴリフィルター
-        if (category) {
-            filters.push({
+        // カテゴリフィルター - 複数カテゴリをサポート
+        if (categories.length > 0) {
+            const categoryFilters = categories.map(category => ({
                 property: 'category',
                 multi_select: {
                     contains: category
                 }
-            });
+            }));
+            
+            // 複数カテゴリのAND条件
+            if (categoryFilters.length > 1) {
+                filters.push({
+                    and: categoryFilters
+                });
+            } else {
+                // 単一カテゴリの場合は直接追加
+                filters.push(categoryFilters[0]);
+            }
         }
 
         // 料金フィルター（無料/有料）
