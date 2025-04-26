@@ -22,7 +22,13 @@ export const fetchEventList = cache(async (
         // フィルター条件があれば追加
         if (filters) {
             if (filters.status) params.append('status', filters.status);
-            if (filters.category) params.append('category', filters.category);
+            if (filters.category) {
+                if (Array.isArray(filters.category)) {
+                    filters.category.forEach(cat => params.append('category', cat));
+                } else {
+                    params.append('category', filters.category);
+                }
+            }
             if (filters.isFree !== undefined) params.append('isFree', filters.isFree.toString());
         }
 
