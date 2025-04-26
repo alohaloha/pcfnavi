@@ -229,17 +229,17 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                             <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/>
                             <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
                         </svg>
-                        共有
+                        リンクをコピー
                     </button>
                 </div>
-                {event.source && (
+                {event.source && event.source.startsWith('http') && (
                     <Link
                         href={event.source}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
                     >
-                        申し込みページへ
+                        掲載元サイトを開く
                     </Link>
                 )}
             </div>
