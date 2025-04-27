@@ -39,7 +39,7 @@ export function MainNav({className}: MainNavProps) {
                         <NavigationMenuLink asChild>
                             <Link
                                 href={route.href}
-                                className="text-sm font-medium transition-colors hover:bg-cta"
+                                className="text-sm font-medium transition-colors hover:text-white"
                             >
                                 {route.label}
                             </Link>
