@@ -40,7 +40,7 @@ export const CustomCard = ({
                            }: CustomCardProps) => {
     return (
         <Card
-            className={`overflow-hidden h-full transition-all hover:shadow-lg ${featured ? 'border-primary' : ''} ${onClick ? 'cursor-pointer' : ''} ${className}`}
+            className={`overflow-hidden h-full transition-all hover:shadow-lg bg-white ${featured ? 'border-primary' : ''} ${onClick ? 'cursor-pointer' : ''} ${className}`}
             onClick={onClick}
         >
             {image && (
