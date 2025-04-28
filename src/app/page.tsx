@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {Metadata} from 'next';
-import {Knewave} from 'next/font/google';
+import { Knewave } from 'next/font/google';
 
 const knewave = Knewave({
     weight: '400',
@@ -18,7 +18,7 @@ export default function Home() {
         <main className="grid min-h-screen place-items-center bg-cream text-primary">
             <div className="text-center">
                 <h1 className={`text-6xl font-extrabold tracking-tight text-primary drop-shadow-sm ${knewave.className}`}>
-                    Coming Soon!!!
+                    PCF Navi
                 </h1>
                 <div className="mt-8 max-w-md">
                     <Image
@@ -32,21 +32,6 @@ export default function Home() {
                 <p className={`mt-4 text-2xl ${knewave.className}`}>
                     Our new site is launching soon. Stay tuned!
                 </p>
-                <div className="mt-8 bg-primary text-white">
-                    primary: #4B6577
-                </div>
-                <div className="mt-8 bg-secondary">
-                    secondary
-                </div>
-                <div className="mt-8 bg-accent">
-                    accent: #3AA89F
-                </div>
-                <div className="mt-8 bg-cta">
-                    cta
-                </div>
-                <div className="mt-8 bg-cream">
-                    cream
-                </div>
             </div>
         </main>
     );
