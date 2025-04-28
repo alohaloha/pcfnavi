@@ -180,10 +180,10 @@ export default function EventsPage() {
                             {EventStatusArray.map((status) => (
                                 <button
                                     key={status.key}
-                                    className={`px-3 py-1 rounded-full text-sm ${
+                                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
                                         filters.status === status.key
-                                            ? 'bg-primary text-primary-foreground'
-                                            : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                            ? 'bg-accent text-white'
+                                            : 'bg-gray-200 text-primary-700 hover:bg-accent/80 hover:text-white'
                                     }`}
                                     onClick={() => handleFilterChange('status', status.key)}
                                 >
@@ -208,8 +208,8 @@ export default function EventsPage() {
                                         key={category.key}
                                         className={`px-3 py-1 rounded-full text-sm ${
                                             isSelected
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                                ? 'bg-accent text-white'
+                                                : 'bg-gray-200 text-primary-700 hover:bg-accent/80 hover:text-white'
                                         }`}
                                         onClick={() => handleFilterChange('category', category.key)}
                                     >
@@ -227,8 +227,8 @@ export default function EventsPage() {
                             <button
                                 className={`px-3 py-1 rounded-full text-sm ${
                                     filters.isFree === true
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                        ? 'bg-accent text-white'
+                                        : 'bg-gray-200 text-primary-700 hover:bg-accent/80 hover:text-white'
                                 }`}
                                 onClick={() => handlePriceFilterChange(true)}
                             >
@@ -237,8 +237,8 @@ export default function EventsPage() {
                             <button
                                 className={`px-3 py-1 rounded-full text-sm ${
                                     filters.isFree === false
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                                        ? 'bg-accent text-white'
+                                        : 'bg-gray-200 text-primary-700 hover:bg-accent/80 hover:text-white'
                                 }`}
                                 onClick={() => handlePriceFilterChange(false)}
                             >
@@ -314,7 +314,7 @@ export default function EventsPage() {
 
             {/* イベント詳細モーダル - Suspenseでラップ */}
             <Suspense fallback={<div>詳細を読み込み中...</div>}>
-                <EventDetail />
+                <EventDetail/>
             </Suspense>
         </div>
     );

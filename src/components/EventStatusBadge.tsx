@@ -9,19 +9,19 @@ interface EventStatusBadgeProps {
 export const EventStatusBadge = ({status, large = false}: EventStatusBadgeProps) => {
     // 文字列型をEventStatusKeyとして扱うための型アサーション
     const statusKey = status as EventStatusKey;
-    
+
     const getStatusColor = (status: EventStatusKey) => {
         switch (status) {
             case 'wanted':
-                return 'bg-green-500 hover:bg-green-600';
+                return 'bg-green-500 hover:bg-green-600 text-white';
             case 'deadline':
-                return 'bg-orange-500 hover:bg-orange-600';
+                return 'bg-orange-500 hover:bg-orange-600 text-white';
             case 'held':
-                return 'bg-blue-500 hover:bg-blue-600';
+                return 'bg-blue-500 hover:bg-blue-600 text-white';
             case 'scheduled':
-                return 'bg-indigo-500 hover:bg-indigo-600';
+                return 'bg-indigo-500 hover:bg-indigo-600 text-white';
             case 'suspension':
-                return 'bg-red-500 hover:bg-red-600';
+                return 'bg-red-500 hover:bg-red-600 text-white';
             case 'unknown':
             default:
                 return 'bg-gray-500 hover:bg-gray-600';
