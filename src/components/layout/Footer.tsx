@@ -50,12 +50,14 @@ export function Footer() {
                         <ul className="space-y-2">
                             {footerLinks.about.map((link) => (
                                 <li key={link.href}>
-                                    <Link
+                                    <a
                                         href={link.href}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                                     >
                                         {link.title}
-                                    </Link>
+                                    </a>
                                 </li>
                             ))}
                         </ul>
