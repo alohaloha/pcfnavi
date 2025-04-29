@@ -125,7 +125,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
             ))}
             <EventStatusBadge status={event.status}/>
             {event.isNew && (
-                <Badge className="bg-amber-500 hover:bg-amber-600 text-white">NEW</Badge>
+                <Badge className="bg-red-400 hover:bg-red-500 text-white">NEW</Badge>
             )}
         </span>
     );
@@ -148,7 +148,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-2 space-y-4">
                     <p className="text-lg leading-relaxed text-foreground">{event.summary}</p>
-                    <div className="space-y-3 bg-muted/50 p-4 rounded-lg border">
+                    <div className="space-y-3 bg-muted/50 p-4 rounded-lg border bg-white">
                         <div className="flex items-start gap-2">
                             <span className="font-semibold min-w-24">日時:</span>
                             <span>{formattedDate}</span>
@@ -173,7 +173,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-muted/30 p-5 rounded-lg border">
+                <div className="bg-muted/30 p-5 rounded-lg border bg-white">
                     <h3 className="font-semibold text-lg mb-3 border-b pb-2">イベント情報</h3>
                     <div className="space-y-4">
                         {event.source && (
@@ -208,7 +208,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
             </div>
 
             {event.blocks && event.blocks.length > 0 && (
-                <div className="border-t pt-6 mt-6">
+                <div className="border-t p-6 mt-6 bg-white">
                     <h2 className="text-xl font-semibold mb-4">詳細情報</h2>
                     <div className="prose prose-sm md:prose-base max-w-none">
                         {renderGroupedBlocks()}
@@ -257,6 +257,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
             contentClassName="p-5"
             maxWidth="full"
             fullHeight={true}
+            className="bg-cream"
         >
             {dialogContent}
         </CustomDialog>
