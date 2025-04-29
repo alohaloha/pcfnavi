@@ -17,9 +17,9 @@ export const EventStatusBadge = ({status, large = false}: EventStatusBadgeProps)
             case 'deadline':
                 return 'bg-orange-500 hover:bg-orange-600 text-white';
             case 'held':
-                return 'bg-blue-500 hover:bg-blue-600 text-white';
+                return 'bg-gray-500 hover:bg-gray-600 text-white';
             case 'scheduled':
-                return 'bg-indigo-500 hover:bg-indigo-600 text-white';
+                return 'bg-accent-500 hover:bg-accent-600 text-white';
             case 'suspension':
                 return 'bg-red-500 hover:bg-red-600 text-white';
             case 'unknown':
