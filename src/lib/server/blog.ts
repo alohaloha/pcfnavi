@@ -1,12 +1,12 @@
 'use server'
 import {cache} from 'react';
-import {BlogCategoryName, BlogCategoryArray} from '../constants'
+import {BlogCategoryArray} from '../constants'
 import {NotionBlock} from "@/types/notion";
 
 export type BlogItem = {
     id: string
     title: string
-    slug: number
+    ID: number
     summary: string
     cover: string
     category: string[]
@@ -80,15 +80,15 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
     }
 });
 
-export const fetchBlogDetail = cache(async (slug: string): Promise<BlogDetail> => {
+export const fetchBlogDetail = cache(async (id: string): Promise<BlogDetail> => {
     try {
         const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-        const res = await fetch(`${process.env.API_BASE_URL}/api/blog/${slug}`, {
+        const res = await fetch(`${process.env.API_BASE_URL}/api/blog/${id}`, {
             method: 'GET',
             headers: {
                 ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
             },
-            next: {tags: [`blog-detail-${slug}`]}
+            next: {tags: [`blog-detail-${id}`]}
         });
 
         if (!res.ok) throw new Error('ブログ詳細の取得に失敗しました');

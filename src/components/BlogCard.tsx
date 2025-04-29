@@ -18,7 +18,7 @@ export default function BlogCard({blog}: BlogCardProps) {
         })
         : '';
     return (
-        <Link href={`/blog/${blog.slug}`} className="block h-full">
+        <Link href={`/blog/${blog.id}`} className="block h-full">
             <div
                 className="bg-white rounded-lg shadow-md overflow-hidden h-full transition-transform hover:scale-[1.02] hover:shadow-lg">
                 <div className="relative h-48 w-full">

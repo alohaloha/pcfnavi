@@ -6,14 +6,14 @@ import BlogDetail from '@/components/BlogDetail';
 
 interface BlogDetailPageProps {
     params: Promise<{
-        slug: string;
+        id: string;
     }>;
 }
 
 export async function generateMetadata(props: BlogDetailPageProps): Promise<Metadata> {
     const params = await props.params;
-    const {slug} = params;
-    const blog = await fetchBlogDetail(slug);
+    const {id} = params;
+    const blog = await fetchBlogDetail(id);
 
     if (!blog.title) {
         return {
@@ -37,14 +37,14 @@ export async function generateStaticParams() {
     const blogs = await fetchBlogList();
 
     return blogs.map((blog) => ({
-        slug: blog.slug,
+        id: blog.id,
     }));
 }
 
 export default async function BlogDetailPage(props: BlogDetailPageProps) {
     const params = await props.params;
-    const {slug} = params;
-    const blog = await fetchBlogDetail(slug);
+    const {id} = params;
+    const blog = await fetchBlogDetail(id);
 
     if (!blog.title) {
         notFound();
