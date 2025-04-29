@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {Metadata} from 'next';
-import { Knewave } from 'next/font/google';
+import {Knewave} from 'next/font/google';
 
 const knewave = Knewave({
     weight: '400',
