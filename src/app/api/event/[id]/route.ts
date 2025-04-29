@@ -37,7 +37,6 @@ export async function GET(
             throw new Error(`Notion API content error: ${contentResponse.status}`);
         }
         const contentData = await contentResponse.json();
-        console.log('取得したイベントデータ:', contentData.id);
 
         // ブロックデータの取得
         const blockResponse = await fetch(`${NOTION_URL}/blocks/${contentData.id}/children`, {
@@ -59,7 +58,7 @@ export async function GET(
             title: contentData.properties.title?.title?.[0]?.plain_text || '',
             summary: contentData.properties.summary?.rich_text?.[0]?.plain_text || '',
             detail: contentData.properties.detail?.rich_text?.[0]?.plain_text || '',
-            eventDate: contentData.properties.eventDate?.date?.start || '',
+            eventDate: contentData.properties.eventDate?.date || {},
             location: contentData.properties.location?.rich_text?.[0]?.plain_text || '',
             capacity: contentData.properties.capacity?.number || 0,
             price: contentData.properties.price?.number || null,

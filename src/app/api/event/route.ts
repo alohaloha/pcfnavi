@@ -133,7 +133,7 @@ export async function GET(request: NextRequest) {
                     id: row.id,
                     title: row.properties.title?.title?.[0]?.plain_text || '',
                     summary: row.properties.summary?.rich_text?.[0]?.plain_text || '',
-                    eventDate: row.properties.eventDate?.date?.start || '',
+                    eventDate: row.properties.eventDate?.date || {},
                     location: row.properties.location?.rich_text?.[0]?.plain_text || '',
                     capacity: row.properties.capacity?.number || 0,
                     price: row.properties.price?.number || null,

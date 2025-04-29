@@ -1,10 +1,16 @@
 import {EventCategoryKey, EventStatusKey} from '@/lib/constants';
 
+export interface EventDate {
+    start?: string | null;
+    end?: string | null;
+    timezone?: string | null;
+}
+
 export interface EventItem {
     id: string;
     title: string;
     summary: string;
-    eventDate: string;
+    eventDate: EventDate;
     location: string;
     capacity: number;
     price: number;
