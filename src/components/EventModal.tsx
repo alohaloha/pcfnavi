@@ -7,8 +7,7 @@ import {EventStatusBadge} from './EventStatusBadge';
 import {CustomDialog} from './layout/CustomDialog';
 import {formatEventDate, formatPrice} from '@/lib/utils';
 import {parseNotionBlocks} from '@/lib/notionParser';
-import {EventCategoryMap} from "@/lib/constants";
-import {getEventCategoryName} from "@/lib/constant-util";
+import {EventCategoryBadge} from './EventCategoryBadge';
 
 interface EventModalProps {
     event: EventDetail;
@@ -95,9 +94,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
     const dialogDescription = (
         <span className="flex flex-wrap gap-1.5 mt-2">
             {event.category.map((cat) => (
-                <Badge key={cat} variant="outline" className="text-sm">
-                    {getEventCategoryName(cat)}
-                </Badge>
+                <EventCategoryBadge key={cat} category={cat}/>
             ))}
             <EventStatusBadge status={event.status}/>
             {event.isNew && (
@@ -169,9 +166,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                             <span className="font-semibold block mb-2">カテゴリ:</span>
                             <div className="flex flex-wrap gap-1.5">
                                 {event.category.map((cat) => (
-                                    <Badge key={cat} variant="outline">
-                                        {getEventCategoryName(cat)}
-                                    </Badge>
+                                    <EventCategoryBadge key={cat} category={cat}/>
                                 ))}
                             </div>
                         </div>

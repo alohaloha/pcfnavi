@@ -2,7 +2,6 @@ import {EventItem} from '@/types/event';
 import {EventStatusBadge} from './EventStatusBadge';
 import {CustomCard} from './layout/CustomCard';
 import {formatEventDate, formatPrice} from '@/lib/utils';
-import {EventCategoryArray, EventCategoryType} from '@/lib/constants';
 import {getEventCategoryName} from "@/lib/constant-util";
 
 interface EventCardProps {
