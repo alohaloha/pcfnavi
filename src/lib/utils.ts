@@ -69,3 +69,15 @@ export function formatPrice(price: number | null): string {
     if (price === 0) return "無料";
     return `¥${price.toLocaleString()}`;
 }
+
+export function formatDate(dateString: string): string {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+        return "Invalid date"
+    }
+    return new Intl.DateTimeFormat("ja-JP", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+    }).format(date)
+}
