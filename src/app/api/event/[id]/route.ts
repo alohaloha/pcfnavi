@@ -1,80 +1,47 @@
 import {NextResponse} from 'next/server';
-import {API_CONFIG} from '@/lib/constants';
-
-const NOTION_URL = API_CONFIG.NOTION_API_URL!;
-const NOTION_TOKEN = API_CONFIG.NOTION_API_SECRET!;
-const API_VERSION = API_CONFIG.NOTION_VERSION!;
-const EVENT_DB_ID = API_CONFIG.NOTION_EVENT_DB_ID!;
+import {notion} from '@/lib/notionClient';
 
 export async function GET(
     request: Request,
     context: { params: Promise<{ id: string }> }
 ) {
     try {
-        const params = await context.params;
-        const {id} = params;
+        const {id} = await context.params;
 
-        // Vercelプレビュー環境のバイパストークンの取得
-        const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-        const headers: HeadersInit = {
-            'Authorization': `Bearer ${NOTION_TOKEN}`,
-            'Notion-Version': API_VERSION,
-        };
+        const page = await notion.pages.retrieve({page_id: id});
+        const blocks = await notion.blocks.children.list({block_id: id});
 
-        // プレビュー環境のバイパストークンがある場合はヘッダーに追加
-        if (protectionBypassSecret) {
-            headers['x-vercel-protection-bypass'] = protectionBypassSecret;
+        // properties を安全に扱う（objectがpageかつpropertiesが存在する前提）
+        if (page.object !== 'page' || !('properties' in page)) {
+            throw new Error('Invalid Notion page object structure');
         }
 
-        // ページコンテンツの取得
-        const contentResponse = await fetch(`${NOTION_URL}/pages/${id}`, {
-            method: 'GET',
-            headers,
-            next: {revalidate: 1800} // 30分キャッシュ
-        });
+        const properties = (page as any).properties;
 
-        if (!contentResponse.ok) {
-            throw new Error(`Notion API content error: ${contentResponse.status}`);
-        }
-        const contentData = await contentResponse.json();
-
-        // ブロックデータの取得
-        const blockResponse = await fetch(`${NOTION_URL}/blocks/${contentData.id}/children`, {
-            method: 'GET',
-            headers,
-            next: {revalidate: 1800} // 30分キャッシュ
-        });
-
-        if (!blockResponse.ok) {
-            throw new Error(`Notion API block error: ${blockResponse.status}`);
-        }
-
-        const blockData = await blockResponse.json();
-        // カテゴリ情報の抽出
-        const categories = contentData.properties.category?.multi_select?.map((item: any) => item.name) || [];
+        const categories = properties.category?.multi_select?.map((item: any) => item.name) || [];
 
         return NextResponse.json({
-            id: contentData.id,
-            title: contentData.properties.title?.title?.[0]?.plain_text || '',
-            summary: contentData.properties.summary?.rich_text?.[0]?.plain_text || '',
-            detail: contentData.properties.detail?.rich_text?.[0]?.plain_text || '',
-            eventDate: contentData.properties.eventDate?.date || {},
-            location: contentData.properties.location?.rich_text?.[0]?.plain_text || '',
-            capacity: contentData.properties.capacity?.number || 0,
-            price: contentData.properties.price?.number || null,
-            organizer: contentData.properties.organizer?.rich_text?.[0]?.plain_text || '',
-            source: contentData.properties.source?.url || '',
-            status: contentData.properties.status?.select?.name || '',
+            id: page.id,
+            title: properties.title?.title?.[0]?.plain_text || '',
+            summary: properties.summary?.rich_text?.[0]?.plain_text || '',
+            detail: properties.detail?.rich_text?.[0]?.plain_text || '',
+            eventDate: properties.eventDate?.date || {},
+            location: properties.location?.rich_text?.[0]?.plain_text || '',
+            capacity: properties.capacity?.number || 0,
+            price: properties.price?.number ?? null,
+            organizer: properties.organizer?.rich_text?.[0]?.plain_text || '',
+            source: properties.source?.url || '',
+            status: properties.status?.select?.name || '',
             category: categories,
-            cover: contentData.properties.cover?.files?.[0]?.file?.url ||
-                contentData.properties.cover?.files?.[0]?.external?.url || '',
-            featured: contentData.properties.featured?.checkbox || false,
-            pinned: contentData.properties.pinned?.checkbox || false,
-            isNew: contentData.properties.isNew?.formula?.boolean || false,
-            blocks: blockData.results || [],
+            cover: properties.cover?.files?.[0]?.file?.url ||
+                properties.cover?.files?.[0]?.external?.url || '',
+            featured: properties.featured?.checkbox || false,
+            pinned: properties.pinned?.checkbox || false,
+            isNew: properties.isNew?.formula?.boolean || false,
+            blocks: blocks.results || [],
         });
     } catch (error) {
         console.error('イベント詳細の取得に失敗しました', error);
         return NextResponse.json({error: 'イベント詳細の取得に失敗しました'}, {status: 500});
     }
-} 
+}
