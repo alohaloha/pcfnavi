@@ -1,6 +1,7 @@
 # Directory Structure
 
-The project follows the standard `src/`-based Next.js App Router structure with Markdown content and dynamic FAQ from a Notion database.
+The project follows the standard `src/`-based Next.js App Router structure with Markdown content and dynamic FAQ from a
+Notion database.
 
 ```txt
 src/
@@ -11,7 +12,7 @@ src/
 │   │   ├── rules/page.tsx
 │   │   ├── events/page.tsx
 │   │   ├── gallery/page.tsx
-│   │   ├── posts/[slug]/page.tsx
+│   │   ├── posts/[id]/page.tsx
 │   │   ├── posts/page.tsx
 │   │   ├── about/page.tsx
 │   │   ├── privacy-policy/page.tsx
@@ -53,12 +54,13 @@ src/
 ## Notion Database Setup
 
 - Create a Notion **database** with the following properties:
-  - `question`: title field
-  - `answer`: rich text
-  - `category`: multi-select field (use exact match to predefined values)
+    - `question`: title field
+    - `answer`: rich text
+    - `category`: multi-select field (use exact match to predefined values)
 - Share the database publicly for reading access
 
 ### FAQ Categories (used for filtering):
+
 - `General`
 - `Events`
 - `Teams`
@@ -70,20 +72,20 @@ src/
 ## Data Fetching Architecture
 
 1. **API Routes (`app/api/faq/`)**
-   - `route.ts` - handles the GET request for the FAQ list
-   - `detail/[id]/route.ts` - handles the GET request for specific FAQ details
+    - `route.ts` - handles the GET request for the FAQ list
+    - `detail/[id]/route.ts` - handles the GET request for specific FAQ details
 
 2. **Server Actions (`lib/faq.ts`)**
-   - `fetchFaqList` - cached server action that calls the FAQ list API
-   - `fetchFaqDetail` - cached server action that calls the FAQ detail API
+    - `fetchFaqList` - cached server action that calls the FAQ list API
+    - `fetchFaqDetail` - cached server action that calls the FAQ detail API
 
 3. **Client/Server Components**
-   - `app/(routes)/faq/page.tsx` - Server Component that fetches the initial FAQ list
-   - `components/FaqList.tsx` - Client Component for category filtering
-   - `components/FaqItem.tsx` - Client Component for accordion behavior and detail fetching
+    - `app/(routes)/faq/page.tsx` - Server Component that fetches the initial FAQ list
+    - `components/FaqList.tsx` - Client Component for category filtering
+    - `components/FaqItem.tsx` - Client Component for accordion behavior and detail fetching
 
 4. **Shared Utility**
-   - `lib/notionParser.tsx` - Utility component for rendering Notion blocks consistently
+    - `lib/notionParser.tsx` - Utility component for rendering Notion blocks consistently
 
 ## Type Definitions
 
@@ -124,23 +126,28 @@ export type FaqDetail = {
 # Implementation Priorities
 
 ## 1. Error Handling & Loading States
+
 ### Error Pages
+
 - Global error page (`app/error.tsx`)
 - Not found page (`app/not-found.tsx`)
 - Route specific error pages where needed
 
 ### Loading States
+
 - Global loading (`app/loading.tsx`)
 - Route specific loading states
 - Skeleton UI components for content-heavy pages
 
 ## 2. Caching Strategy
+
 - Implement React Cache for data fetching
 - Configure Notion API response caching
 - Static page generation where applicable
 - Revalidation strategies for dynamic content
 
 ## 3. Accessibility Improvements
+
 - ARIA labels and roles
 - Keyboard navigation
 - Focus management
@@ -148,6 +155,7 @@ export type FaqDetail = {
 - Screen reader optimization
 
 ## 4. Analytics & Monitoring
+
 - Vercel Analytics integration
 - Error tracking (Sentry)
 - Performance monitoring
@@ -155,6 +163,7 @@ export type FaqDetail = {
 - API endpoint monitoring
 
 ## Implementation Notes
+
 - Each feature should be implemented incrementally
 - Test coverage should be maintained
 - Documentation should be updated alongside changes
