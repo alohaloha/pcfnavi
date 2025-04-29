@@ -5,7 +5,7 @@ import {Badge} from '@/components/ui/badge';
 import {EventDetail} from '@/types/event';
 import {EventStatusBadge} from './EventStatusBadge';
 import {CustomDialog} from './layout/CustomDialog';
-import {formatDate} from '@/lib/utils';
+import {formatEventDate, formatPrice} from '@/lib/utils';
 import {parseNotionBlocks} from '@/lib/notionParser';
 import {EventCategoryMap} from "@/lib/constants";
 import {getEventCategoryName} from "@/lib/constant-util";
@@ -18,33 +18,9 @@ interface EventModalProps {
 
 export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
     // 料金のフォーマット
-    const formattedPrice = event.price === null
-        ? '－'
-        : event.price === 0
-            ? '無料'
-            : `¥${event.price.toLocaleString()}`;
+    const formattedPrice = formatPrice(event.price);
 
-    // 日付のフォーマット
-    const formatEventDate = () => {
-        const startDate = formatDate(event.eventDate);
-
-        // 終了日がある場合
-        if (event.eventDateEnd) {
-            const endDate = formatDate(event.eventDateEnd);
-
-            // 同じ日の場合は開始時間と終了時間のみ表示
-            if (startDate.split(' ')[0] === endDate.split(' ')[0]) {
-                return `${startDate.split(' ')[0]} ${startDate.split(' ')[1]}～${endDate.split(' ')[1]}`;
-            }
-
-            // 異なる日の場合は両方表示
-            return `${startDate} 〜 ${endDate}`;
-        }
-
-        return startDate;
-    };
-
-    const formattedDate = formatEventDate();
+    const formattedDate = formatEventDate(event.eventDate);
 
     // bulletedとnumberedのリストアイテムをグループ化
     const renderGroupedBlocks = () => {

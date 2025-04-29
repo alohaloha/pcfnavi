@@ -1,7 +1,7 @@
 import {EventItem} from '@/types/event';
 import {EventStatusBadge} from './EventStatusBadge';
 import {CustomCard} from './layout/CustomCard';
-import {formatDate} from '@/lib/utils';
+import {formatEventDate, formatPrice} from '@/lib/utils';
 import {EventCategoryArray, EventCategoryType} from '@/lib/constants';
 import {getEventCategoryName} from "@/lib/constant-util";
 
@@ -11,15 +11,9 @@ interface EventCardProps {
 }
 
 export const EventCard = ({event, onClick}: EventCardProps) => {
-    // 料金のフォーマット
-    const formattedPrice = event.price === null
-        ? '－'
-        : event.price === 0
-            ? '無料'
-            : `¥${event.price.toLocaleString()}`;
+    const formattedPrice = formatPrice(event.price);
 
-    // 日付のフォーマット
-    const formattedDate = formatDate(event.eventDate);
+    const formattedDate = formatEventDate(event.eventDate);
 
     // イベントバッジの作成
     const eventBadges = event.category.map(cat => ({
