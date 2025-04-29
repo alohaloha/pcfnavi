@@ -1,18 +1,18 @@
 'use server'
 import {cache} from 'react';
-import {FaqCategoryName, FaqCategoryMap} from '../constants'
-import {NotionBlock} from "@/types/notion";
+import {FaqCategoryName} from '../constants';
+import {NotionBlock} from '@/types/notion';
 
 export type FaqItem = {
-    id: string
-    question: string
-    answer: string
-    category: FaqCategoryName[]
-}
+    id: string;
+    question: string;
+    answer: string;
+    category: FaqCategoryName[];
+};
 
 export type FaqDetail = {
-    blocks: NotionBlock[]
-}
+    blocks: NotionBlock[];
+};
 
 export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
     try {
@@ -20,9 +20,11 @@ export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
         const res = await fetch(`${process.env.API_BASE_URL}/api/faq`, {
             method: 'GET',
             headers: {
-                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+                ...(protectionBypassSecret && {
+                    'x-vercel-protection-bypass': protectionBypassSecret,
+                }),
             },
-            next: {tags: ['faq-list']}
+            next: {tags: ['faq-list']},
         });
 
         if (!res.ok) throw new Error('FAQ一覧の取得に失敗しました');
@@ -41,9 +43,11 @@ export const fetchFaqDetail = cache(async (id: string): Promise<FaqDetail> => {
         const res = await fetch(`${process.env.API_BASE_URL}/api/faq/detail/${id}`, {
             method: 'GET',
             headers: {
-                ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
+                ...(protectionBypassSecret && {
+                    'x-vercel-protection-bypass': protectionBypassSecret,
+                }),
             },
-            next: {tags: [`faq-detail-${id}`]}
+            next: {tags: [`faq-detail-${id}`]},
         });
 
         if (!res.ok) throw new Error('FAQ詳細の取得に失敗しました');
