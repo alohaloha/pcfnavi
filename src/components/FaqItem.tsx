@@ -7,10 +7,11 @@ type FaqItemProps = {
     id: string;
     question: string;
     summary: string;
+    showBlocks: boolean;
     fetchDetail: (id: string) => Promise<FaqDetail>;
 }
 
-export default function FaqItem({id, question, summary, fetchDetail}: FaqItemProps) {
+export default function FaqItem({id, question, summary, showBlocks, fetchDetail}: FaqItemProps) {
     const [isOpen, setIsOpen] = useState(false)
     const [detailBlocks, setDetailBlocks] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(false)
@@ -65,13 +66,13 @@ export default function FaqItem({id, question, summary, fetchDetail}: FaqItemPro
 
                     {/* 詳細表示ボタンとロード中表示 */}
                     <div className="flex items-center space-x-4">
-                        {!showDetail && (
+                        {!showDetail && showBlocks && (
                             <button
                                 onClick={handleFetchDetail}
                                 className="bg-blue-600 hover:bg-blue-700 text-white py-1 px-4 rounded text-sm"
                                 disabled={isLoading}
                             >
-                                詳しく見る
+                                もっと見る
                             </button>
                         )}
 
