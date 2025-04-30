@@ -10,6 +10,7 @@ type FaqListProps = {
         id: string;
         question: string;
         answer: string;
+        show_blocks: boolean;
         category: FaqCategoryName[];
     }>;
     categories?: ReadonlyArray<{
@@ -44,6 +45,7 @@ export default function FaqList({
                                     id={faq.id}
                                     question={faq.question}
                                     summary={faq.answer}
+                                    showBlocks={faq.show_blocks}
                                     fetchDetail={fetchFaqDetail}
                                 />
                             ))}

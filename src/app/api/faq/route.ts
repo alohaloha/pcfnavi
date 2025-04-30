@@ -11,6 +11,7 @@ export async function GET() {
             id: row.id,
             question: row.properties.question.title[0]?.plain_text || '',
             answer: row.properties.answer.rich_text[0]?.plain_text || '',
+            show_blocks: row.properties.show_blocks.checkbox || false,
             category: row.properties.category.multi_select.map((item: any) => item.name) || [],
         })).filter((item: any) => item.question && item.answer && item.category.length > 0);
 

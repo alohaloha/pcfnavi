@@ -8,6 +8,7 @@ export type FaqItem = {
     question: string;
     answer: string;
     category: FaqCategoryName[];
+    show_blocks: boolean;
 };
 
 export type FaqDetail = {
