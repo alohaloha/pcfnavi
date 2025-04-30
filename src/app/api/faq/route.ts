@@ -1,19 +1,24 @@
-import {NextResponse} from 'next/server';
-import {notion} from '@/lib/notionClient';
+// app/api/faq/route.ts
+import {kv} from "@/lib/kvClient";
+import {NextResponse} from "next/server";
+import {safeParseJson} from "@/lib/utils/safeParseJson";
 
 export async function GET() {
     try {
-        const response = await notion.databases.query({
-            database_id: process.env.NOTION_FAQ_DB_ID!,
-        });
+        const raw = await kv.get('faq');
+        const data = safeParseJson<any[]>(raw, 'faq');
 
-        const items = response.results.map((row: any) => ({
+        if (!data) {
+            return NextResponse.json({ items: [] });
+        }
+
+        const items = data.map((row) => ({
             id: row.id,
             question: row.properties.question.title[0]?.plain_text || '',
             answer: row.properties.answer.rich_text[0]?.plain_text || '',
-            show_blocks: row.properties.show_blocks.checkbox || false,
+            show_blocks: row.properties.show_blocks?.checkbox || false,
             category: row.properties.category.multi_select.map((item: any) => item.name) || [],
-        })).filter((item: any) => item.question && item.answer && item.category.length > 0);
+        })).filter(item => item.question && item.answer && item.category.length > 0);
 
         return NextResponse.json({items});
     } catch (error) {
@@ -21,3 +26,4 @@ export async function GET() {
         return NextResponse.json({error: 'FAQ一覧の取得に失敗しました'}, {status: 500});
     }
 }
+
