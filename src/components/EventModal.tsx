@@ -161,36 +161,6 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                         </div>
                     </div>
                 </div>
-                {/*<div className="bg-muted/30 p-5 rounded-lg border bg-white">*/}
-                {/*    <h3 className="font-semibold text-lg mb-3 border-b pb-2">イベント情報</h3>*/}
-                {/*    <div className="space-y-4">*/}
-                {/*        {event.source && (*/}
-                {/*            <div className="break-words">*/}
-                {/*                <span className="font-semibold block mb-1">掲載元:</span>*/}
-                {/*                <Link*/}
-                {/*                    href={event.source}*/}
-                {/*                    target="_blank"*/}
-                {/*                    rel="noopener noreferrer"*/}
-                {/*                    className="text-primary hover:underline text-sm"*/}
-                {/*                >*/}
-                {/*                    {getSourceDomain() || event.source}*/}
-                {/*                </Link>*/}
-                {/*            </div>*/}
-                {/*        )}*/}
-                {/*        <div className="mt-4">*/}
-                {/*            <span className="font-semibold block mb-2">カテゴリ:</span>*/}
-                {/*            <div className="flex flex-wrap gap-1.5">*/}
-                {/*                {event.category.map((cat) => (*/}
-                {/*                    <EventCategoryBadge key={cat} category={cat}/>*/}
-                {/*                ))}*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div className="mt-4">*/}
-                {/*            <span className="font-semibold block mb-2">ステータス:</span>*/}
-                {/*            <EventStatusBadge status={event.status} large/>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
             </div>
 
             {event.blocks && event.blocks.length > 0 && (
