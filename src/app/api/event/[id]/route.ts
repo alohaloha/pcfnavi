@@ -1,26 +1,53 @@
-import {NextResponse} from 'next/server';
-import {notion} from '@/lib/notionClient';
+// app/api/event/[id]/route.ts
+import { kv } from '@/lib/kvClient';
+import { NextResponse } from 'next/server';
 
 export async function GET(
-    request: Request,
+    _req: Request,
     context: { params: Promise<{ id: string }> }
 ) {
+    const {id} = await context.params;
+
     try {
-        const {id} = await context.params;
+        // 一覧から対象のイベント情報を取得
+        const rawList = await kv.get<string>('event');
+        if (!rawList) return [];
 
-        const page = await notion.pages.retrieve({page_id: id});
-        const blocks = await notion.blocks.children.list({block_id: id});
-
-        // properties を安全に扱う（objectがpageかつpropertiesが存在する前提）
-        if (page.object !== 'page' || !('properties' in page)) {
-            throw new Error('Invalid Notion page object structure');
+        let list: any[];
+        try {
+            list = Array.isArray(rawList) ? rawList : JSON.parse(rawList);
+        } catch (error) {
+            console.error('JSON parsing error:', error, 'rawList list:', rawList);
+            throw new Error("FAQ一覧の取得に失敗しました: JSON形式が不正です");
         }
 
+        const page = list.find(item => item.id === id);
+        console.log('page:', page);
+        if (!page) {
+            return NextResponse.json({ error: 'event not found' }, { status: 404 });
+        }
         const properties = (page as any).properties;
+        // blocks も取得
+        const rawBlocks = await kv.get<string>('event:block');
+        if (!rawBlocks) {
+            return NextResponse.json({ error: 'event:block not found' }, { status: 404 });
+        }
 
-        const categories = properties.category?.multi_select?.map((item: any) => item.name) || [];
+        let blocks: any[];
+        let allBlocks;
 
-        return NextResponse.json({
+        try {
+            allBlocks = typeof rawBlocks === 'string' ? JSON.parse(rawBlocks) : rawBlocks;
+            blocks = Array.isArray(allBlocks) ? allBlocks : [];
+        } catch (error) {
+            console.error('JSON parsing error:', error, 'rawBlocks:', rawBlocks);
+            throw new Error("FAQ一覧の取得に失敗しました: JSON形式が不正です");
+        }
+        const blockEntry = blocks.find(item => item.id === id);
+        console.log('blockEntry:', blockEntry);
+
+        // プロパティ整形（EventItem形式）
+        const event = {
             id: page.id,
             title: properties.title?.title?.[0]?.plain_text || '',
             summary: properties.summary?.rich_text?.[0]?.plain_text || '',
@@ -32,16 +59,19 @@ export async function GET(
             organizer: properties.organizer?.rich_text?.[0]?.plain_text || '',
             source: properties.source?.url || '',
             status: properties.status?.select?.name || '',
-            category: categories,
+            category: properties.category?.multi_select?.map((c: any) => c.name) || [],
             cover: properties.cover?.files?.[0]?.file?.url ||
                 properties.cover?.files?.[0]?.external?.url || '',
             featured: properties.featured?.checkbox || false,
             pinned: properties.pinned?.checkbox || false,
             isNew: properties.isNew?.formula?.boolean || false,
-            blocks: blocks.results || [],
-        });
+            applicationUrl: properties.applicationUrl?.url || '',
+            blocks: blockEntry?.blocks ?? [],
+        };
+
+        return NextResponse.json(event);
     } catch (error) {
-        console.error('イベント詳細の取得に失敗しました', error);
-        return NextResponse.json({error: 'イベント詳細の取得に失敗しました'}, {status: 500});
+        console.error('イベント詳細取得エラー:', error);
+        return NextResponse.json({ error: 'イベント詳細の取得に失敗しました' }, { status: 500 });
     }
 }
