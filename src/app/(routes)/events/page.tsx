@@ -13,7 +13,6 @@ function EventDetail() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const selectedEventId = searchParams.get('id');
-    console.log('selectedEventId:', selectedEventId);
     const [selectedEvent, setSelectedEvent] = useState<any>(null);
     const [isDialogOpen, setIsDialogOpen] = useState(!!selectedEventId);
 
