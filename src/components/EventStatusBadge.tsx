@@ -13,9 +13,9 @@ export const EventStatusBadge = ({status, large = false}: EventStatusBadgeProps)
     const getStatusColor = (status: EventStatusKey) => {
         switch (status) {
             case 'wanted':
-                return 'bg-green-500 hover:bg-green-600 text-white';
+                return 'bg-secondary-500 hover:bg-secondary-600 text-white';
             case 'deadline':
-                return 'bg-orange-500 hover:bg-orange-600 text-white';
+                return 'bg-gray-500 hover:bg-gray-600 text-white';
             case 'held':
                 return 'bg-gray-500 hover:bg-gray-600 text-white';
             case 'scheduled':
@@ -45,9 +45,6 @@ export const EventStatusBadge = ({status, large = false}: EventStatusBadgeProps)
                 return '不明';
         }
     };
-
-    // コンソールに現在のステータスを出力（デバッグ用）
-    console.log('現在のステータス:', status);
 
     return (
         <Badge className={`${getStatusColor(statusKey)} ${large ? 'text-sm px-3 py-1' : ''}`}>

@@ -118,10 +118,21 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                 </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="">
                 <div className="md:col-span-2 space-y-4">
                     <p className="text-lg leading-relaxed text-foreground">{event.summary}</p>
                     <div className="space-y-3 bg-muted/50 p-4 rounded-lg border bg-white">
+                        <div className="flex items-start gap-2">
+                            <span className="font-semibold min-w-24">掲載元:</span>
+                            <Link
+                                href={event.source}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-accent underline hover:underline text-sm"
+                            >
+                                {getSourceDomain() || event.source}
+                            </Link>
+                        </div>
                         <div className="flex items-start gap-2">
                             <span className="font-semibold min-w-24">日時:</span>
                             <span>{formattedDate}</span>
@@ -144,38 +155,42 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                             <span className="font-semibold min-w-24">料金:</span>
                             <span>{formattedPrice}</span>
                         </div>
-                    </div>
-                </div>
-                <div className="bg-muted/30 p-5 rounded-lg border bg-white">
-                    <h3 className="font-semibold text-lg mb-3 border-b pb-2">イベント情報</h3>
-                    <div className="space-y-4">
-                        {event.source && (
-                            <div className="break-words">
-                                <span className="font-semibold block mb-1">掲載元:</span>
-                                <Link
-                                    href={event.source}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline text-sm"
-                                >
-                                    {getSourceDomain() || event.source}
-                                </Link>
-                            </div>
-                        )}
-                        <div className="mt-4">
-                            <span className="font-semibold block mb-2">カテゴリ:</span>
-                            <div className="flex flex-wrap gap-1.5">
-                                {event.category.map((cat) => (
-                                    <EventCategoryBadge key={cat} category={cat}/>
-                                ))}
-                            </div>
-                        </div>
-                        <div className="mt-4">
-                            <span className="font-semibold block mb-2">ステータス:</span>
-                            <EventStatusBadge status={event.status} large/>
+                        <div className="flex items-start gap-2">
+                            <span className="font-semibold min-w-24">内容:</span>
+                            <span>{event.detail}</span>
                         </div>
                     </div>
                 </div>
+                {/*<div className="bg-muted/30 p-5 rounded-lg border bg-white">*/}
+                {/*    <h3 className="font-semibold text-lg mb-3 border-b pb-2">イベント情報</h3>*/}
+                {/*    <div className="space-y-4">*/}
+                {/*        {event.source && (*/}
+                {/*            <div className="break-words">*/}
+                {/*                <span className="font-semibold block mb-1">掲載元:</span>*/}
+                {/*                <Link*/}
+                {/*                    href={event.source}*/}
+                {/*                    target="_blank"*/}
+                {/*                    rel="noopener noreferrer"*/}
+                {/*                    className="text-primary hover:underline text-sm"*/}
+                {/*                >*/}
+                {/*                    {getSourceDomain() || event.source}*/}
+                {/*                </Link>*/}
+                {/*            </div>*/}
+                {/*        )}*/}
+                {/*        <div className="mt-4">*/}
+                {/*            <span className="font-semibold block mb-2">カテゴリ:</span>*/}
+                {/*            <div className="flex flex-wrap gap-1.5">*/}
+                {/*                {event.category.map((cat) => (*/}
+                {/*                    <EventCategoryBadge key={cat} category={cat}/>*/}
+                {/*                ))}*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*        <div className="mt-4">*/}
+                {/*            <span className="font-semibold block mb-2">ステータス:</span>*/}
+                {/*            <EventStatusBadge status={event.status} large/>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
 
             {event.blocks && event.blocks.length > 0 && (
