@@ -43,7 +43,6 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
             cache: 'no-store',
             next: {tags: ['blog-list']}
         });
-        console.log('レスポンス status:', res.status);
 
         if (!res.ok) {
             const errorText = await res.text();

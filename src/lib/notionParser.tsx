@@ -10,7 +10,6 @@ export function parseNotionBlocks(blocks: NotionBlock[]): React.ReactNode[] {
         console.log(`ブログ[${index}] ID:${block.id} ブロック:`, block);
         switch (block.type) {
             case 'paragraph':
-                console.log(block.paragraph.rich_text);
                 return (
                     <p key={blockId} className="mb-4 text-gray-700">
                         {block.paragraph.rich_text.map((text: any, i: number) => renderRichText(text, i))}
@@ -120,6 +119,5 @@ function renderRichText(text: any, key: number): React.ReactNode {
         );
     }
 
-    console.log('返却前のテキスト:', plain_text);
     return className ? <span key={key} className={className}>{plain_text}</span> : <span key={key}>{plain_text}</span>;
 } 
