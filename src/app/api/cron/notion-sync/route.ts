@@ -9,7 +9,7 @@ const dbs = {
 };
 
 export async function GET() {
-    if (process.env.VERCEL_ENV !== 'production') {
+    if (process.env.ENABLE_CRON !== 'true') {
         return NextResponse.json({
             message: `Skipped: current env is '${process.env.VERCEL_ENV}'`,
         });
