@@ -1,6 +1,6 @@
 import { notion } from '@/lib/notionClient';
 import { safeKVSet } from '@/lib/utils/safeKVSet';
-import { NextResponse } from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 
 const dbs = {
     faq: process.env.NOTION_FAQ_DB_ID!,
@@ -8,12 +8,20 @@ const dbs = {
     event: process.env.NOTION_EVENT_DB_ID!,
 };
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return new Response('Unauthorized', {
+            status: 401,
+        });
+    }
+
     if (process.env.ENABLE_CRON !== 'true') {
         return NextResponse.json({
             message: `Skipped: current env is '${process.env.VERCEL_ENV}'`,
         });
     }
+
 
     const results: Record<string, number> = {};
 
