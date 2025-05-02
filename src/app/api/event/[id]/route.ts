@@ -1,52 +1,37 @@
 // app/api/event/[id]/route.ts
 import { kv } from '@/lib/kvClient';
 import { NextResponse } from 'next/server';
+import { safeParseJson } from '@/lib/utils/safeParseJson';
 
 export async function GET(
     _req: Request,
     context: { params: Promise<{ id: string }> }
 ) {
-    const {id} = await context.params;
+    const { id } = await context.params;
 
     try {
-        // 一覧から対象のイベント情報を取得
-        const rawList = await kv.get<string>('event');
-        if (!rawList) return [];
+        // 一覧データ取得（KV: event）
+        const rawList = await kv.get('event');
+        const list = safeParseJson<any[]>(rawList, 'event');
 
-        let list: any[];
-        try {
-            list = Array.isArray(rawList) ? rawList : JSON.parse(rawList);
-        } catch (error) {
-            console.error('JSON parsing error:', error, 'rawList list:', rawList);
-            throw new Error("FAQ一覧の取得に失敗しました: JSON形式が不正です");
+        if (!list) {
+            return NextResponse.json({ error: 'event not found in KV' }, { status: 404 });
         }
 
         const page = list.find(item => item.id === id);
-        console.log('page:', page);
         if (!page) {
             return NextResponse.json({ error: 'event not found' }, { status: 404 });
         }
-        const properties = (page as any).properties;
-        // blocks も取得
-        const rawBlocks = await kv.get<string>('event:block');
-        if (!rawBlocks) {
-            return NextResponse.json({ error: 'event:block not found' }, { status: 404 });
-        }
 
-        let blocks: any[];
-        let allBlocks;
+        const properties = page.properties;
 
-        try {
-            allBlocks = typeof rawBlocks === 'string' ? JSON.parse(rawBlocks) : rawBlocks;
-            blocks = Array.isArray(allBlocks) ? allBlocks : [];
-        } catch (error) {
-            console.error('JSON parsing error:', error, 'rawBlocks:', rawBlocks);
-            throw new Error("FAQ一覧の取得に失敗しました: JSON形式が不正です");
-        }
-        const blockEntry = blocks.find(item => item.id === id);
-        console.log('blockEntry:', blockEntry);
+        // ブロック取得（KV: event:block）
+        const rawBlocks = await kv.get('event:block');
+        const allBlocks = safeParseJson<{ id: string; blocks: any[] }[]>(rawBlocks, 'event:block');
 
-        // プロパティ整形（EventItem形式）
+        const blockEntry = allBlocks?.find(item => item.id === id);
+
+        // 整形
         const event = {
             id: page.id,
             title: properties.title?.title?.[0]?.plain_text || '',
