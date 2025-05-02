@@ -1,23 +1,36 @@
-import {NextResponse} from 'next/server';
-import {notion} from '@/lib/notionClient';
-import {API_CONFIG} from '@/lib/constants';
+// app/api/blog/[id]/route.ts
+import { kv } from '@/lib/kvClient';
+import { NextResponse } from 'next/server';
+import { safeParseJson } from '@/lib/utils/safeParseJson';
 
 export async function GET(
-    request: Request,
+    _req: Request,
     context: { params: Promise<{ id: string }> }
 ) {
+    const { id } = await context.params;
+
     try {
-        const {id} = await context.params;
+        // 一覧から対象の blog ページを探す
+        const rawList = await kv.get('blog');
+        const list = safeParseJson<any[]>(rawList, 'blog');
 
-        const page = await notion.pages.retrieve({page_id: id});
-        const blocks = await notion.blocks.children.list({block_id: id});
-
-        if (page.object !== 'page' || !('properties' in page)) {
-            throw new Error('Invalid Notion page object structure');
+        if (!list) {
+            return NextResponse.json({ error: 'blog not found in KV' }, { status: 404 });
         }
 
-        const properties = (page as any).properties;
+        const page = list.find(item => item.id === id);
+        if (!page) {
+            return NextResponse.json({ error: 'blog not found' }, { status: 404 });
+        }
 
+        const properties = page.properties;
+
+        // blocks の取得
+        const rawBlocks = await kv.get('blog:block');
+        const blocksList = safeParseJson<{ id: string; blocks: any[] }[]>(rawBlocks, 'blog:block');
+        const blockEntry = blocksList?.find(item => item.id === id);
+
+        // 整形して返却
         const categories = properties.category?.multi_select?.map((item: any) => item.name) || [];
 
         return NextResponse.json({
@@ -31,10 +44,10 @@ export async function GET(
             publishedAt: properties.publishedAt?.date?.start || '',
             featured: properties.featured?.checkbox || false,
             isNew: properties.isNew?.formula?.boolean || false,
-            blocks: blocks.results || [],
+            blocks: blockEntry?.blocks || [],
         });
     } catch (error) {
-        console.error('ブログ詳細の取得に失敗しました', error);
-        return NextResponse.json({error: 'ブログ詳細の取得に失敗しました'}, {status: 500});
+        console.error('ブログ詳細の取得に失敗しました:', error);
+        return NextResponse.json({ error: 'ブログ詳細の取得に失敗しました' }, { status: 500 });
     }
 }
