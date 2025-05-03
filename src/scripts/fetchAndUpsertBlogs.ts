@@ -1,6 +1,5 @@
 import 'dotenv/config';
-import { v4 as uuidv4 } from 'uuid';
-import { uploadImageToCloudflare } from '@/lib/cloudflare';
+import { uploadImageWithCache } from '@/lib/cloudflare';
 import { replaceImageUrlsInText } from '@/lib/utils/image-util';
 import { notion } from '@/lib/notionClient';
 import { supabase } from '@/lib/supabaseClient';
@@ -24,6 +23,7 @@ function extractPlainText(richText: RichTextItemResponse[]): string {
 
 async function fetchBlocks(blockId: string) {
     const blocks = await notion.blocks.children.list({ block_id: blockId });
+    console.log(`ブロック数: ${blocks.results.length}`);
     return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse)[];
 }
 
@@ -32,7 +32,6 @@ async function fetchAndUpsertBlogs() {
 
     for (const page of pages) {
         const props = page.properties;
-
         const pageId = page.id;
         const title = extractPlainText(props.title?.title);
         const summary = props.summary?.rich_text?.[0]?.plain_text ?? '';
@@ -47,8 +46,9 @@ async function fetchAndUpsertBlogs() {
         const lastEditedTime = page.last_edited_time;
 
         const rawCoverUrl = props.cover?.files?.[0]?.file?.url ?? props.cover?.files?.[0]?.external?.url ?? null;
-        const optimizedCoverUrl = rawCoverUrl ? await uploadImageToCloudflare(rawCoverUrl) : null;
-
+        const optimizedCoverUrl = rawCoverUrl
+            ? await uploadImageWithCache(rawCoverUrl)
+            : null;
         // Insert into blog_pages
         await supabase.from('blog_pages').upsert({
             id: pageId,
@@ -68,28 +68,36 @@ async function fetchAndUpsertBlogs() {
 
         const blocks = await fetchBlocks(pageId);
 
-        for (const block of blocks) {
+        for (let index = 0; index < blocks.length; index++) {
+            const block = blocks[index];
             if (!('type' in block)) continue;
 
             const blockId = block.id;
             const blockType = block.type;
-            const richTexts = (block as any)[blockType]?.rich_text ?? [];
+            const blockData = (block as any)[blockType];
+            const richTexts = Array.isArray(blockData?.rich_text) ? blockData.rich_text : [];
 
-            await supabase.from('blog_blocks').upsert({
-                id: blockId,
-                page_id: pageId,
-                type: blockType,
-                json_raw: block,
+            await supabase.from('blog_blocks').insert({
+                id: block.id,
+                page_id: page.id,
+                type: block.type,
+                parent_id: (block.parent as any)?.block_id ?? null,
+                order: index,
+                is_toggleable: (block as any).toggleable ?? false,
+                color: (block as any)[block.type]?.color ?? null,
+                has_children: block.has_children ?? false,
             });
 
-            for (const richText of richTexts) {
-                await supabase.from('blog_rich_texts').insert({
-                    id: uuidv4(),
+
+            for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
+                const richText = richTexts[rtIndex];
+                const r = await supabase.from('blog_rich_texts').insert({
                     block_id: blockId,
-                    text: richText.plain_text,
-                    annotations: richText.annotations,
-                    href: richText.href,
+                    order: rtIndex,
+                    plain_text: richText?.plain_text ?? null,
+                    href: richText?.href ?? null,
                 });
+                console.log({ r });
             }
         }
     }
