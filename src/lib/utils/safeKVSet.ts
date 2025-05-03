@@ -4,7 +4,7 @@ export async function safeKVSet<T>(
     key: string,
     value: T,
     label?: string,
-    options: { ex: number } = { ex: 3600 }
+    options: { ex: number } = { ex: 86400 }
 ): Promise<boolean> {
     try {
         const json = JSON.stringify(value);
