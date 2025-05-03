@@ -4,15 +4,14 @@ import {notFound} from 'next/navigation';
 import {fetchBlogDetail, fetchBlogList} from '@/lib/server/blog';
 import BlogDetail from '@/components/BlogDetail';
 
-interface BlogDetailPageProps {
-    params: Promise<{
-        id: string;
-    }>;
+interface Params {
+    id: string;
 }
 
-export async function generateMetadata(props: BlogDetailPageProps): Promise<Metadata> {
-    const params = await props.params;
-    const {id} = params;
+export async function generateMetadata({params,}: {
+    params: Promise<Params>;
+}): Promise<Metadata> {
+    const {id} = await params;
     const blog = await fetchBlogDetail(id);
 
     if (!blog.title) {
@@ -36,15 +35,17 @@ export async function generateMetadata(props: BlogDetailPageProps): Promise<Meta
 export async function generateStaticParams() {
     const blogs = await fetchBlogList();
 
-    return blogs.map((blog) => ({
-        id: blog.id,
-    }));
+    return Array.isArray(blogs)
+        ? blogs.map((blog) => ({id: blog.id}))
+        : [];
 }
 
-export default async function BlogDetailPage(props: BlogDetailPageProps) {
-    const params = await props.params;
-    const {id} = params;
+export default async function BlogDetailPage({params,}: {
+    params: Promise<Params>;
+}) {
+    const {id} = await params;
     const blog = await fetchBlogDetail(id);
+    console.log({blog});
 
     if (!blog.title) {
         notFound();
@@ -55,4 +56,4 @@ export default async function BlogDetailPage(props: BlogDetailPageProps) {
             <BlogDetail blog={blog}/>
         </main>
     );
-} 
+}

@@ -35,14 +35,14 @@ export default function BlogDetail({blog}: BlogDetailProps) {
 
             <div className="p-6 md:p-8">
                 <div className="flex flex-wrap gap-2 mb-4">
-                    {blog.category.map((cat) => (
+                    {blog.category?.map((cat) => (
                         <span
                             key={cat}
                             className="inline-block bg-yellow-300 text-xs px-2 py-1 rounded"
                         >
               {cat}
             </span>
-                    ))}
+                    )) ?? []}
                 </div>
 
                 <h1 className="text-2xl md:text-3xl font-bold mb-4">{blog.title}</h1>
@@ -56,7 +56,7 @@ export default function BlogDetail({blog}: BlogDetailProps) {
                 </div>
                 <hr/>
                 <div className="prose prose-blue max-w-none mt-2">
-                    {parseSupabaseBlocks(blog.blocks)}
+                    {parseSupabaseBlocks(blog.blocks ?? [])}
                 </div>
             </div>
         </article>

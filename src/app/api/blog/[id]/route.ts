@@ -22,7 +22,7 @@ export async function GET(
         }
 
         // ブロック情報取得
-        const { data: blocks, error: blockError } = await supabase
+        const { data: blockData, error: blockError } = await supabase
             .from('blog_blocks')
             .select('*')
             .eq('page_id', id)
@@ -30,20 +30,23 @@ export async function GET(
 
         if (blockError) throw blockError;
 
+        const blocks = Array.isArray(blockData) ? blockData : [];
+        const blockIds = blocks?.map(block => block.id) || [];
         // リッチテキストをブロックごとに紐付け
         const { data: richTexts, error: rtError } = await supabase
             .from('blog_rich_texts')
             .select('*')
-            .in('block_id', blocks.map(b => b.id))
+            .in('block_id', blockIds)
             .order('order', { ascending: true });
-        console.log({ richTexts });
 
         if (rtError) throw rtError;
 
-        const blocksWithText = blocks.map(block => ({
-            ...block,
-            rich_texts: richTexts.filter(rt => rt.block_id === block.id),
-        }));
+        const blocksWithText = blocks
+            ? blocks.map(block => ({
+                ...block,
+                rich_texts: richTexts.filter(rt => rt.block_id === block.id),
+            }))
+            : [];
 
         return NextResponse.json({
             id: page.id,
@@ -51,7 +54,7 @@ export async function GET(
             summary: page.summary,
             detail: page.detail,
             cover: page.cover ? getCloudflareImageUrl(page.cover) : '',
-            category: page.category ?? [],
+            category: Array.isArray(page.category) ? page.category : [],
             publishedAt: page.published_at,
             featured: page.featured,
             isNew: false,
