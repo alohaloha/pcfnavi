@@ -35,3 +35,11 @@ export async function uploadImageToCloudflare(imageUrl: string): Promise<string>
 
     return json.result.variants[0];
 }
+
+// cloudflareの公開URLを取得する関数
+export function getCloudflareImageUrl(imageId: string): string {
+    const baseUrl = process.env.CLOUDFLARE_BASE_URL;
+    const hash = process.env.CLOUDFLARE_IMAGES_HASH;
+    const variant = process.env.CLOUDFLARE_IMAGE_VARIANT || 'public';
+    return `${baseUrl}/${hash}/${imageId}/${variant}`;
+}
