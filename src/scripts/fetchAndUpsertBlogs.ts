@@ -1,8 +1,7 @@
 import 'dotenv/config';
-import { uploadImageWithCache } from '@/lib/cloudflare';
-import { replaceImageUrlsInText } from '@/lib/utils/image-util';
 import { notion } from '@/lib/notionClient';
 import { supabase } from '@/lib/supabaseClient';
+import { uploadImageWithCache } from '@/lib/cloudflareCache';
 import {
     BlockObjectResponse,
     PartialBlockObjectResponse,
@@ -23,7 +22,6 @@ function extractPlainText(richText: RichTextItemResponse[]): string {
 
 async function fetchBlocks(blockId: string) {
     const blocks = await notion.blocks.children.list({ block_id: blockId });
-    console.log(`ブロック数: ${blocks.results.length}`);
     return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse)[];
 }
 
@@ -46,10 +44,8 @@ async function fetchAndUpsertBlogs() {
         const lastEditedTime = page.last_edited_time;
 
         const rawCoverUrl = props.cover?.files?.[0]?.file?.url ?? props.cover?.files?.[0]?.external?.url ?? null;
-        const optimizedCoverUrl = rawCoverUrl
-            ? await uploadImageWithCache(rawCoverUrl)
-            : null;
-        // Insert into blog_pages
+        const optimizedCoverKey = rawCoverUrl ? await uploadImageWithCache(rawCoverUrl) : null;
+
         await supabase.from('blog_pages').upsert({
             id: pageId,
             title,
@@ -60,7 +56,7 @@ async function fetchAndUpsertBlogs() {
             url,
             category,
             featured,
-            cover: optimizedCoverUrl,
+            cover: optimizedCoverKey,
             status,
             created_time: createdTime,
             last_edited_time: lastEditedTime,
@@ -74,8 +70,7 @@ async function fetchAndUpsertBlogs() {
 
             const blockId = block.id;
             const blockType = block.type;
-            const blockData = (block as any)[blockType];
-            const richTexts = Array.isArray(blockData?.rich_text) ? blockData.rich_text : [];
+            const richTexts = (block as any)[blockType]?.rich_text ?? [];
 
             await supabase.from('blog_blocks').insert({
                 id: block.id,
@@ -88,16 +83,14 @@ async function fetchAndUpsertBlogs() {
                 has_children: block.has_children ?? false,
             });
 
-
             for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
                 const richText = richTexts[rtIndex];
-                const r = await supabase.from('blog_rich_texts').insert({
+                await supabase.from('blog_rich_texts').insert({
                     block_id: blockId,
                     order: rtIndex,
-                    plain_text: richText?.plain_text ?? null,
+                    plane_text: richText?.plain_text ?? null,
                     href: richText?.href ?? null,
                 });
-                console.log({ r });
             }
         }
     }
