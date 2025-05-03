@@ -16,6 +16,7 @@ export default function FaqItem({id, question, summary, showBlocks, fetchDetail}
     const [detailBlocks, setDetailBlocks] = useState<any[] | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [showDetail, setShowDetail] = useState(false)
+    if (id === '1de9c5c1-735d-8140-a1aa-d2091668bd14') console.log({ id, showBlocks});
 
     // アコーディオンの開閉
     const handleToggle = () => {
