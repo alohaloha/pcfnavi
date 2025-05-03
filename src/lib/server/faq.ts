@@ -41,7 +41,7 @@ export const fetchFaqList = cache(async (): Promise<FaqItem[]> => {
 export const fetchFaqDetail = cache(async (id: string): Promise<FaqDetail> => {
     try {
         const protectionBypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-        const res = await fetch(`${process.env.API_BASE_URL}/api/faq/detail/${id}`, {
+        const res = await fetch(`${process.env.API_BASE_URL}/api/faq/${id}`, {
             method: 'GET',
             headers: {
                 ...(protectionBypassSecret && {

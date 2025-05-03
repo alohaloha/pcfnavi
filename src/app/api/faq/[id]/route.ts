@@ -1,4 +1,3 @@
-// app/api/faq/detail/[id]/route.ts
 import { kv } from '@/lib/kvClient';
 import { NextResponse } from 'next/server';
 import { safeParseJson } from '@/lib/utils/safeParseJson';
