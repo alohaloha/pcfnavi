@@ -19,6 +19,7 @@ export async function GET() {
             show_blocks: row.properties.show_blocks?.checkbox || false,
             category: row.properties.category.multi_select.map((item: any) => item.name) || [],
         })).filter(item => item.question && item.answer && item.category.length > 0);
+        console.log({ showBlocks: items.map(item => item.show_blocks) });
 
         return NextResponse.json({items});
     } catch (error) {
