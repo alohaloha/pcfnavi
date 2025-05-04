@@ -17,6 +17,7 @@ export default function BlogDetail({blog}: BlogDetailProps) {
             day: 'numeric'
         })
         : '';
+    console.log('BlogDetail', {cover: blog.cover, title: blog.title});
 
     return (
         <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">

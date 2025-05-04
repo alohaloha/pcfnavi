@@ -2,6 +2,8 @@
 import {cache} from 'react';
 import {BlogCategoryArray} from '../constants'
 import {NotionBlock} from "@/types/notion";
+import { supabase } from '@/lib/supabaseClient';
+import { getCloudflareImageUrl } from '@/lib/cloudflare';
 
 export type BlogItem = {
     id: string
@@ -9,7 +11,7 @@ export type BlogItem = {
     ID: number
     summary: string
     cover: string
-    category: string[]
+    category?: string[] | []
     publishedAt: string
     featured: boolean
     isNew: boolean
@@ -17,12 +19,13 @@ export type BlogItem = {
 }
 
 export type BlogDetail = {
-    blocks: NotionBlock[]
+    id: string
+    blocks?: NotionBlock[] | []
     title: string
     summary: string
     detail: string
     cover: string
-    category: string[]
+    category?: string[] | []
     publishedAt: string
     status?: string
     isNew?: boolean
@@ -40,8 +43,7 @@ export const fetchBlogList = cache(async (): Promise<BlogItem[]> => {
             headers: {
                 ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
             },
-            cache: 'no-store',
-            next: {tags: ['blog-list']}
+            next: {tags: ['blog-list'], revalidate: 0}
         });
 
         if (!res.ok) {
@@ -95,6 +97,68 @@ export const fetchBlogDetail = cache(async (id: string): Promise<BlogDetail> => 
         return await res.json();
     } catch (error) {
         console.error('ブログ詳細の取得エラー:', error);
-        return {blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: '', detail: ''};
+        return {id: '', blocks: [], title: '', summary: '', cover: '', category: [], publishedAt: '', detail: ''};
     }
 });
+
+
+export async function getBlogListFromSupabase(): Promise<BlogItem[]> {
+    const { data, error } = await supabase.from('blog_pages').select('*').order('published_at', { ascending: false });
+
+    if (error || !data) {
+        console.error('ブログ一覧の取得に失敗しました', error);
+        return [];
+    }
+
+    return data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        cover: item.cover ? getCloudflareImageUrl(item.cover) : '',
+        category: Array.isArray(item.category) ? item.category : [],
+        publishedAt: item.published_at,
+        featured: item.featured,
+        isNew: false,
+        status: item.status || '',
+        ID: item.ID || 0,
+    }));
+}
+
+export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail | null> {
+    const { data: page, error: pageError } = await supabase.from('blog_pages').select('*').eq('id', id).single();
+    if (pageError || !page) return null;
+
+    const { data: blocks, error: blockError } = await supabase
+        .from('blog_blocks')
+        .select('*')
+        .eq('page_id', id)
+        .order('order', { ascending: true });
+    if (blockError) return null;
+
+    const blockIds = blocks?.map(block => block.id) || [];
+
+    const { data: richTexts, error: rtError } = await supabase
+        .from('blog_rich_texts')
+        .select('*')
+        .in('block_id', blockIds)
+        .order('order', { ascending: true });
+    if (rtError) return null;
+
+    const blocksWithText = blocks?.map(block => ({
+        ...block,
+        rich_texts: richTexts.filter(rt => rt.block_id === block.id),
+    })) ?? [];
+
+    return {
+        id: page.id,
+        title: page.title,
+        summary: page.summary,
+        detail: page.detail,
+        cover: page.cover ? getCloudflareImageUrl(page.cover) : '',
+        category: Array.isArray(page.category) ? page.category : [],
+        publishedAt: page.published_at,
+        featured: page.featured,
+        isNew: false,
+        blocks: blocksWithText,
+    };
+}
