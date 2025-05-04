@@ -3,6 +3,8 @@ import { supabase } from '@/lib/supabaseClient';
 import { NextResponse } from 'next/server';
 import { getCloudflareImageUrl } from '@/lib/cloudflare';
 
+export const revalidate = 0;
+
 export async function GET() {
     try {
         const { data, error } = await supabase

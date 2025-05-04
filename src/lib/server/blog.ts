@@ -43,7 +43,7 @@ export const fetchBlogList = async (): Promise<BlogItem[]> => {
             headers: {
                 ...(protectionBypassSecret && {'x-vercel-protection-bypass': protectionBypassSecret}),
             },
-            cache: 'no-store', // 🔥 キャッシュ完全無効 TODO:: 本番前に削除する
+            // cache: 'no-store', // 🔥 キャッシュ完全無効 TODO:: 本番前に削除する
             next: {
                 tags: ['blog-list'],
                 // revalidate: 60, // 1分ごとに再検証 TODO:: 本番前にこっちに戻す
