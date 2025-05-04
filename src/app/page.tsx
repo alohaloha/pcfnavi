@@ -32,6 +32,21 @@ export default function Home() {
                 <p className={`mt-4 text-2xl ${knewave.className}`}>
                     Our new site is launching soon. Stay tuned!
                 </p>
+                <div className="mt-8 bg-primary text-white">
+                    primary: #4B6577
+                </div>
+                <div className="mt-8 bg-secondary">
+                    secondary
+                </div>
+                <div className="mt-8 bg-accent">
+                    accent: #3AA89F
+                </div>
+                <div className="mt-8 bg-cta">
+                    cta
+                </div>
+                <div className="mt-8 bg-cream">
+                    cream
+                </div>
             </div>
         </main>
     );

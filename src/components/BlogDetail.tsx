@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import {parseNotionBlocks} from '@/lib/notionParser';
+import {parseSupabaseBlocks} from '@/lib/supabase-parser';
 import type {BlogDetail} from '@/lib/server/blog';
 
 interface BlogDetailProps {
@@ -56,7 +56,7 @@ export default function BlogDetail({blog}: BlogDetailProps) {
                 </div>
                 <hr/>
                 <div className="prose prose-blue max-w-none mt-2">
-                    {parseNotionBlocks(blog.blocks)}
+                    {parseSupabaseBlocks(blog.blocks)}
                 </div>
             </div>
         </article>
