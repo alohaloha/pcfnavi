@@ -16,7 +16,12 @@ export async function GET() {
             return NextResponse.json({ error: 'ブログ一覧の取得に失敗しました' }, { status: 500 });
         }
 
-        const items = (data || [])
+        if (!data || data.length === 0) {
+            return NextResponse.json({ items: [] });
+        }
+
+        console.log('ブログ一覧取得:整形前', data.map(item => item.cover));
+        const items = (data as any[])
             .filter((row) => row.status === 'published' && row.title)
             .map((row) => ({
                 id: row.id,
@@ -29,6 +34,7 @@ export async function GET() {
                 isNew: isNew(row.published_at),
                 status: row.status,
             }));
+        console.log('ブログ一覧取得:整形後', items.map(item => item.cover));
 
         return NextResponse.json({ items });
     } catch (error) {

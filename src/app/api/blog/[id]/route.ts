@@ -15,7 +15,6 @@ export async function GET(
             .select('*')
             .eq('id', id)
             .single();
-        console.log({ page });
 
         if (pageError || !page) {
             return NextResponse.json({ error: 'blog not found' }, { status: 404 });
