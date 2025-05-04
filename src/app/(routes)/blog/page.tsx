@@ -1,6 +1,6 @@
 import React from 'react';
 import {Metadata} from 'next';
-import {fetchBlogList} from '@/lib/server/blog';
+import {fetchBlogList, getBlogListFromSupabase} from '@/lib/server/blog';
 import BlogList from '@/components/BlogList';
 
 export const metadata: Metadata = {
@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-    const blogs = await fetchBlogList();
+    const blogs = await getBlogListFromSupabase();
 
     return (
         <main className="container mx-auto px-4 py-8">
