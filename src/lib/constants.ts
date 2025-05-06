@@ -179,6 +179,10 @@ export const BlogCategory = {
         name: '日本代表',
         key: 'alljapan',
     },
+    World: {
+        name: '世界',
+        key: 'world',
+    },
     Other: {
         name: 'その他',
         key: 'other',
@@ -195,6 +199,7 @@ export const BlogCategoryArray: readonly BlogCategoryType[] = [
     BlogCategory.Promotion,
     BlogCategory.Collaboration,
     BlogCategory.AllJapan,
+    BlogCategory.World,
     BlogCategory.Other,
 ] as const;
 
@@ -207,6 +212,7 @@ export const BlogCategoryMap: { [key: string]: BlogCategoryType } = {
     [BlogCategory.Promotion.key]: BlogCategory.Promotion,
     [BlogCategory.Collaboration.key]: BlogCategory.Collaboration,
     [BlogCategory.AllJapan.key]: BlogCategory.AllJapan,
+    [BlogCategory.World.key]: BlogCategory.World,
     [BlogCategory.Other.key]: BlogCategory.Other,
 } as const;
 
