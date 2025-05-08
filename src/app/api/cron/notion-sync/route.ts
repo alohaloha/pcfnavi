@@ -5,7 +5,7 @@ import {NextRequest, NextResponse} from 'next/server';
 const dbs = {
     faq: process.env.NOTION_FAQ_DB_ID!,
     // blog: process.env.NOTION_BLOG_DB_ID!,
-    event: process.env.NOTION_EVENT_DB_ID!,
+    // event: process.env.NOTION_EVENT_DB_ID!,
 };
 
 export async function GET(request: NextRequest) {
