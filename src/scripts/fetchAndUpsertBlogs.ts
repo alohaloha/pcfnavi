@@ -3,7 +3,7 @@ import { notion } from '@/lib/notionClient';
 import { supabase } from '@/lib/supabaseClient';
 import { uploadImageWithCache } from '@/lib/cloudflareCache';
 import {
-    BlockObjectResponse,
+    BlockObjectResponse, FileBlockObjectResponse, ImageBlockObjectResponse,
     PartialBlockObjectResponse,
     RichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints';
@@ -22,10 +22,12 @@ function extractPlainText(richText: RichTextItemResponse[]): string {
 
 async function fetchBlocks(blockId: string) {
     const blocks = await notion.blocks.children.list({ block_id: blockId });
-    return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse)[];
+    return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse | ImageBlockObjectResponse | FileBlockObjectResponse)[];
 }
 
 async function fetchAndUpsertBlogs() {
+    const deleted = await supabase.from('blog_pages').delete().neq('status', null);
+    console.log('Deleted old blog pages:', deleted);
     const pages = await fetchBlogsFromNotion();
 
     for (const page of pages) {
@@ -70,7 +72,28 @@ async function fetchAndUpsertBlogs() {
 
             const blockId = block.id;
             const blockType = block.type;
+            let optimizedBlockFileKey = null;
             const richTexts = (block as any)[blockType]?.rich_text ?? [];
+            if (blockType === 'image') {
+                console.log('block.image', block.image);
+                if (block.image.type === 'file') {
+                    const rawFileUrl = block.image.file.url;
+                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+                } else if (block.image.type === 'external') {
+                    const rawFileUrl = block.image.external.url;
+                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+                }
+            }
+            // if (blockType === 'file') {
+            //     console.log('block.file', block.file);
+            //     if (block.file.type === 'file') {
+            //         const rawFileUrl = block.file.file.url;
+            //         optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+            //     } else if (block.file.type === 'external') {
+            //         const rawFileUrl = block.file.external.url;
+            //         optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+            //     }
+            // }
 
             await supabase.from('blog_blocks').insert({
                 id: block.id,
@@ -81,14 +104,15 @@ async function fetchAndUpsertBlogs() {
                 is_toggleable: (block as any).toggleable ?? false,
                 color: (block as any)[block.type]?.color ?? null,
                 has_children: block.has_children ?? false,
+                cloudflare_key: optimizedBlockFileKey,
             });
 
             for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
                 const richText = richTexts[rtIndex];
-                await supabase.from('blog_rich_texts').insert({
+                const rtResult = await supabase.from('blog_rich_texts').insert({
                     block_id: blockId,
                     order: rtIndex,
-                    plane_text: richText?.plain_text ?? null,
+                    plain_text: richText?.plain_text ?? null,
                     href: richText?.href ?? null,
                 });
             }
