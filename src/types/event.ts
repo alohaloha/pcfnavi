@@ -1,9 +1,13 @@
-import {EventCategoryKey, EventStatusKey} from '@/lib/constants';
+// イベントステータスのキー
+export type EventStatusKey = 'wanted' | 'deadline' | 'scheduled' | 'held' | 'suspension' | 'unknown';
+
+// イベントカテゴリのキー
+export type EventCategoryKey = 'tournament' | 'training' | 'meeting' | 'other';
 
 export interface EventDate {
     start: string;
     end?: string;
-    is_all_day?: boolean;
+    is_all_day: boolean;
     timezone?: string | null;
 }
 
