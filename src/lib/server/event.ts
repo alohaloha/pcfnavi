@@ -1,6 +1,9 @@
 'use server'
 import {cache} from 'react';
 import {EventDetail, EventFilters, EventItem, EventListResponse} from '@/types/event';
+import { NotionBlock } from "@/types/notion";
+import { supabase } from '@/lib/supabaseClient';
+import { getCloudflareImageUrl } from '@/lib/cloudflare';
 
 /**
  * イベント一覧を取得する
@@ -89,4 +92,100 @@ export const fetchEventDetail = cache(async (id: string): Promise<EventDetail | 
         console.error('イベント詳細の取得に失敗しました:', error);
         return null;
     }
-}); 
+});
+
+export async function getEventListFromSupabase(): Promise<EventItem[]> {
+    const { data, error } = await supabase
+        .from('event_pages')
+        .select('*')
+        .neq('status', 'held')
+        .order('start_at', { ascending: true });
+
+    if (error || !data) {
+        console.error('イベント一覧の取得に失敗しました', error);
+        return [];
+    }
+
+    return data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        eventDate: {
+            start: item.start_at,
+            end: item.end_at,
+            is_all_day: item.is_all_day
+        },
+        location: item.location,
+        capacity: item.capacity,
+        price: item.price,
+        organizer: item.organizer,
+        source: item.source,
+        status: item.status,
+        category: Array.isArray(item.category) ? item.category : [],
+        cover: item.cover ? getCloudflareImageUrl(item.cover) : '',
+        featured: item.featured,
+        pinned: item.pinned,
+        isNew: false
+    }));
+}
+
+export async function getEventDetailFromSupabase(id: string): Promise<EventDetail | null> {
+    const { data: page, error: pageError } = await supabase
+        .from('event_pages')
+        .select('*')
+        .eq('id', id)
+        .single();
+    
+    if (pageError || !page) return null;
+
+    const { data: blocks, error: blockError } = await supabase
+        .from('event_blocks')
+        .select('*')
+        .eq('page_id', id)
+        .order('order', { ascending: true });
+    
+    if (blockError) return null;
+
+    const blockIds = blocks?.map(block => block.id) || [];
+
+    const { data: richTexts, error: rtError } = await supabase
+        .from('event_rich_texts')
+        .select('*')
+        .in('block_id', blockIds)
+        .order('order', { ascending: true });
+    
+    if (rtError) return null;
+
+    const blocksWithImage = blocks?.map(block => ({
+        ...block,
+        imageSrc: block.cloudflare_key ? getCloudflareImageUrl(block.cloudflare_key) : null,
+    })) ?? [];
+    const blocksWithText = blocksWithImage?.map(block => ({
+        ...block,
+        rich_texts: richTexts.filter(rt => rt.block_id === block.id),
+    })) ?? [];
+
+    return {
+        id: page.id,
+        title: page.title,
+        summary: page.summary,
+        detail: page.detail,
+        eventDate: {
+            start: page.start_at,
+            end: page.end_at,
+            is_all_day: page.is_all_day
+        },
+        location: page.location,
+        capacity: page.capacity,
+        price: page.price,
+        organizer: page.organizer,
+        source: page.source,
+        status: page.status,
+        category: Array.isArray(page.category) ? page.category : [],
+        cover: page.cover ? getCloudflareImageUrl(page.cover) : '',
+        featured: page.featured,
+        pinned: page.pinned,
+        isNew: false,
+        blocks: blocksWithText
+    };
+} 
