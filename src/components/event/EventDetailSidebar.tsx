@@ -8,10 +8,10 @@ interface EventDetailSidebarProps {
 
 export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
     return (
-        <div className="bg-gray-50 p-6 rounded-lg">
-            <div className="space-y-4">
+        <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="space-y-6">
                 <div>
-                    <h3 className="font-medium text-gray-900 mb-2">イベント情報</h3>
+                    <h3 className="font-medium text-gray-900 mb-2">基本情報</h3>
                     <div className="space-y-2 text-sm text-gray-600">
                         <div>
                             <span className="font-medium">開催日時：</span>
@@ -31,18 +31,18 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                                 {event.location}
                             </div>
                         )}
+                        {event.price > 0 && (
+                            <div>
+                                <span className="font-medium">参加費：</span>
+                                <br />
+                                {event.price.toLocaleString()}円
+                            </div>
+                        )}
                         {event.capacity && (
                             <div>
                                 <span className="font-medium">定員：</span>
                                 <br />
                                 {event.capacity}名
-                            </div>
-                        )}
-                        {event.price && (
-                            <div>
-                                <span className="font-medium">参加費：</span>
-                                <br />
-                                {event.price}
                             </div>
                         )}
                         {event.organizer && (
@@ -75,7 +75,7 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                             {event.category.map((cat, index) => (
                                 <span
                                     key={index}
-                                    className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
+                                    className="bg-yellow-300 text-xs px-2 py-1 rounded shadow-sm"
                                 >
                                     {getEventCategoryName(cat)}
                                 </span>

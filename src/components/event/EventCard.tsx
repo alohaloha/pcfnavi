@@ -32,7 +32,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                         {event.category.map((cat) => (
                             <span
                                 key={cat}
-                                className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+                                className="px-2 py-1 bg-yellow-300 text-xs rounded shadow-sm"
                             >
                                 {getEventCategoryName(cat)}
                             </span>
