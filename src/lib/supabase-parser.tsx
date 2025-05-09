@@ -64,6 +64,9 @@ export function parseSupabaseBlocks(blocks: any[]): React.ReactNode[] {
             case 'divider':
                 return <hr key={blockId} className="my-6 border-t border-gray-200" />;
 
+            case 'image':
+                return <img key={blockId} src={block?.imageSrc} alt={block.type} className="my-4" />;
+
             default:
                 return <div key={blockId}>Unsupported block type: {block.type}</div>;
         }
