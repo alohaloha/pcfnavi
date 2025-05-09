@@ -1,8 +1,9 @@
 import {EventCategoryKey, EventStatusKey} from '@/lib/constants';
 
 export interface EventDate {
-    start?: string | null;
-    end?: string | null;
+    start: string;
+    end?: string;
+    is_all_day?: boolean;
     timezone?: string | null;
 }
 
