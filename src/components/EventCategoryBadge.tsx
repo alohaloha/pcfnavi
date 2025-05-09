@@ -8,7 +8,7 @@ interface EventCategoryBadgeProps {
 
 export const EventCategoryBadge = ({ category }: EventCategoryBadgeProps) => {
     return (
-        <Badge variant="outline" className="text-sm">
+        <Badge className="bg-yellow-300 text-xs px-2 py-1 rounded shadow-sm">
             {getEventCategoryName(category)}
         </Badge>
     );
