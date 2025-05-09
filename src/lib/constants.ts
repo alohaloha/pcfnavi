@@ -15,7 +15,7 @@ export const Navigation = {
     },
     Events: {
         name: 'イベント',
-        path: '/events',
+        path: '/event',
     },
     Gallery: {
         name: 'ギャラリー',

@@ -13,7 +13,7 @@ const routes = [
         label: "ルール",
     },
     {
-        href: "/events",
+        href: "/event",
         label: "イベント",
     },
     {
