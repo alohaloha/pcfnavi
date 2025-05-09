@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Filter } from 'lucide-react';
 
 interface EventFilterProps {
     selectedStatus?: EventStatusKey;
@@ -40,8 +42,8 @@ export function EventFilter({
         onIsFreeChange(checked ? true : undefined);
     };
 
-    return (
-        <div className="space-y-6 bg-white p-4 rounded-lg shadow-sm">
+    const FilterContent = () => (
+        <div className="space-y-6">
             {/* ステータスフィルター */}
             <div>
                 <h3 className="text-sm font-medium mb-3">ステータス</h3>
@@ -108,5 +110,34 @@ export function EventFilter({
                 フィルターをリセット
             </Button>
         </div>
+    );
+
+    return (
+        <>
+            {/* デスクトップ表示 */}
+            <div className="hidden md:block w-64 bg-white p-4 rounded-lg shadow-sm">
+                <FilterContent />
+            </div>
+
+            {/* モバイル表示 */}
+            <div className="md:hidden">
+                <Sheet>
+                    <SheetTrigger asChild>
+                        <Button variant="outline" className="w-full">
+                            <Filter className="mr-2 h-4 w-4" />
+                            フィルター
+                        </Button>
+                    </SheetTrigger>
+                    <SheetContent side="bottom" className="h-[80vh] bg-white">
+                        <SheetHeader>
+                            <SheetTitle>フィルター</SheetTitle>
+                        </SheetHeader>
+                        <div className="mt-4">
+                            <FilterContent />
+                        </div>
+                    </SheetContent>
+                </Sheet>
+            </div>
+        </>
     );
 } 
