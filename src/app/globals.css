@@ -47,5 +47,7 @@
 
     body {
         @apply bg-cream text-primary font-sans;
+        /* スクロールバーを常に表示 */
+        overflow-y: scroll;
     }
 }
