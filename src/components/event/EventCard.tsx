@@ -11,8 +11,8 @@ interface EventCardProps {
 
 export function EventCard({ event, onClick }: EventCardProps) {
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <Link href={`/event/${event.id}`} className="block">
+        <div className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full">
+            <Link href={`/event/${event.id}`} className="block flex-1">
                 {event.cover && (
                     <div className="relative h-48">
                         <img
@@ -27,7 +27,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                         )}
                     </div>
                 )}
-                <div className="p-4">
+                <div className="p-4 flex flex-col h-full">
                     <div className="flex flex-wrap gap-2 mb-2">
                         {event.category.map((cat) => (
                             <span
@@ -40,7 +40,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                     </div>
                     <h3 className="text-lg font-semibold mb-2 line-clamp-2">{event.title}</h3>
                     <p className="text-sm text-gray-600 mb-2 line-clamp-2">{event.summary}</p>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-gray-500 flex-1">
                         <div className="mb-1">
                             <span className="font-medium">開催日時：</span>
                             {formatEventDate(event.eventDate)}
@@ -64,16 +64,16 @@ export function EventCard({ event, onClick }: EventCardProps) {
                             </div>
                         )}
                     </div>
-                    <div className="mt-3 flex justify-between items-center">
-                        <EventStatusBadge status={event.status} />
-                        {event.featured && (
-                            <span className="text-xs text-amber-600 font-medium">
-                                ⭐ 注目イベント
-                            </span>
-                        )}
-                    </div>
                 </div>
             </Link>
+            <div className="px-4 py-3 border-t border-gray-100 flex justify-between items-center">
+                <EventStatusBadge status={event.status} />
+                {event.featured && (
+                    <span className="text-xs text-amber-600 font-medium">
+                        ⭐ 注目イベント
+                    </span>
+                )}
+            </div>
         </div>
     );
 } 
