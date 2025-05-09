@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -31,6 +34,8 @@ interface MainNavProps {
 }
 
 export function MainNav({className}: MainNavProps) {
+    const pathname = usePathname()
+
     // クラス名に応じてスタイルを適応させる
     const menuClass = cn(
         "flex items-center",
@@ -47,18 +52,24 @@ export function MainNav({className}: MainNavProps) {
     return (
         <NavigationMenu className={menuClass}>
             <NavigationMenuList className={listClass}>
-                {routes.map((route) => (
-                    <NavigationMenuItem key={route.href}>
-                        <NavigationMenuLink asChild>
-                            <Link
-                                href={route.href}
-                                className="text-sm font-medium transition-colors hover:text-white"
-                            >
-                                {route.label}
-                            </Link>
-                        </NavigationMenuLink>
-                    </NavigationMenuItem>
-                ))}
+                {routes.map((route) => {
+                    const isActive = pathname.startsWith(route.href)
+                    return (
+                        <NavigationMenuItem key={route.href}>
+                            <NavigationMenuLink asChild>
+                                <Link
+                                    href={route.href}
+                                    className={cn(
+                                        "text-sm font-medium transition-colors hover:text-white hover:bg-accent rounded-md px-3 py-2",
+                                        isActive && "text-white font-bold bg-accent"
+                                    )}
+                                >
+                                    {route.label}
+                                </Link>
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                    )
+                })}
             </NavigationMenuList>
         </NavigationMenu>
     )
