@@ -1,8 +1,9 @@
-import { EventDetail } from '@/types/event';
+import { EventItem } from '@/types/event';
 import { formatDate } from '@/lib/utils';
+import { getEventCategoryName } from '@/lib/constant-util';
 
 interface EventDetailSidebarProps {
-    event: EventDetail;
+    event: EventItem;
 }
 
 export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
@@ -76,7 +77,7 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                                     key={index}
                                     className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
                                 >
-                                    {cat}
+                                    {getEventCategoryName(cat)}
                                 </span>
                             ))}
                         </div>
