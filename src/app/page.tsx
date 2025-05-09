@@ -8,7 +8,7 @@ const knewave = Knewave({
 });
 
 export const metadata: Metadata = {
-    title: 'PCF Navi – Coming Soon',
+    title: '電くるなび – Coming Soon',
     description: 'Powerchair Football fan portal is getting ready.',
     robots: 'noindex, nofollow',         // ★ 検索エンジンに載せない
 };
@@ -18,7 +18,7 @@ export default function Home() {
         <main className="grid min-h-screen place-items-center bg-cream text-primary">
             <div className="text-center">
                 <h1 className={`text-6xl font-extrabold tracking-tight text-primary drop-shadow-sm ${knewave.className}`}>
-                    PCF Navi
+                    Denkuru Navi
                 </h1>
                 <div className="mt-8 max-w-md">
                     <Image

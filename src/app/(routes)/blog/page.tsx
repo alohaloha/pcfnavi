@@ -4,7 +4,7 @@ import {fetchBlogList, getBlogListFromSupabase} from '@/lib/server/blog';
 import BlogList from '@/components/BlogList';
 
 export const metadata: Metadata = {
-    title: 'ブログ | PCF NAVI',
+    title: 'ブログ | 電くるなび',
     description: '電動車椅子サッカーに関する最新情報や役立つ記事をご紹介します。',
 };
 

@@ -4,7 +4,7 @@ export default function PrivacyPolicyPage() {
             <h1 className="text-3xl font-bold mb-6">プライバシーポリシー</h1>
 
             <p className="mb-4">
-                PCF Navi（以下、「当サイト」といいます）は、利用者のプライバシーを尊重し、個人情報の保護に努めます。
+                電くるなび（以下、「当サイト」といいます）は、利用者のプライバシーを尊重し、個人情報の保護に努めます。
                 以下に、当サイトにおける個人情報の取扱い方針を定めます。
             </p>
 
@@ -42,7 +42,7 @@ export default function PrivacyPolicyPage() {
             <hr className="my-8"/>
 
             <p className="text-sm text-gray-600">【制定日】2025年4月27日</p>
-            <p className="text-sm text-gray-600">PCF Navi</p>
+            <p className="text-sm text-gray-600">電くるなび</p>
         </div>
     );
 }

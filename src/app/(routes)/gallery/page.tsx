@@ -4,7 +4,7 @@ import {TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Portal} from '
 import Script from 'next/script';
 
 export const metadata = {
-    title: "ギャラリー | PCF Navi",
+    title: "ギャラリー | 電くるなび",
     description: "パワーチェアフットボールの写真や動画ギャラリー",
 };
 

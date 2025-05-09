@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'イベント | PCF NAVI',
+    title: 'イベント | 電くるなび',
     description: '電動車椅子サッカーに関するイベント情報をご紹介します。',
 };
 

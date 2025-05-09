@@ -1,5 +1,5 @@
 // サイト全般
-export const SITE_NAME = 'PCF NAVI'
+export const SITE_NAME = '電くるなび'
 export const SITE_DESCRIPTION = '電動車椅子サッカーの情報ポータル'
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
 

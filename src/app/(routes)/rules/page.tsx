@@ -1,7 +1,7 @@
 import { Section } from "@/components/Section";
 
 export const metadata = {
-  title: "ルール | PCF Navi",
+  title: "ルール | 電くるなび",
   description: "パワーチェアフットボールのルールについて説明します",
 };
 

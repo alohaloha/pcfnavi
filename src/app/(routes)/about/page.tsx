@@ -17,19 +17,19 @@ import {IconParkOutlineSendEmail} from "@/components/icon/IconParkOutlineSendEma
 import {MdiCardsHeartOutline} from "@/components/icon/MdiCardsHeartOutline";
 
 export const metadata = {
-    title: 'PCF Naviについて',
-    description: 'PCF Naviの公式サイトの説明ページです。',
+    title: '電くるなびについて',
+    description: '電くるなびの公式サイトの説明ページです。',
 };
 
 export default function AboutPage() {
     return (
         <main className="container mx-auto px-4 py-8 max-w-3xl">
-            <h1 className="text-3xl font-bold mb-4">PCF Naviについて</h1>
+            <h1 className="text-3xl font-bold mb-4">電くるなびについて</h1>
 
             <section className="mb-12 border-b-2 border-gray-300 pb-8">
                 <h2 className="text-2xl font-semibold mb-2 flex items-center">
                     <Sparkles className="h-6 w-6 text-yellow-500 mr-2"/>
-                    PCF Naviに込めた想い
+                    電くるなびに込めた想い
                 </h2>
                 <p className="mt-3">
                     正直、最初は、こんなにすごい世界だとは思っていませんでした。

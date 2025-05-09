@@ -3,7 +3,7 @@ import FaqList from "@/components/FaqList";
 import {fetchFaqList} from "@/lib/server/faq";
 
 export const metadata = {
-    title: "よくある質問 | PCF Navi",
+    title: "よくある質問 | 電くるなび",
     description: "パワーチェアフットボールに関するよくある質問",
 };
 

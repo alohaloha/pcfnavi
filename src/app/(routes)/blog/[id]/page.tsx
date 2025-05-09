@@ -19,13 +19,13 @@ export async function generateMetadata({params,}: {
 
     if (!blog?.title) {
         return {
-            title: 'ブログ記事が見つかりません | PCF NAVI',
+            title: 'ブログ記事が見つかりません | 電くるなび',
             description: '指定されたブログ記事は存在しないか、削除された可能性があります。',
         };
     }
 
     return {
-        title: `${blog.title} | PCF NAVI`,
+        title: `${blog.title} | 電くるなび`,
         description: blog.summary,
         openGraph: {
             title: blog.title,
