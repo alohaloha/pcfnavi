@@ -94,7 +94,8 @@ export const fetchEventDetail = cache(async (id: string): Promise<EventDetail | 
     }
 });
 
-export async function getEventListFromSupabase(): Promise<EventItem[]> {
+// キャッシュ付きのイベント一覧取得関数
+export const getEventListFromSupabase = cache(async (): Promise<EventItem[]> => {
     const { data, error } = await supabase
         .from('event_pages')
         .select('*')
@@ -127,9 +128,10 @@ export async function getEventListFromSupabase(): Promise<EventItem[]> {
         pinned: item.pinned,
         isNew: false
     }));
-}
+});
 
-export async function getEventDetailFromSupabase(id: string): Promise<EventDetail | null> {
+// キャッシュ付きのイベント詳細取得関数
+export const getEventDetailFromSupabase = cache(async (id: string): Promise<EventDetail | null> => {
     const { data: page, error: pageError } = await supabase
         .from('event_pages')
         .select('*')
@@ -165,6 +167,7 @@ export async function getEventDetailFromSupabase(id: string): Promise<EventDetai
         rich_texts: richTexts.filter(rt => rt.block_id === block.id),
     })) ?? [];
 
+    // 一覧ページと同じ変換処理を適用
     return {
         id: page.id,
         title: page.title,
@@ -188,4 +191,4 @@ export async function getEventDetailFromSupabase(id: string): Promise<EventDetai
         isNew: false,
         blocks: blocksWithText
     };
-} 
+}); 

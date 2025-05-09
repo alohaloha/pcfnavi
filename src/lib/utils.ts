@@ -70,14 +70,17 @@ export function formatPrice(price: number | null): string {
     return `¥${price.toLocaleString()}`;
 }
 
-export function formatDate(dateString: string): string {
-    const date = new Date(dateString)
-    if (isNaN(date.getTime())) {
-        return "Invalid date"
+export function formatDate(date: string, isAllDay: boolean = false): string {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const hours = d.getHours();
+    const minutes = d.getMinutes();
+
+    if (isAllDay) {
+        return `${year}年${month}月${day}日`;
     }
-    return new Intl.DateTimeFormat("ja-JP", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    }).format(date)
+
+    return `${year}年${month}月${day}日 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
