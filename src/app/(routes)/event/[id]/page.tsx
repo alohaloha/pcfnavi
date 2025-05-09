@@ -1,19 +1,27 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { EventDetail } from '@/types/event';
-import { getEventDetailFromSupabase } from '@/lib/server/event';
+import { getEventDetailFromSupabase, getEventListFromSupabase } from '@/lib/server/event';
 import { EventDetailView } from '@/components/event/EventDetailView';
 
-interface EventDetailPageProps {
-    params: {
-        id: string;
-    };
+interface Params {
+    id: string;
 }
 
 export const revalidate = 3600; // 1時間ごとに再検証
 
-export async function generateMetadata({ params }: EventDetailPageProps): Promise<Metadata> {
-    const event = await getEventDetailFromSupabase(params.id);
+export async function generateStaticParams() {
+    const events = await getEventListFromSupabase();
+    return events.map((event) => ({
+        id: event.id,
+    }));
+}
+
+export async function generateMetadata({ params }: {
+    params: Promise<Params>;
+}): Promise<Metadata> {
+    const { id } = await params;
+    const event = await getEventDetailFromSupabase(id);
     if (!event) {
         return {
             title: 'イベントが見つかりません',
@@ -32,8 +40,11 @@ export async function generateMetadata({ params }: EventDetailPageProps): Promis
     };
 }
 
-export default async function EventDetailPage({ params }: EventDetailPageProps) {
-    const event = await getEventDetailFromSupabase(params.id);
+export default async function EventDetailPage({ params }: {
+    params: Promise<Params>;
+}) {
+    const { id } = await params;
+    const event = await getEventDetailFromSupabase(id);
     if (!event) {
         notFound();
     }
