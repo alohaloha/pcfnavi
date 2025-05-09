@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { getEventListFromSupabase } from '@/lib/server/event';
-import { EventList } from '@/components/event/EventList';
+import { EventListWithFilter } from '@/components/event/EventListWithFilter';
 import { EventModal } from '@/components/event/EventModal';
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default async function EventsPage() {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8">イベント一覧</h1>
-            <EventList events={events} />
+            <EventListWithFilter events={events} />
             <EventModal />
         </div>
     );
