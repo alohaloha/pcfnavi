@@ -1,5 +1,4 @@
-import { EventCategoryKey, EventStatusKey } from '@/types/event';
-import { EventStatus } from '@/lib/constants';
+import { EventCategoryKey, EventStatusKey, EventStatus, EventCategory } from '@/lib/constants';
 import { getEventCategoryName } from '@/lib/constant-util';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -68,15 +67,15 @@ export function EventFilter({
             <div>
                 <h3 className="text-sm font-medium mb-3">カテゴリ</h3>
                 <div className="space-y-2">
-                    {['tournament', 'training', 'meeting', 'other'].map((category) => (
-                        <div key={category} className="flex items-center space-x-2">
+                    {Object.values(EventCategory).map((category) => (
+                        <div key={category.key} className="flex items-center space-x-2">
                             <Checkbox
-                                id={`category-${category}`}
-                                checked={selectedCategories.includes(category as EventCategoryKey)}
-                                onCheckedChange={() => handleCategoryChange(category as EventCategoryKey)}
+                                id={`category-${category.key}`}
+                                checked={selectedCategories.includes(category.key)}
+                                onCheckedChange={() => handleCategoryChange(category.key)}
                             />
-                            <Label htmlFor={`category-${category}`}>
-                                {getEventCategoryName(category as EventCategoryKey)}
+                            <Label htmlFor={`category-${category.key}`}>
+                                {category.name}
                             </Label>
                         </div>
                     ))}
