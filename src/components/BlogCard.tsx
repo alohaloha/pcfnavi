@@ -50,7 +50,7 @@ export default function BlogCard({blog}: BlogCardProps) {
                             blog.category.map((cat, index) => (
                                 <span
                                     key={`${cat}-${index}`}
-                                    className="inline-block bg-yellow-300 text-xs px-2 py-1 rounded shadow-sm"
+                                    className="inline-block bg-cta text-xs px-2 py-1 rounded shadow-sm"
                                 >
                                     {cat}
                                 </span>

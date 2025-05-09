@@ -75,7 +75,7 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                             {event.category.map((cat, index) => (
                                 <span
                                     key={index}
-                                    className="bg-yellow-300 text-xs px-2 py-1 rounded shadow-sm"
+                                    className="bg-cta text-xs px-2 py-1 rounded shadow-sm"
                                 >
                                     {getEventCategoryName(cat)}
                                 </span>

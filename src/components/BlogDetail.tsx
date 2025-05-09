@@ -39,7 +39,7 @@ export default function BlogDetail({blog}: BlogDetailProps) {
                     {blog.category?.map((cat) => (
                         <span
                             key={cat}
-                            className="inline-block bg-yellow-300 text-xs px-2 py-1 rounded"
+                            className="inline-block bg-cta text-xs px-2 py-1 rounded"
                         >
               {cat}
             </span>
