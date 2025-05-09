@@ -19,6 +19,10 @@ export default function BlogDetail({blog}: BlogDetailProps) {
         : '';
     console.log('BlogDetail', {cover: blog.cover, title: blog.title});
 
+    const parsedBlocks = React.useMemo(() => {
+        return parseSupabaseBlocks(blog.blocks ?? []);
+    }, [blog.blocks]);
+
     return (
         <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             {blog.cover && (
@@ -41,8 +45,8 @@ export default function BlogDetail({blog}: BlogDetailProps) {
                             key={cat}
                             className="inline-block bg-cta text-xs px-2 py-1 rounded"
                         >
-              {cat}
-            </span>
+                            {cat}
+                        </span>
                     )) ?? []}
                 </div>
 
@@ -57,7 +61,7 @@ export default function BlogDetail({blog}: BlogDetailProps) {
                 </div>
                 <hr/>
                 <div className="prose prose-blue max-w-none mt-2">
-                    {parseSupabaseBlocks(blog.blocks ?? [])}
+                    {parsedBlocks}
                 </div>
             </div>
         </article>
