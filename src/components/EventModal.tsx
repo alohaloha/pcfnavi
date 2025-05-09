@@ -8,6 +8,7 @@ import {CustomDialog} from './layout/CustomDialog';
 import {formatEventDate, formatPrice} from '@/lib/utils';
 import {parseNotionBlocks} from '@/lib/notionParser';
 import {EventCategoryBadge} from './EventCategoryBadge';
+import {parseSupabaseBlocks} from "@/lib/supabase-parser";
 
 interface EventModalProps {
     event: EventDetail;
@@ -28,7 +29,7 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
         let currentListType: string | null = null;
 
         // parseNotionBlocksを使用してNotionブロックをReactノードに変換
-        const parsedBlocks = parseNotionBlocks(event.blocks);
+        const parsedBlocks = parseSupabaseBlocks(event.blocks);
 
         event.blocks.forEach((block: any, index: number) => {
             if (block.type === 'bulleted_list_item' || block.type === 'numbered_list_item') {
@@ -124,14 +125,16 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                     <div className="space-y-3 bg-muted/50 p-4 rounded-lg border bg-white">
                         <div className="flex items-start gap-2">
                             <span className="font-semibold min-w-24">掲載元:</span>
-                            <Link
-                                href={event.source}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-accent underline hover:underline text-sm"
-                            >
-                                {getSourceDomain() || event.source}
-                            </Link>
+                            {event.source && event.source.startsWith('http') && (
+                                <Link
+                                    href={event.source}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-accent underline hover:underline text-sm"
+                                >
+                                    {getSourceDomain() || event.source}
+                                </Link>
+                            )}
                         </div>
                         <div className="flex items-start gap-2">
                             <span className="font-semibold min-w-24">日時:</span>
