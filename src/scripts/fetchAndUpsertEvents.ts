@@ -42,13 +42,13 @@ async function fetchAndUpsertEvents() {
         const capacity = props.capacity?.number?.number ?? null;
         const price = props.price?.number?.number ?? null;
         const organizer = props.organizer?.rich_text?.[0]?.plain_text ?? '';
-        const source = props.URL?.url ?? null;
+        const source = props.source?.url ?? null;
         const category = (props.category?.multi_select ?? []).map((c: any) => c.name);
         const featured = props.featured?.checkbox ?? false;
         const pinned = props.pinned?.checkbox ?? false;
-        const start_at = props.eventDate?.start ? new Date(props.eventDate.start) : null;
-        const end_at = props.eventDate?.end ? new Date(props.eventDate.end) : null;
-        const is_all_day = props.eventDate?.start?.length === 10; // "YYYY-MM-DD"形式かどうか
+        const start_at = props.eventDate?.date?.start ? new Date(props.eventDate.date.start) : null;
+        const end_at = props.eventDate?.date?.end ? new Date(props.eventDate.date.end) : null;
+        const is_all_day = props.eventDate?.date?.start?.length === 10; // "YYYY-MM-DD"形式かどうか
         const createdTime = page.created_time;
         const lastEditedTime = page.last_edited_time;
 
