@@ -2,7 +2,7 @@
 
 import React, {useState, Suspense} from 'react';
 import {useSearchParams, useRouter} from 'next/navigation';
-import {fetchEventList, fetchEventDetail} from '@/lib/server/event';
+import {getEventListFromSupabase, getEventDetailFromSupabase} from '@/lib/server/event';
 import {EventCard} from '@/components/EventCard';
 import {EventModal} from '@/components/EventModal';
 import {EventCategoryType, EventStatusType, EventStatusArray, EventCategoryArray} from '@/lib/constants';
@@ -21,7 +21,8 @@ function EventDetail() {
         if (selectedEventId) {
             const loadEventDetail = async () => {
                 try {
-                    const event = await fetchEventDetail(selectedEventId);
+                    const event = await getEventDetailFromSupabase(selectedEventId);
+                    console.log({ event });
                     if (event) {
                         setSelectedEvent(event);
                         setIsDialogOpen(true);
@@ -59,8 +60,6 @@ export default function EventsPage() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [events, setEvents] = useState<any[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
 
     // フィルター状態
     const [filters, setFilters] = useState<EventFilters>({
@@ -74,10 +73,8 @@ export default function EventsPage() {
         const loadEvents = async () => {
             setIsLoading(true);
             try {
-                const data = await fetchEventList(currentPage, 10, filters);
-                console.log('イベント一覧の取得に成功しました:', data);
-                setEvents(data.items);
-                setTotalPages(data.pageCount);
+                const data = await getEventListFromSupabase();
+                setEvents(data);
             } catch (error) {
                 console.error('イベント一覧の取得に失敗しました:', error);
             } finally {
@@ -86,7 +83,7 @@ export default function EventsPage() {
         };
 
         loadEvents();
-    }, [currentPage, filters]);
+    }, [filters]);
 
     // イベントカードがクリックされたときの処理
     const handleEventClick = async (eventId: string) => {
@@ -143,9 +140,6 @@ export default function EventsPage() {
 
             return {...prev, [key]: value};
         });
-
-        // フィルター変更時はページを1に戻す
-        setCurrentPage(1);
     };
 
     // 料金フィルター変更時の処理
@@ -160,9 +154,6 @@ export default function EventsPage() {
 
             return {...prev, isFree};
         });
-
-        // フィルター変更時はページを1に戻す
-        setCurrentPage(1);
     };
 
     return (
@@ -270,43 +261,6 @@ export default function EventsPage() {
                         <div className="text-center py-12 bg-muted rounded-lg">
                             <p className="text-xl">該当するイベントはありません。</p>
                             <p className="text-muted-foreground mt-2">フィルター条件を変更してみてください。</p>
-                        </div>
-                    )}
-
-                    {/* ページネーション */}
-                    {totalPages > 1 && (
-                        <div className="flex justify-center mt-8">
-                            <nav className="flex items-center gap-1">
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                    disabled={currentPage === 1}
-                                    className="px-3 py-1 rounded border disabled:opacity-50"
-                                >
-                                    前へ
-                                </button>
-
-                                {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
-                                    <button
-                                        key={page}
-                                        onClick={() => setCurrentPage(page)}
-                                        className={`px-3 py-1 rounded ${
-                                            currentPage === page
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'border hover:bg-muted'
-                                        }`}
-                                    >
-                                        {page}
-                                    </button>
-                                ))}
-
-                                <button
-                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                    disabled={currentPage === totalPages}
-                                    className="px-3 py-1 rounded border disabled:opacity-50"
-                                >
-                                    次へ
-                                </button>
-                            </nav>
                         </div>
                     )}
                 </>
