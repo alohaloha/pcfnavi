@@ -1,8 +1,10 @@
+import { EventCategoryKey, EventStatusKey } from '@/lib/constants';
+
 // イベントステータスのキー
-export type EventStatusKey = 'wanted' | 'deadline' | 'scheduled' | 'held' | 'suspension' | 'unknown';
+// export type EventStatusKey = 'wanted' | 'deadline' | 'scheduled' | 'held' | 'suspension' | 'unknown';
 
 // イベントカテゴリのキー
-export type EventCategoryKey = 'tournament' | 'training' | 'meeting' | 'other';
+// export type EventCategoryKey = 'tournament' | 'training' | 'meeting' | 'other';
 
 export interface EventDate {
     start: string;
