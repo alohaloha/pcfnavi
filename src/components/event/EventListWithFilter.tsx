@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { EventItem, EventCategoryKey, EventStatusKey } from '@/types/event';
+import { EventItem } from '@/types/event';
+import { EventCategoryKey, EventStatusKey } from '@/lib/constants';
 import { EventList } from './EventList';
 import { EventFilter } from './EventFilter';
 
