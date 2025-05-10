@@ -29,7 +29,7 @@ const footerLinks = {
 const socialLinks = [
     {
         title: "Twitter",
-        href: "https://twitter.com/pcfnavi",
+        href: "https://twitter.com/denkuru_navi",
         icon: "twitter",
     },
 ]
