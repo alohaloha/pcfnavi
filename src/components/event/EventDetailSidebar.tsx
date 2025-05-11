@@ -60,7 +60,8 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                                     href={event.source}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline block overflow-hidden whitespace-nowrap text-ellipsis"
+                                    title={event.source}
                                 >
                                     {event.source}
                                 </a>
