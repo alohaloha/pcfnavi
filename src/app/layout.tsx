@@ -47,11 +47,11 @@ export default function RootLayout({
   return (
     <html lang="ja" className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} ${inter.variable} ${rubik.variable} antialiased`}>
       <body className="min-h-screen flex flex-col">
-        <Header />
+      {process.env.NEXT_PUBLIC_SHOW_HEADER === "true" && <Header />}
         <div className="flex-1">
           {children}
         </div>
-        <Footer />
+      {process.env.NEXT_PUBLIC_SHOW_HEADER === "true" && <Footer />}
       </body>
     </html>
   );
