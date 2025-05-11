@@ -1,26 +1,53 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@config "../../tailwind.config.ts"; /* configファイルへのパスを指定 */
+
+@theme {
+    /* カスタムカラーをCSSバリアブルとして定義 */
+    --color-primary: #4B6577;
+    --color-primary-50: #F2F4F6;
+    --color-primary-100: #E1E7EA;
+    --color-primary-200: #C5D0D4;
+    --color-primary-300: #A9B9BF;
+    --color-primary-400: #8DA2AA;
+    --color-primary-500: #4B6577;
+    --color-primary-600: #3C515F;
+    --color-primary-700: #2C3C48;
+    --color-primary-800: #1D2731;
+    --color-primary-900: #0D1219;
+
+    --color-accent: #3AA89F;
+    --color-accent-100: #D1F0EC;
+    --color-accent-200: #A3E1D9;
+    --color-accent-300: #75D2C5;
+    --color-accent-400: #47C3B2;
+    --color-accent-500: #3AA89F;
+    --color-accent-600: #2D8279;
+    --color-accent-700: #205D54;
+
+    --color-secondary: #88C070;
+    --color-secondary-100: #E8F5E1;
+    --color-secondary-200: #D1EBCA;
+    --color-secondary-300: #B9E0B3;
+    --color-secondary-400: #A2D69C;
+    --color-secondary-500: #88C070;
+    --color-secondary-600: #6C9C58;
+    --color-secondary-700: #4F703D;
+
+    --color-cta: #F9C54E;
+    --color-cream: #F8F6EF;
+    --color-border: #E1E7EA;
+    --color-ring: #4B6577;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+    * {
+        @apply border-[#E1E7EA] outline-[#4B6577]/50;
+    }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    body {
+        @apply bg-cream text-primary font-sans;
+        /* スクロールバーを常に表示 */
+        overflow-y: scroll;
+    }
 }

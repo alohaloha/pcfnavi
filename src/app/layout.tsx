@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Rubik, Noto_Sans_JP, Inter } from "next/font/google";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
-import { Rubik } from 'next/font/google';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,6 +18,20 @@ const rubik = Rubik({
   subsets: ['latin'],
   weight: ['800'],  // 太いウェイトを使用
   display: 'swap',
+  variable: '--font-rubik',
+});
+
+const notoSansJP = Noto_Sans_JP({
+  subsets: ['latin'],
+  display: 'swap',
+  weight: ['400', '500', '700'],
+  preload: true,
+  variable: '--font-noto-sans-jp',
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -30,11 +45,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${rubik.className}`}
-      >
-        {children}
+    <html lang="ja" className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} ${inter.variable} ${rubik.variable} antialiased`}>
+      <body className="min-h-screen flex flex-col">
+      {process.env.NEXT_PUBLIC_SHOW_HEADER === "true" && <Header />}
+        <div className="flex-1">
+          {children}
+        </div>
+      {process.env.NEXT_PUBLIC_SHOW_HEADER === "true" && <Footer />}
       </body>
     </html>
   );
