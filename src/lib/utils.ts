@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
-
 /** 年月日（例: 2025年5月18日） */
 const formatYMD = (d: Date) =>
     new Intl.DateTimeFormat("ja-JP", {
@@ -68,19 +67,4 @@ export function formatPrice(price: number | null): string {
     if (price === null) return "－";
     if (price === 0) return "無料";
     return `¥${price.toLocaleString()}`;
-}
-
-export function formatDate(date: string, isAllDay: boolean = false): string {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = d.getMonth() + 1;
-    const day = d.getDate();
-    const hours = d.getHours();
-    const minutes = d.getMinutes();
-
-    if (isAllDay) {
-        return `${year}年${month}月${day}日`;
-    }
-
-    return `${year}年${month}月${day}日 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }

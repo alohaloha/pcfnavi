@@ -1,5 +1,5 @@
 import { EventItem } from '@/types/event';
-import { formatDate } from '@/lib/utils';
+import { formatEventDate } from '@/lib/utils';
 import { getEventCategoryName } from '@/lib/constant-util';
 
 interface EventDetailSidebarProps {
@@ -16,13 +16,7 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                         <div>
                             <span className="font-medium">開催日時：</span>
                             <br />
-                            {formatDate(event.eventDate.start, event.eventDate.is_all_day)}
-                            {event.eventDate.end && (
-                                <>
-                                    <br />
-                                    〜 {formatDate(event.eventDate.end, event.eventDate.is_all_day)}
-                                </>
-                            )}
+                            {formatEventDate(event.eventDate)}
                         </div>
                         {event.location && (
                             <div>
@@ -60,7 +54,8 @@ export function EventDetailSidebar({ event }: EventDetailSidebarProps) {
                                     href={event.source}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 hover:underline block overflow-hidden whitespace-nowrap text-ellipsis"
+                                    title={event.source}
                                 >
                                     {event.source}
                                 </a>

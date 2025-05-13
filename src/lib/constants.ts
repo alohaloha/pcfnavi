@@ -244,9 +244,12 @@ export const EventCategory = {
     },
     AllJapan: {
         name: '日本代表',
-
         key: 'allJapan',
     },
+    Course: {
+        name: '講習会',
+        key: 'course',
+    }
 } as const;
 export type EventCategoryType = (typeof EventCategory)[keyof typeof EventCategory];
 
@@ -258,6 +261,7 @@ export const EventCategoryArray: readonly EventCategoryType[] = [
     EventCategory.Domestic,
     EventCategory.International,
     EventCategory.AllJapan,
+    EventCategory.Course,
 ] as const;
 
 export const EventCategoryMap: { [key: string]: EventCategoryType } = {
@@ -268,6 +272,7 @@ export const EventCategoryMap: { [key: string]: EventCategoryType } = {
     [EventCategory.Domestic.key]: EventCategory.Domestic,
     [EventCategory.International.key]: EventCategory.International,
     [EventCategory.AllJapan.key]: EventCategory.AllJapan,
+    [EventCategory.Course.key]: EventCategory.Course,
 } as const;
 
 // EVENTステータス
