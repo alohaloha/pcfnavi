@@ -148,7 +148,11 @@ export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail 
         .order('order', { ascending: true });
     if (rtError) return null;
 
-    const blocksWithText = blocks?.map(block => ({
+    const blocksWithImage = blocks?.map(block => ({
+        ...block,
+        imageSrc: block.cloudflare_key ? getCloudflareImageUrl(block.cloudflare_key) : null,
+    })) ?? [];
+    const blocksWithText = blocksWithImage?.map(block => ({
         ...block,
         rich_texts: richTexts.filter(rt => rt.block_id === block.id),
     })) ?? [];
