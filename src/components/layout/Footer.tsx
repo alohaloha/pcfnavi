@@ -18,10 +18,14 @@ const footerLinks = {
             href: "/privacy-policy",
         },
     ],
-    faq: [
+    resources: [
         {
             title: "よくある質問",
             href: "/faq",
+        },
+        {
+            title: "イベント情報",
+            href: "/calendar",
         },
     ],
 }
@@ -63,9 +67,9 @@ export function Footer() {
                         </ul>
                     </nav>
                     <nav className="space-y-4">
-                        <h3 className="font-bold">よくある質問</h3>
+                        <h3 className="font-bold">お役立ち情報</h3>
                         <ul className="space-y-2">
-                            {footerLinks.faq.map((link) => (
+                            {footerLinks.resources.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
