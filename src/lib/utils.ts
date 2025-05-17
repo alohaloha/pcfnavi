@@ -1,6 +1,8 @@
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 import {EventDate} from "@/types/event";
+import { differenceInHours, differenceInMinutes, differenceInDays, format } from 'date-fns';
+import { ja } from 'date-fns/locale';
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -68,3 +70,35 @@ export function formatPrice(price: number | null): string {
     if (price === 0) return "無料";
     return `¥${price.toLocaleString()}`;
 }
+
+/**
+ * 日付をスマートにフォーマットする関数（最終更新日の表示に使用）
+ * @param input
+ */
+export function formatSmartDate(input: Date | string): string {
+    const date = typeof input === 'string' ? new Date(input) : input;
+    const now = new Date();
+
+    const diffMinutes = differenceInMinutes(now, date);
+    const diffHours = differenceInHours(now, date);
+    const diffDays = differenceInDays(now, date);
+    const diffWeeks = Math.floor(diffDays / 7);
+    const diffMonths = Math.floor(diffDays / 30);
+
+    if (diffHours < 24) {
+        if (diffMinutes < 60) {
+            return `${diffMinutes}分前`;
+        } else {
+            return `${diffHours}時間前`;
+        }
+    } else if (diffDays < 7) {
+        return `${diffDays}日前`;
+    } else if (diffWeeks < 4) {
+        return `${diffWeeks}週間前`;
+    } else if (diffMonths < 12) {
+        return `${diffMonths}ヶ月前`;
+    } else {
+        return format(date, 'YY年MM月dd日 HH:mm', { locale: ja });
+    }
+}
+
