@@ -3,6 +3,7 @@ import { formatEventDate } from '@/lib/utils';
 import Link from 'next/link';
 import { EventStatusBadge } from '../EventStatusBadge';
 import { getEventCategoryName } from '@/lib/constant-util';
+import {RelativeTime} from "@/components/event/RelativeTime";
 
 interface EventCardProps {
     event: EventItem;
@@ -74,6 +75,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                     </span>
                 )}
             </div>
+            <p className="text-gray-500 text-sm px-4 pb-3 text-right">最終更新日：<RelativeTime date={event.lastEditedTime} /></p>
         </div>
     );
 } 
