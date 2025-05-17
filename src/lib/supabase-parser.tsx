@@ -65,8 +65,14 @@ export function parseSupabaseBlocks(blocks: any[]): React.ReactNode[] {
                 return <hr key={blockId} className="my-6 border-t border-gray-200" />;
 
             case 'image':
-                return <img key={blockId} src={block?.imageSrc} alt={block.type} className="my-4" />;
-
+                return (
+                    <div key={blockId} className="my-4">
+                        <img src={block?.imageSrc} alt={block.captionText || block.type} />
+                        {block.captionHtml !== null && (
+                            <span className="text-sm" dangerouslySetInnerHTML={{ __html: block.captionHtml }} />
+                        )}
+                    </div>
+                );
             default:
                 return <div key={blockId}>Unsupported block type: {block.type}</div>;
         }
