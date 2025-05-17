@@ -87,6 +87,8 @@ async function fetchAndUpsertEvents() {
             if (blockType !== 'image' && blockType!== 'file') {
                 richTexts = (block as any)[blockType]?.rich_text ?? [];
             }
+            let captionText = null;
+            let captionHtml = null;
             if (blockType === 'image') {
                 if (block.image.type === 'file') {
                     const rawFileUrl = block.image.file.url;
@@ -95,6 +97,16 @@ async function fetchAndUpsertEvents() {
                     const rawFileUrl = block.image.external.url;
                     optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
                 }
+
+                captionText = block.image?.caption?.map(c => c.plain_text).join('') || null;
+
+                captionHtml = block.image?.caption?.map(c => {
+                    const content = c.plain_text;
+                    const href = c.href;
+                    return href
+                        ? `<a class="underline text-blue text-right" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
+                        : content;
+                }).join('') || null;
             }
             const result = await supabase.from('event_blocks').insert({
                 id: block.id,
@@ -106,6 +118,8 @@ async function fetchAndUpsertEvents() {
                 color: (block as any)[block.type]?.color ?? null,
                 has_children: block.has_children ?? false,
                 cloudflare_key: optimizedBlockFileKey,
+                caption_text: captionText,
+                caption_html: captionHtml,
             });
 
             for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
