@@ -277,6 +277,18 @@ export const EventCategoryMap: { [key: string]: EventCategoryType } = {
 
 // EVENTステータス
 export const EventStatus = {
+    Scheduled: {
+        name: '開催予定',
+        key: 'scheduled',
+    },
+    NowOn: {
+        name: '開催中',
+        key: 'nowOn',
+    },
+    Held: {
+        name: '開催済み',
+        key: 'held',
+    },
     Wanted: {
         name: '募集中',
         key: 'wanted',
@@ -284,14 +296,6 @@ export const EventStatus = {
     Deadline: {
         name: '募集締切',
         key: 'deadline',
-    },
-    Scheduled: {
-        name: '開催予定',
-        key: 'scheduled',
-    },
-    Held: {
-        name: '開催済み',
-        key: 'held',
     },
     Suspension: {
         name: '中止',
@@ -311,6 +315,7 @@ export const EventStatusArray: readonly EventStatusType[] = [
     EventStatus.Held,
     EventStatus.Suspension,
     EventStatus.Unknown,
+    EventStatus.NowOn,
 ] as const;
 
 export const EventStatusMap: { [key: string]: EventStatusType } = {
@@ -320,6 +325,7 @@ export const EventStatusMap: { [key: string]: EventStatusType } = {
     [EventStatus.Held.key]: EventStatus.Held,
     [EventStatus.Suspension.key]: EventStatus.Suspension,
     [EventStatus.Unknown.key]: EventStatus.Unknown,
+    [EventStatus.NowOn.key]: EventStatus.NowOn,
 } as const;
 
 // FAQ カテゴリー
