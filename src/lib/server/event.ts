@@ -99,7 +99,7 @@ export const getEventListFromSupabase = cache(async (): Promise<EventItem[]> => 
     const { data, error } = await supabase
         .from('event_pages')
         .select('*')
-        .neq('status', 'held')
+        .neq('status', null)
         .order('start_at', { ascending: true });
 
     if (error || !data) {
@@ -126,7 +126,8 @@ export const getEventListFromSupabase = cache(async (): Promise<EventItem[]> => 
         cover: item.cover ? getCloudflareImageUrl(item.cover) : '',
         featured: item.featured,
         pinned: item.pinned,
-        isNew: false
+        isNew: false,
+        lastEditedTime: item.last_edited_time,
     }));
 });
 
@@ -161,6 +162,8 @@ export const getEventDetailFromSupabase = cache(async (id: string): Promise<Even
     const blocksWithImage = blocks?.map(block => ({
         ...block,
         imageSrc: block.cloudflare_key ? getCloudflareImageUrl(block.cloudflare_key) : null,
+        captionText: block?.captiton_text ? block.caption_text : null,
+        captionHtml: block.caption_html ? block.caption_html : null,
     })) ?? [];
     const blocksWithText = blocksWithImage?.map(block => ({
         ...block,
@@ -189,6 +192,7 @@ export const getEventDetailFromSupabase = cache(async (id: string): Promise<Even
         featured: page.featured,
         pinned: page.pinned,
         isNew: false,
+        lastEditedTime: page.last_edited_time,
         blocks: blocksWithText
     };
 }); 
