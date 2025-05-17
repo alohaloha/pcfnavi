@@ -11,7 +11,7 @@ interface EventListWithFilterProps {
 }
 
 export function EventListWithFilter({ events }: EventListWithFilterProps) {
-    const [selectedStatus, setSelectedStatus] = useState<EventStatusKey>();
+    const [selectedStatus, setSelectedStatus] = useState<EventStatusKey | undefined>('scheduled');
     const [selectedCategories, setSelectedCategories] = useState<EventCategoryKey[]>([]);
     const [isFree, setIsFree] = useState<boolean>();
 
