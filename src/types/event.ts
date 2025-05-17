@@ -31,6 +31,7 @@ export interface EventItem {
     isNew: boolean;
     notionBlockId?: string;
     applicationUrl?: string;
+    lastEditedTime: Date;
 }
 
 export interface EventDetail extends EventItem {
