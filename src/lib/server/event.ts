@@ -195,4 +195,43 @@ export const getEventDetailFromSupabase = cache(async (id: string): Promise<Even
         lastEditedTime: page.last_edited_time,
         blocks: blocksWithText
     };
+});
+
+export const getUpcomingEventsFromSupabase = cache(async (limit: number = 3): Promise<EventItem[]> => {
+    const today = new Date().toISOString();
+    const { data, error } = await supabase
+        .from('event_pages')
+        .select('*')
+        .neq('status', null)
+        .gte('start_at', today)
+        .order('start_at', { ascending: true })
+        .limit(limit);
+
+    if (error || !data) {
+        console.error('今後のイベント一覧の取得に失敗しました', error);
+        return [];
+    }
+
+    return data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        eventDate: {
+            start: item.start_at,
+            end: item.end_at,
+            is_all_day: item.is_all_day
+        },
+        location: item.location,
+        capacity: item.capacity,
+        price: item.price,
+        organizer: item.organizer,
+        source: item.source,
+        status: item.status,
+        category: Array.isArray(item.category) ? item.category : [],
+        cover: item.cover ? getCloudflareImageUrl(item.cover) : '',
+        featured: item.featured,
+        pinned: item.pinned,
+        isNew: false,
+        lastEditedTime: item.last_edited_time,
+    }));
 }); 
