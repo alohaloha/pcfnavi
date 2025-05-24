@@ -1,17 +1,17 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "カレンダー | PCF NAVI",
-  description: "PCF NAVIのイベントカレンダーです。",
+  title: "カレンダー | 電くるなび",
+  description: "電くるなびのイベントカレンダーです。",
   openGraph: {
-    title: "カレンダー | PCF NAVI",
-    description: "PCF NAVIのイベントカレンダーです。",
+    title: "カレンダー | 電くるなび",
+    description: "電くるなびのイベントカレンダーです。",
     images: ["/images/ogp.jpg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "カレンダー | PCF NAVI",
-    description: "PCF NAVIのイベントカレンダーです。",
+    title: "カレンダー | 電くるなび",
+    description: "電くるなびのイベントカレンダーです。",
     images: ["/images/ogp.jpg"],
   },
 };
