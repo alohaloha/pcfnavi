@@ -129,66 +129,59 @@ export async function getBlogListFromSupabase(): Promise<BlogItem[]> {
 }
 
 export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail | null> {
-    const { data: page, error: pageError } = await supabase.from('blog_pages').select('*').eq('id', id).single();
-    if (pageError || !page) return null;
+    try {
+        const { data: blog, error: blogError } = await supabase
+            .from('blogs')
+            .select('*')
+            .eq('id', id)
+            .single();
 
-    const { data: blocks, error: blockError } = await supabase
-        .from('blog_blocks')
-        .select('*')
-        .eq('page_id', id)
-        .order('order', { ascending: true });
-    if (blockError) return null;
-
-    const blockIds = blocks?.map(block => block.id) || [];
-
-    const { data: richTexts, error: rtError } = await supabase
-        .from('blog_rich_texts')
-        .select('*')
-        .in('block_id', blockIds)
-        .order('order', { ascending: true });
-    if (rtError) return null;
-
-    // ブロックの階層構造を構築
-    const blocksWithImage = blocks?.map(block => ({
-        ...block,
-        imageSrc: block.cloudflare_key ? getCloudflareImageUrl(block.cloudflare_key) : null,
-    })) ?? [];
-
-    const blocksWithText = blocksWithImage?.map(block => ({
-        ...block,
-        rich_texts: richTexts.filter(rt => rt.block_id === block.id),
-    })) ?? [];
-
-    // 親子関係を構築
-    const blockMap = new Map(blocksWithText.map(block => [block.id, block]));
-    const rootBlocks: NotionBlock[] = [];
-
-    blocksWithText.forEach(block => {
-        if (block.parent_id) {
-            const parentBlock = blockMap.get(block.parent_id);
-            if (parentBlock) {
-                if (!parentBlock.children) {
-                    parentBlock.children = [];
-                }
-                parentBlock.children.push(block);
-            }
-        } else {
-            rootBlocks.push(block);
+        if (blogError) {
+            console.error('Error fetching blog:', blogError);
+            return null;
         }
-    });
 
-    return {
-        id: page.id,
-        title: page.title,
-        summary: page.summary,
-        detail: page.detail,
-        cover: page.cover ? getCloudflareImageUrl(page.cover) : '',
-        category: Array.isArray(page.category) ? page.category : [],
-        publishedAt: page.published_at,
-        featured: page.featured,
-        isNew: false,
-        blocks: rootBlocks,
-    };
+        const { data: blocks, error: blocksError } = await supabase
+            .from('blog_blocks')
+            .select('*')
+            .eq('blog_id', id)
+            .order('order', { ascending: true });
+
+        if (blocksError) {
+            console.error('Error fetching blocks:', blocksError);
+            return null;
+        }
+
+        // ブロックの階層構造を構築
+        const blockMap = new Map<string, any>();
+        const rootBlocks: any[] = [];
+
+        // まず全てのブロックをMapに格納
+        blocks.forEach(block => {
+            blockMap.set(block.id, { ...block, children: [] });
+        });
+
+        // 親子関係を構築
+        blocks.forEach(block => {
+            const blockWithChildren = blockMap.get(block.id);
+            if (block.parent_id) {
+                const parentBlock = blockMap.get(block.parent_id);
+                if (parentBlock) {
+                    parentBlock.children.push(blockWithChildren);
+                }
+            } else {
+                rootBlocks.push(blockWithChildren);
+            }
+        });
+
+        return {
+            ...blog,
+            blocks: rootBlocks
+        };
+    } catch (error) {
+        console.error('Error in getBlogDetailFromSupabase:', error);
+        return null;
+    }
 }
 
 export const getLatestBlogsFromSupabase = cache(async (limit: number = 3): Promise<BlogItem[]> => {
