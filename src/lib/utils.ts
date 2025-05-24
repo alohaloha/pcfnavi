@@ -98,7 +98,7 @@ export function formatSmartDate(input: Date | string): string {
     } else if (diffMonths < 12) {
         return `${diffMonths}ヶ月前`;
     } else {
-        return format(date, 'YY年MM月dd日 HH:mm', { locale: ja });
+        return format(date, 'yy年MM月dd日 HH:mm', { locale: ja });
     }
 }
 
