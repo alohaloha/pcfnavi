@@ -170,3 +170,29 @@ export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail 
         blocks: blocksWithText,
     };
 }
+
+export const getLatestBlogsFromSupabase = cache(async (limit: number = 3): Promise<BlogItem[]> => {
+    const { data, error } = await supabase
+        .from('blog_pages')
+        .select('*')
+        .order('last_edited_time', { ascending: false })
+        .limit(limit);
+
+    if (error || !data) {
+        console.error('最新ブログ一覧の取得に失敗しました', error);
+        return [];
+    }
+
+    return data.map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        cover: item.cover ? getCloudflareImageUrl(item.cover) : '',
+        category: Array.isArray(item.category) ? item.category : [],
+        publishedAt: item.published_at,
+        featured: item.featured,
+        isNew: false,
+        status: item.status || '',
+        ID: item.ID || 0,
+    }));
+});
