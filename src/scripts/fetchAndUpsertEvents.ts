@@ -25,6 +25,72 @@ async function fetchBlocks(blockId: string) {
     return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse)[];
 }
 
+async function processBlock(block: BlockObjectResponse | PartialBlockObjectResponse, pageId: string, parentId: string | null, order: number) {
+    if (!('type' in block)) return;
+
+    const blockId = block.id;
+    const blockType = block.type;
+    let richTexts = [];
+    let optimizedBlockFileKey = null;
+    let captionText = null;
+    let captionHtml = null;
+
+    if (blockType !== 'image' && blockType !== 'file') {
+        richTexts = (block as any)[blockType]?.rich_text ?? [];
+    }
+
+    if (blockType === 'image') {
+        if (block.image.type === 'file') {
+            const rawFileUrl = block.image.file.url;
+            optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+        } else if (block.image.type === 'external') {
+            const rawFileUrl = block.image.external.url;
+            optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+        }
+
+        captionText = block.image?.caption?.map(c => c.plain_text).join('') || null;
+        captionHtml = block.image?.caption?.map(c => {
+            const content = c.plain_text;
+            const href = c.href;
+            return href
+                ? `<a class="underline text-blue text-right" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
+                : content;
+        }).join('') || null;
+    }
+
+    await supabase.from('event_blocks').insert({
+        id: blockId,
+        page_id: pageId,
+        type: blockType,
+        parent_id: parentId,
+        order: order,
+        is_toggleable: (block as any).toggleable ?? false,
+        color: (block as any)[blockType]?.color ?? null,
+        has_children: block.has_children ?? false,
+        cloudflare_key: optimizedBlockFileKey,
+        caption_text: captionText,
+        caption_html: captionHtml,
+    });
+
+    for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
+        const richText = richTexts[rtIndex];
+        await supabase.from('event_rich_texts').insert({
+            block_id: blockId,
+            order: rtIndex,
+            plain_text: richText?.plain_text ?? null,
+            href: richText?.href ?? null,
+        });
+    }
+
+    // 子要素がある場合は再帰的に処理
+    if (block.has_children) {
+        const childBlocks = await fetchBlocks(blockId);
+        for (let childIndex = 0; childIndex < childBlocks.length; childIndex++) {
+            await processBlock(childBlocks[childIndex], pageId, blockId, childIndex);
+        }
+    }
+}
+
 async function fetchAndUpsertEvents() {
     const deleted = await supabase.from('event_pages').delete().neq('status', null);
     console.log('Deleted old event pages:', deleted);
@@ -52,7 +118,7 @@ async function fetchAndUpsertEvents() {
         const createdTime = page.created_time;
         const lastEditedTime = page.last_edited_time;
 
-        const pageResult = await supabase.from('event_pages').upsert({
+        await supabase.from('event_pages').upsert({
             id: pageId,
             title,
             summary,
@@ -74,63 +140,8 @@ async function fetchAndUpsertEvents() {
         });
 
         const blocks = await fetchBlocks(pageId);
-
         for (let index = 0; index < blocks.length; index++) {
-            console.log(`Processing block ${index + 1} of ${blocks.length}: ${blocks[index].id}`);
-            const block = blocks[index];
-            if (!('type' in block)) continue;
-
-            const blockId = block.id;
-            const blockType = block.type;
-            let richTexts = [];
-            let optimizedBlockFileKey = null;
-            if (blockType !== 'image' && blockType!== 'file') {
-                richTexts = (block as any)[blockType]?.rich_text ?? [];
-            }
-            let captionText = null;
-            let captionHtml = null;
-            if (blockType === 'image') {
-                if (block.image.type === 'file') {
-                    const rawFileUrl = block.image.file.url;
-                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-                } else if (block.image.type === 'external') {
-                    const rawFileUrl = block.image.external.url;
-                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-                }
-
-                captionText = block.image?.caption?.map(c => c.plain_text).join('') || null;
-
-                captionHtml = block.image?.caption?.map(c => {
-                    const content = c.plain_text;
-                    const href = c.href;
-                    return href
-                        ? `<a class="underline text-blue text-right" href="${href}" target="_blank" rel="noopener noreferrer">${content}</a>`
-                        : content;
-                }).join('') || null;
-            }
-            const result = await supabase.from('event_blocks').insert({
-                id: block.id,
-                page_id: page.id,
-                type: block.type,
-                parent_id: (block.parent as any)?.block_id ?? null,
-                order: index,
-                is_toggleable: (block as any).toggleable ?? false,
-                color: (block as any)[block.type]?.color ?? null,
-                has_children: block.has_children ?? false,
-                cloudflare_key: optimizedBlockFileKey,
-                caption_text: captionText,
-                caption_html: captionHtml,
-            });
-
-            for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
-                const richText = richTexts[rtIndex];
-                const result = await supabase.from('event_rich_texts').insert({
-                    block_id: blockId,
-                    order: rtIndex,
-                    plain_text: richText?.plain_text ?? null,
-                    href: richText?.href ?? null,
-                });
-            }
+            await processBlock(blocks[index], pageId, null, index);
         }
     }
 }
