@@ -3,21 +3,20 @@ import { getEventCategoryName } from '@/lib/constant-util';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Filter } from 'lucide-react';
 
 interface EventFilterProps {
-    selectedStatus?: EventStatusKey;
+    selectedStatuses: EventStatusKey[];
     selectedCategories: EventCategoryKey[];
     isFree?: boolean;
-    onStatusChange: (status?: EventStatusKey) => void;
+    onStatusChange: (statuses: EventStatusKey[]) => void;
     onCategoryChange: (categories: EventCategoryKey[]) => void;
     onIsFreeChange: (isFree?: boolean) => void;
 }
 
 export function EventFilter({
-    selectedStatus,
+    selectedStatuses,
     selectedCategories,
     isFree,
     onStatusChange,
@@ -25,8 +24,11 @@ export function EventFilter({
     onIsFreeChange,
 }: EventFilterProps) {
     // ステータスの選択を処理
-    const handleStatusChange = (value: string) => {
-        onStatusChange(value as EventStatusKey);
+    const handleStatusChange = (status: EventStatusKey) => {
+        const newStatuses = selectedStatuses.includes(status)
+            ? selectedStatuses.filter(s => s !== status)
+            : [...selectedStatuses, status];
+        onStatusChange(newStatuses);
     };
 
     // カテゴリの選択を処理
@@ -47,22 +49,18 @@ export function EventFilter({
             {/* ステータスフィルター */}
             <div>
                 <h3 className="text-sm font-medium mb-3">ステータス</h3>
-                <RadioGroup
-                    value={selectedStatus}
-                    onValueChange={handleStatusChange}
-                    className="space-y-2"
-                >
-                    <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="" id="status-all" />
-                        <Label htmlFor="status-all">すべて</Label>
-                    </div>
+                <div className="space-y-2">
                     {Object.values(EventStatus).map((status) => (
                         <div key={status.key} className="flex items-center space-x-2">
-                            <RadioGroupItem value={status.key} id={`status-${status.key}`} />
+                            <Checkbox
+                                id={`status-${status.key}`}
+                                checked={selectedStatuses.includes(status.key)}
+                                onCheckedChange={() => handleStatusChange(status.key)}
+                            />
                             <Label htmlFor={`status-${status.key}`}>{status.name}</Label>
                         </div>
                     ))}
-                </RadioGroup>
+                </div>
             </div>
 
             {/* カテゴリフィルター */}
@@ -102,7 +100,7 @@ export function EventFilter({
                 variant="outline"
                 className="w-full"
                 onClick={() => {
-                    onStatusChange(undefined);
+                    onStatusChange([]);
                     onCategoryChange([]);
                     onIsFreeChange(undefined);
                 }}

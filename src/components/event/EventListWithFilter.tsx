@@ -11,14 +11,14 @@ interface EventListWithFilterProps {
 }
 
 export function EventListWithFilter({ events }: EventListWithFilterProps) {
-    const [selectedStatus, setSelectedStatus] = useState<EventStatusKey | undefined>('scheduled');
+    const [selectedStatuses, setSelectedStatuses] = useState<EventStatusKey[]>(['scheduled', 'nowOn']);
     const [selectedCategories, setSelectedCategories] = useState<EventCategoryKey[]>([]);
     const [isFree, setIsFree] = useState<boolean>();
 
     // フィルタリングされたイベントを取得
     const filteredEvents = events.filter(event => {
         // ステータスでフィルタリング
-        if (selectedStatus && event.status !== selectedStatus) {
+        if (selectedStatuses.length > 0 && !selectedStatuses.includes(event.status)) {
             return false;
         }
 
@@ -39,10 +39,10 @@ export function EventListWithFilter({ events }: EventListWithFilterProps) {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
                 <EventFilter
-                    selectedStatus={selectedStatus}
+                    selectedStatuses={selectedStatuses}
                     selectedCategories={selectedCategories}
                     isFree={isFree}
-                    onStatusChange={setSelectedStatus}
+                    onStatusChange={setSelectedStatuses}
                     onCategoryChange={setSelectedCategories}
                     onIsFreeChange={setIsFree}
                 />
