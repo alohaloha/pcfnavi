@@ -4,6 +4,17 @@ import Image from "next/image";
 export const metadata = {
     title: "ルール | 電くるなび",
     description: "パワーチェアフットボールのルールについて説明します",
+    openGraph: {
+        title: "ルール | 電くるなび",
+        description: "パワーチェアフットボールのルールについて説明します",
+        images: ["/images/ogp.jpg"],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "ルール | 電くるなび",
+        description: "パワーチェアフットボールのルールについて説明します",
+        images: ["/images/ogp.jpg"],
+    },
 };
 
 export default function RulesPage() {
