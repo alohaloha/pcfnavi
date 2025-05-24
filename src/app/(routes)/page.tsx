@@ -17,6 +17,12 @@ export async function generateMetadata(): Promise<Metadata> {
             description: '電動車椅子サッカーの情報ポータルサイト',
             images: [`${siteUrl}/images/ogp.jpg`],
         },
+        twitter: {
+            card: 'summary_large_image',
+            title: '電くるなび - 電動車椅子サッカーの情報ポータルサイト',
+            description: '電動車椅子サッカーの情報ポータルサイト',
+            images: [`${siteUrl}/images/ogp.jpg`],
+        },
     };
 }
 
