@@ -148,14 +148,34 @@ export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail 
         .order('order', { ascending: true });
     if (rtError) return null;
 
+    // ブロックの階層構造を構築
     const blocksWithImage = blocks?.map(block => ({
         ...block,
         imageSrc: block.cloudflare_key ? getCloudflareImageUrl(block.cloudflare_key) : null,
     })) ?? [];
+
     const blocksWithText = blocksWithImage?.map(block => ({
         ...block,
         rich_texts: richTexts.filter(rt => rt.block_id === block.id),
     })) ?? [];
+
+    // 親子関係を構築
+    const blockMap = new Map(blocksWithText.map(block => [block.id, block]));
+    const rootBlocks: NotionBlock[] = [];
+
+    blocksWithText.forEach(block => {
+        if (block.parent_id) {
+            const parentBlock = blockMap.get(block.parent_id);
+            if (parentBlock) {
+                if (!parentBlock.children) {
+                    parentBlock.children = [];
+                }
+                parentBlock.children.push(block);
+            }
+        } else {
+            rootBlocks.push(block);
+        }
+    });
 
     return {
         id: page.id,
@@ -167,7 +187,7 @@ export async function getBlogDetailFromSupabase(id: string): Promise<BlogDetail 
         publishedAt: page.published_at,
         featured: page.featured,
         isNew: false,
-        blocks: blocksWithText,
+        blocks: rootBlocks,
     };
 }
 
