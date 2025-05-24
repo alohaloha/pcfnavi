@@ -3,6 +3,7 @@ import {Metadata} from 'next';
 import {notFound} from 'next/navigation';
 import {fetchBlogDetail, fetchBlogList, getBlogDetailFromSupabase, getBlogListFromSupabase} from '@/lib/server/blog';
 import BlogDetail from '@/components/BlogDetail';
+import { headers } from 'next/headers';
 
 interface Params {
     id: string;
@@ -17,6 +18,13 @@ export async function generateMetadata({params,}: {
     const {id} = await params;
     const blog = await getBlogDetailFromSupabase(id);
 
+    // リクエストヘッダからホスト名を取得
+    const headersList = await headers();
+    const host = headersList.get('x-forwarded-host') || headersList.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const siteUrl = host ? `${protocol}://${host}` : '';
+    const ogImage = blog?.cover ? blog.cover : `${siteUrl}/images/ogp.jpg`;
+
     if (!blog?.title) {
         return {
             title: 'ブログ記事が見つかりません | 電くるなび',
@@ -30,7 +38,7 @@ export async function generateMetadata({params,}: {
         openGraph: {
             title: blog.title,
             description: blog.summary,
-            images: blog.cover ? [blog.cover] : [],
+            images: [ogImage],
         },
     };
 }

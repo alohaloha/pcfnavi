@@ -1,12 +1,24 @@
 import React from 'react';
-import {Metadata} from 'next';
-import {fetchBlogList, getBlogListFromSupabase} from '@/lib/server/blog';
+import { Metadata } from 'next';
+import { fetchBlogList, getBlogListFromSupabase } from '@/lib/server/blog';
 import BlogList from '@/components/BlogList';
+import { headers } from 'next/headers';
 
-export const metadata: Metadata = {
-    title: 'ブログ | 電くるなび',
-    description: '電動車椅子サッカーに関する最新情報や役立つ記事をご紹介します。',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const headersList = await headers();
+    const host = headersList.get('x-forwarded-host') || headersList.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const siteUrl = host ? `${protocol}://${host}` : '';
+    return {
+        title: 'ブログ | 電くるなび',
+        description: '電動車椅子サッカーの情報ポータルサイト',
+        openGraph: {
+            title: 'ブログ | 電くるなび',
+            description: '電動車椅子サッカーの情報ポータルサイト',
+            images: [`${siteUrl}/images/ogp.jpg`],
+        },
+    };
+}
 
 export default async function BlogPage() {
     const blogs = await getBlogListFromSupabase();
