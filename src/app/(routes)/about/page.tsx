@@ -5,6 +5,17 @@ import {Globe, Heart, LucideMessageCircleQuestion, MailIcon, Music4, Sparkles} f
 export const metadata = {
     title: '電くるなびについて',
     description: '電くるなびの公式サイトの説明ページです。',
+    openGraph: {
+        title: '電くるなびについて',
+        description: '電くるなびの公式サイトの説明ページです。',
+        images: ['/images/ogp.jpg'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: '電くるなびについて',
+        description: '電くるなびの公式サイトの説明ページです。',
+        images: ['/images/ogp.jpg'],
+    },
 };
 
 export default function AboutPage() {
