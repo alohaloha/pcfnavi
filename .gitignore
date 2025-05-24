@@ -43,3 +43,5 @@ next-env.d.ts
 # editor
 .vscode
 .idea
+# SpecStory explanation file
+.specstory/.what-is-this.md
