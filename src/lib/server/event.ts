@@ -170,6 +170,35 @@ export const getEventDetailFromSupabase = cache(async (id: string): Promise<Even
         rich_texts: richTexts.filter(rt => rt.block_id === block.id),
     })) ?? [];
 
+    // 親子関係を構築
+    const blockMap = new Map<string, any>();
+    const rootBlocks: any[] = [];
+    blocksWithText.forEach(block => {
+        blockMap.set(block.id, {
+            ...block,
+            children: []
+        });
+    });
+
+    blocksWithText.forEach(block => {
+        const blockWithChildren = blockMap.get(block.id);
+        if (block.parent_id) {
+            const parentBlock = blockMap.get(block.parent_id);
+            if (parentBlock) {
+                parentBlock.children.push(blockWithChildren);
+            }
+        } else {
+            rootBlocks.push(blockWithChildren);
+        }
+    });
+
+    // childrenをorder順でソート
+    blockMap.forEach((block) => {
+        if (block.children && block.children.length > 0) {
+            block.children.sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
+        }
+    });
+
     // 一覧ページと同じ変換処理を適用
     return {
         id: page.id,
@@ -193,7 +222,7 @@ export const getEventDetailFromSupabase = cache(async (id: string): Promise<Even
         pinned: page.pinned,
         isNew: false,
         lastEditedTime: page.last_edited_time,
-        blocks: blocksWithText
+        blocks: rootBlocks
     };
 });
 
