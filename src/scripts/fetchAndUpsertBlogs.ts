@@ -25,6 +25,55 @@ async function fetchBlocks(blockId: string) {
     return blocks.results as (BlockObjectResponse | PartialBlockObjectResponse | ImageBlockObjectResponse | FileBlockObjectResponse)[];
 }
 
+async function processBlock(block: BlockObjectResponse | PartialBlockObjectResponse | ImageBlockObjectResponse | FileBlockObjectResponse, pageId: string, parentId: string | null, order: number) {
+    if (!('type' in block)) return;
+
+    const blockId = block.id;
+    const blockType = block.type;
+    let optimizedBlockFileKey = null;
+    const richTexts = (block as any)[blockType]?.rich_text ?? [];
+
+    if (blockType === 'image') {
+        if (block.image.type === 'file') {
+            const rawFileUrl = block.image.file.url;
+            optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+        } else if (block.image.type === 'external') {
+            const rawFileUrl = block.image.external.url;
+            optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
+        }
+    }
+
+    await supabase.from('blog_blocks').insert({
+        id: block.id,
+        page_id: pageId,
+        type: block.type,
+        parent_id: parentId,
+        order: order,
+        is_toggleable: (block as any).toggleable ?? false,
+        color: (block as any)[block.type]?.color ?? null,
+        has_children: block.has_children ?? false,
+        cloudflare_key: optimizedBlockFileKey,
+    });
+
+    for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
+        const richText = richTexts[rtIndex];
+        await supabase.from('blog_rich_texts').insert({
+            block_id: blockId,
+            order: rtIndex,
+            plain_text: richText?.plain_text ?? null,
+            href: richText?.href ?? null,
+        });
+    }
+
+    // 子要素がある場合は再帰的に処理
+    if (block.has_children) {
+        const childBlocks = await fetchBlocks(blockId);
+        for (let childIndex = 0; childIndex < childBlocks.length; childIndex++) {
+            await processBlock(childBlocks[childIndex], pageId, blockId, childIndex);
+        }
+    }
+}
+
 async function fetchAndUpsertBlogs() {
     const deleted = await supabase.from('blog_pages').delete().neq('status', null);
     console.log('Deleted old blog pages:', deleted);
@@ -65,57 +114,8 @@ async function fetchAndUpsertBlogs() {
         });
 
         const blocks = await fetchBlocks(pageId);
-
         for (let index = 0; index < blocks.length; index++) {
-            const block = blocks[index];
-            if (!('type' in block)) continue;
-
-            const blockId = block.id;
-            const blockType = block.type;
-            let optimizedBlockFileKey = null;
-            const richTexts = (block as any)[blockType]?.rich_text ?? [];
-            if (blockType === 'image') {
-                console.log('block.image', block.image);
-                if (block.image.type === 'file') {
-                    const rawFileUrl = block.image.file.url;
-                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-                } else if (block.image.type === 'external') {
-                    const rawFileUrl = block.image.external.url;
-                    optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-                }
-            }
-            // if (blockType === 'file') {
-            //     console.log('block.file', block.file);
-            //     if (block.file.type === 'file') {
-            //         const rawFileUrl = block.file.file.url;
-            //         optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-            //     } else if (block.file.type === 'external') {
-            //         const rawFileUrl = block.file.external.url;
-            //         optimizedBlockFileKey = rawFileUrl ? await uploadImageWithCache(rawFileUrl) : null;
-            //     }
-            // }
-
-            await supabase.from('blog_blocks').insert({
-                id: block.id,
-                page_id: page.id,
-                type: block.type,
-                parent_id: (block.parent as any)?.block_id ?? null,
-                order: index,
-                is_toggleable: (block as any).toggleable ?? false,
-                color: (block as any)[block.type]?.color ?? null,
-                has_children: block.has_children ?? false,
-                cloudflare_key: optimizedBlockFileKey,
-            });
-
-            for (let rtIndex = 0; rtIndex < richTexts.length; rtIndex++) {
-                const richText = richTexts[rtIndex];
-                const rtResult = await supabase.from('blog_rich_texts').insert({
-                    block_id: blockId,
-                    order: rtIndex,
-                    plain_text: richText?.plain_text ?? null,
-                    href: richText?.href ?? null,
-                });
-            }
+            await processBlock(blocks[index], pageId, null, index);
         }
     }
 }
