@@ -309,23 +309,23 @@ export const EventStatus = {
 export type EventStatusType = (typeof EventStatus)[keyof typeof EventStatus];
 
 export const EventStatusArray: readonly EventStatusType[] = [
-    EventStatus.Wanted,
-    EventStatus.Deadline,
     EventStatus.Scheduled,
+    EventStatus.NowOn,
     EventStatus.Held,
     EventStatus.Suspension,
     EventStatus.Unknown,
-    EventStatus.NowOn,
+    EventStatus.Wanted,
+    EventStatus.Deadline,
 ] as const;
 
 export const EventStatusMap: { [key: string]: EventStatusType } = {
-    [EventStatus.Wanted.key]: EventStatus.Wanted,
-    [EventStatus.Deadline.key]: EventStatus.Deadline,
     [EventStatus.Scheduled.key]: EventStatus.Scheduled,
+    [EventStatus.NowOn.key]: EventStatus.NowOn,
     [EventStatus.Held.key]: EventStatus.Held,
     [EventStatus.Suspension.key]: EventStatus.Suspension,
     [EventStatus.Unknown.key]: EventStatus.Unknown,
-    [EventStatus.NowOn.key]: EventStatus.NowOn,
+    [EventStatus.Wanted.key]: EventStatus.Wanted,
+    [EventStatus.Deadline.key]: EventStatus.Deadline,
 } as const;
 
 // FAQ カテゴリー
