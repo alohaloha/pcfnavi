@@ -1,38 +1,40 @@
-import Image from 'next/image';
-import {Metadata} from 'next';
-import {Knewave} from 'next/font/google';
+import { Metadata } from 'next';
+import { headers } from 'next/headers';
+import { getUpcomingEventsFromSupabase } from '@/lib/server/event';
+import { getLatestBlogsFromSupabase } from '@/lib/server/blog';
+import { HomePage } from '@/components/home/HomePage';
 
-const knewave = Knewave({
-    weight: '400',
-    subsets: ['latin'],
-});
+export async function generateMetadata(): Promise<Metadata> {
+    const headersList = await headers();
+    const host = headersList.get('x-forwarded-host') || headersList.get('host');
+    const protocol = host?.includes('localhost') ? 'http' : 'https';
+    const siteUrl = host ? `${protocol}://${host}` : '';
+    return {
+        title: '電くるなび - 電動車椅子サッカーの情報ポータルサイト',
+        description: '電動車椅子サッカーの情報ポータルサイト',
+        openGraph: {
+            title: '電くるなび - 電動車椅子サッカーの情報ポータルサイト',
+            description: '電動車椅子サッカーの情報ポータルサイト',
+            images: [`${siteUrl}/images/ogp.jpg`],
+        },
+    };
+}
 
-export const metadata: Metadata = {
-    title: '電くるなび – Coming Soon',
-    description: 'Powerchair Football fan portal is getting ready.',
-    robots: 'noindex, nofollow',         // ★ 検索エンジンに載せない
-};
+// ISRの設定（1時間ごとに再生成）
+export const revalidate = 3600;
 
-export default function Home() {
+export default async function Page() {
+    const [upcomingEvents, latestBlogs] = await Promise.all([
+        getUpcomingEventsFromSupabase(3),
+        getLatestBlogsFromSupabase(3),
+    ]);
+
     return (
-        <main className="grid min-h-screen place-items-center bg-cream text-primary">
-            <div className="text-center">
-                <h1 className={`text-6xl font-extrabold tracking-tight text-primary drop-shadow-sm ${knewave.className}`}>
-                    Denkuru Navi
-                </h1>
-                <div className="mt-8 max-w-md">
-                    <Image
-                        src="/images/just_one_step_forward.jpg"
-                        alt="Powerchair Football - Just one step forward, and the world begins to shift"
-                        width={500}
-                        height={500}
-                        className="rounded-lg shadow-lg"
-                    />
-                </div>
-                <p className={`mt-4 text-2xl ${knewave.className}`}>
-                    Our new site is launching soon. Stay tuned!
-                </p>
-            </div>
+        <main className="container mx-auto px-4 py-8">
+            <HomePage
+                upcomingEvents={upcomingEvents}
+                latestBlogs={latestBlogs}
+            />
         </main>
     );
 }
