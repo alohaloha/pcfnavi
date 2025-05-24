@@ -12,26 +12,28 @@ export default function AboutPage() {
         <main className="container mx-auto px-4 py-8 max-w-3xl">
             <h1 className="text-3xl font-bold mb-4">電くるなびについて</h1>
 
-            <section className="mb-12 border-b-2 border-gray-300 pb-8">
-                <p className="mt-3">
+            <section className="mb-12 border-b-2 border-gray-300 pb-8 leading-loose">
+                <p className="mt-4">
                     このサイトは、電動車椅子サッカー（Powerchair Football）をもっと知ってもらいたくて立ち上げました。
-                    立ち上げたのは、ただの一ファンです。好きな気持ちを大切に、マイペースで更新しています。
+                    ただの一ファンの、完全なる推し活であり、マイペースに更新しています。
                 </p>
-                <p className="mt-3">
-                    気になったニュース、イベント情報など、私が知って欲しいことを中心に紹介していきます。
+                <p className="mt-4">
+                    SNSだと情報が流れてしまうことも多いので、ここに来れば「いつ・何があるか」がまとめて見られる場所にできたらいいなと思ったのがきっかけです。<br/>
+                    こちらで紹介しているSNSなど是非フォローしてください。<span className="text-sm">いつかまとめられたらいいな。（小声）</span>
                 </p>
-                <p className="mt-3">
-                    選手やスタッフのインタビューもやってみたいし、オンラインで一緒に観戦する企画なんかもできたら楽しそうです。<br/>
-                    妄想はふくらむばかりですが、できることから少しずつ、実現していけたらと思っています。
+                <p className="mt-4">
+                    気になったニュース、イベント情報など、私が見つけたものを中心に紹介していますので、
+                    偏りや抜け漏れがあるかもしれません。ご了承ください。<br />
+                    もちろん、私の知らない情報もたくさんあるので、「こんなイベントがあるよ！」など、
+                    みなさんからの情報提供もお待ちしています。<br />
                 </p>
-                <p className="mt-3">
+                <p className="mt-4">
                     完璧な情報サイトではないので、間違いや足りない情報があるかもしれません。<br/>
                     イベントや大会については、主催者にお問合せをお願いします。<br/>
-                    もし気づいたことがあれば、ぜひ教えていただけるとうれしいです。<br/>
+                    このサイトについて気づいたことがあれば、ぜひ教えていただけるとうれしいです。<br/>
                 </p>
-                <p className="mt-3">
-                    うまくできるかはわからないけど、ワクワクしながら、この世界のことを伝えていけたらいいなと思っています。<br/>
-                    よかったら、またふらっと覗きににきてください。<br/>
+                <p className="mt-4">
+                    ゆくゆくはファン同士や選手同士など、交流の場にもなったらいいなーなんて妄想も膨らみますが、今はできることからコツコツとやっていきます。<br/>
                 </p>
             </section>
 
@@ -40,7 +42,7 @@ export default function AboutPage() {
                     <Sparkles className="h-6 w-6 text-yellow-500 mr-2"/>
                     大切にしたいこと
                 </h2>
-                <ul className="list-none pl-5">
+                <ul className="list-none pl-5 leading-loose">
                     <li className="mb-2 flex items-center">
                         <Heart className="mr-3"/>
                         否定しないこと
@@ -80,13 +82,13 @@ export default function AboutPage() {
                       </span>
                     </li>
                     <li>
-                      <span className="font-bold flex items-center">
-                        <Globe className="mr-3"/>
-                        いろんな情報にアクセスする
-                      </span>
+                        <span className="font-bold flex items-center">
+                          <Globe className="mr-3"/>
+                          情報の集約ポータル
+                        </span>
                         <span className="block">
-                        色んなサイトやSNSを横断して調べた大会情報やイベントのお知らせなどをまとめたい。
-                      </span>
+                          様々なサイトやSNSに散らばっている大会情報やイベントのお知らせを一箇所に集約し、簡単にアクセスできるようにしたい。
+                        </span>
                     </li>
                     <li>
                       <span className="font-bold flex items-center">
@@ -107,10 +109,10 @@ export default function AboutPage() {
                       </span>
                     </li>
                 </ul>
-                <p className="mt-3">
+                <p className="mt-4">
                     妄想を少しずつ形にしていって、この競技がもっと楽しく盛り上がるきっかけになれば嬉しいです。
                 </p>
-                <p className="mt-3">
+                <p className="mt-4">
                     一緒に楽しんでもらえたらさらに嬉しいです。
                 </p>
             </section>
@@ -125,7 +127,8 @@ export default function AboutPage() {
                     <Link href="https://forms.gle/ULgwcr2wqbVSLv9Q6" className="text-accent font-bold underline">
                         お問合せフォーム
                     </Link>
-                    からご連絡ください。
+                    からご連絡ください。<br/>
+                    情報提供もお待ちしております。
                 </p>
             </section>
         </main>
