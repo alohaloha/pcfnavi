@@ -4,23 +4,17 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {BlogItem} from '@/lib/server/blog';
+import {RelativeTime} from "@/components/event/RelativeTime";
 
 interface BlogCardProps {
     blog: BlogItem;
 }
 
 export default function BlogCard({blog}: BlogCardProps) {
-    const formattedDate = blog.publishedAt
-        ? new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })
-        : '';
     return (
         <Link href={`/blog/${blog.id}`} className="block h-full">
             <div
-                className="bg-white rounded-lg shadow-md overflow-hidden h-full transition-transform hover:scale-[1.02] hover:shadow-lg">
+                className="bg-white rounded-lg shadow-md overflow-hidden h-full transition-transform hover:scale-[1.02] hover:shadow-lg flex flex-col">
                 <div className="relative h-48 w-full">
                     {blog.cover ? (
                         <Image
@@ -44,7 +38,7 @@ export default function BlogCard({blog}: BlogCardProps) {
                     )}
                 </div>
 
-                <div className="p-4">
+                <div className="p-4 flex flex-col flex-1">
                     <div className="flex flex-wrap gap-1 mb-2">
                         {Array.isArray(blog.category) && blog.category.length > 0 ? (
                             blog.category.map((cat, index) => (
@@ -67,14 +61,23 @@ export default function BlogCard({blog}: BlogCardProps) {
                     <p className="text-gray-600 text-sm mb-3 line-clamp-3">
                         {blog.summary}
                     </p>
-
-                    <div className="flex justify-between items-center text-sm text-gray-500">
-                        <span>{formattedDate}</span>
-                        {blog.featured && (
-                            <span className="text-accent font-medium">注目記事</span>
-                        )}
-                    </div>
                 </div>
+
+                <div className="px-4 py-3 border-t border-gray-100 flex justify-between items-center">
+                    <span className="text-sm text-gray-500">公開日：
+                        {blog.publishedAt && new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })}
+                    </span>
+                    {blog.featured && (
+                        <span className="text-xs text-amber-600 font-medium">
+                            ⭐ 注目記事
+                        </span>
+                    )}
+                </div>
+                {/* <p className="text-gray-500 text-sm px-4 pb-3 text-right">公開日：<RelativeTime date={new Date(blog.publishedAt)} /></p> */}
             </div>
         </Link>
     );
