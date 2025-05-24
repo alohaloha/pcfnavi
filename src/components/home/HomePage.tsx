@@ -4,7 +4,7 @@ import React from 'react';
 import { EventItem } from '@/types/event';
 import { BlogItem } from '@/lib/server/blog';
 import { EventList } from '@/components/event/EventList';
-import BlogList from '@/components/BlogList';
+import BlogCard from '@/components/BlogCard';
 import Link from 'next/link';
 import { CircleChevronRight } from 'lucide-react';
 
@@ -37,7 +37,11 @@ export function HomePage({ upcomingEvents, latestBlogs }: HomePageProps) {
                         <span className="group-hover:underline">もっと見る</span>
                     </Link>
                 </div>
-                <BlogList blogs={latestBlogs} />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {latestBlogs.map((blog) => (
+                        <BlogCard key={blog.id} blog={blog} />
+                    ))}
+                </div>
             </section>
         </div>
     );
