@@ -20,7 +20,12 @@ export default function BlogDetail({blog}: BlogDetailProps) {
     console.log('BlogDetail', {cover: blog.cover, title: blog.title});
 
     const parsedBlocks = React.useMemo(() => {
-        return parseSupabaseBlocks(blog.blocks ?? []);
+        const convertedBlocks = (blog.blocks ?? []).map(block => ({
+            ...block,
+            rich_texts: block.rich_text ?? [],
+            has_children: block.has_children ?? false
+        }));
+        return parseSupabaseBlocks(convertedBlocks);
     }, [blog.blocks]);
 
     return (
