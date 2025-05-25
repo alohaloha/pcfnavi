@@ -44,7 +44,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                     <div className="text-sm text-gray-500 flex-1">
                         <div className="mb-1">
                             <span className="font-medium">開催日時：</span>
-                            {formatEventDate(event.eventDate)}
+                            <span suppressHydrationWarning>{formatEventDate(event.eventDate)}</span>
                         </div>
                         {event.location && (
                             <div className="mb-1">
@@ -55,7 +55,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
                         {event.price > 0 && (
                             <div className="mb-1">
                                 <span className="font-medium">参加費：</span>
-                                {event.price.toLocaleString()}円
+                                <span suppressHydrationWarning>{event.price.toLocaleString()}円</span>
                             </div>
                         )}
                         {event.capacity && (
