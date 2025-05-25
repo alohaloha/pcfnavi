@@ -77,10 +77,12 @@ export function EventDetailHeader({ event }: EventDetailHeaderProps) {
                                         href={event.source}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-blue-600 hover:underline block overflow-hidden whitespace-nowrap text-ellipsis"
+                                        className="text-blue-600 hover:underline block max-w-full overflow-hidden text-ellipsis"
                                         title={event.source}
                                     >
-                                        {event.source}
+                                        {event.source.length > 50 
+                                            ? `${event.source.substring(0, 50)}...`
+                                            : event.source}
                                     </a>
                                 </div>
                             )}
