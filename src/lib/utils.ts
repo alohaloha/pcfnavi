@@ -14,6 +14,7 @@ const formatYMD = (d: Date) =>
         year: "numeric",
         month: "long",
         day: "numeric",
+        timeZone: "Asia/Tokyo",
     }).format(d);
 
 /** 時分（例: 09:00） */
@@ -22,6 +23,7 @@ const formatHM = (d: Date) =>
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
+        timeZone: "Asia/Tokyo",
     }).format(d);
 
 export function formatEventDate({start, end}: EventDate): string {
@@ -57,6 +59,7 @@ export function formatEventDate({start, end}: EventDate): string {
         const mdEnd = new Intl.DateTimeFormat("ja-JP", {
             month: "long",
             day: "numeric",
+            timeZone: "Asia/Tokyo",
         }).format(e);
         return `${formatYMD(s)}～${mdEnd}`;
     }
