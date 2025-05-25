@@ -63,7 +63,7 @@ export default function BlogCard({blog}: BlogCardProps) {
                 </div>
 
                 <div className="px-4 py-3 border-t border-gray-100 flex justify-between items-center">
-                    <span className="text-sm text-gray-500">公開日：
+                    <span className="text-sm text-gray-500" suppressHydrationWarning>公開日：
                         {blog.publishedAt && new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
                             year: 'numeric',
                             month: '2-digit',
