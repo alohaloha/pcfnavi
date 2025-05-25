@@ -81,7 +81,11 @@ export default function BlogList({blogs}: BlogListProps) {
     };
 
     useEffect(() => {
-        setFilteredBlogs(blogs);
+        if (activeCategory === 'all') {
+            setFilteredBlogs(blogs);
+        } else {
+            handleCategoryFilter(activeCategory);
+        }
     }, [blogs]);
 
     return (
