@@ -6,7 +6,6 @@ import {EventDetail} from '@/types/event';
 import {EventStatusBadge} from './EventStatusBadge';
 import {CustomDialog} from './layout/CustomDialog';
 import {formatEventDate, formatPrice} from '@/lib/utils';
-import {parseNotionBlocks} from '@/lib/notionParser';
 import {EventCategoryBadge} from './EventCategoryBadge';
 import {parseSupabaseBlocks} from "@/lib/supabase-parser";
 
@@ -180,8 +179,12 @@ export const EventModal = ({event, open, onOpenChange}: EventModalProps) => {
                     <button
                         className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center gap-1 text-sm font-medium transition-colors"
                         onClick={() => {
-                            const url = window.location.href;
-                            navigator.clipboard.writeText(url);
+                            if (typeof window !== 'undefined') {
+                                const url = window.location.href;
+                                navigator.clipboard.writeText(url).catch(() => {
+                                    // Silently handle copy errors
+                                });
+                            }
                         }}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
