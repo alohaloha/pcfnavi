@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {parseEventBlocks} from '@/lib/event-parser';
 import type {EventDetail} from '@/types/event';
@@ -10,13 +10,17 @@ interface EventDetailProps {
 }
 
 export default function EventDetail({event}: EventDetailProps) {
-    const formattedDate = event.eventDate.start
-        ? new Date(event.eventDate.start).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })
-        : '';
+    const [formattedDate, setFormattedDate] = useState('');
+    
+    useEffect(() => {
+        if (event.eventDate.start) {
+            setFormattedDate(new Date(event.eventDate.start).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        }
+    }, [event.eventDate.start]);
 
     const parsedBlocks = React.useMemo(() => {
         return parseEventBlocks(event.blocks ?? []);
