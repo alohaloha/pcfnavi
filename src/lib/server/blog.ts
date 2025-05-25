@@ -195,7 +195,7 @@ export const getLatestBlogsFromSupabase = cache(async (limit: number = 3): Promi
     const { data, error } = await supabase
         .from('blog_pages')
         .select('*')
-        .order('last_edited_time', { ascending: false })
+        .order('published_at', { ascending: false })
         .limit(limit);
 
     if (error || !data) {
