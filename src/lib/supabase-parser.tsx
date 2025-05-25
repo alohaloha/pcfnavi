@@ -5,8 +5,8 @@ import React from 'react'
 interface Block {
     id: string;
     type: string;
-    rich_texts: any[];
-    has_children: boolean;
+    rich_texts?: any[];
+    has_children?: boolean;
     children?: Block[];
     imageSrc?: string;
     captionText?: string;
@@ -32,31 +32,31 @@ export function parseSupabaseBlocks(blocks: Block[]): React.ReactNode[] {
                 case 'paragraph':
                     return (
                         <p key={uniqueKey} className={`mb-4 text-gray-700 ${indentClass}`}>
-                            {renderTexts(block.rich_texts)}
+                            {renderTexts(block.rich_texts ?? [])}
                         </p>
                     );
                 case 'heading_1':
                     return (
                         <h1 key={uniqueKey} className={`text-2xl font-bold mb-4 mt-6 ${indentClass}`}>
-                            {renderTexts(block.rich_texts)}
+                            {renderTexts(block.rich_texts ?? [])}
                         </h1>
                     );
                 case 'heading_2':
                     return (
                         <h2 key={uniqueKey} className={`text-xl font-bold mb-3 mt-5 ${indentClass}`}>
-                            {renderTexts(block.rich_texts)}
+                            {renderTexts(block.rich_texts ?? [])}
                         </h2>
                     );
                 case 'heading_3':
                     return (
                         <h3 key={uniqueKey} className={`text-lg font-bold mb-2 mt-4 ${indentClass}`}>
-                            {renderTexts(block.rich_texts)}
+                            {renderTexts(block.rich_texts ?? [])}
                         </h3>
                     );
                 case 'quote':
                     return (
                         <blockquote key={uniqueKey} className={`border-l-4 border-gray-300 pl-4 my-4 italic ${indentClass}`}>
-                            {renderTexts(block.rich_texts)}
+                            {renderTexts(block.rich_texts ?? [])}
                             {block.has_children && block.children && (
                                 <div className="mt-2">
                                     {parseSupabaseBlocks(block.children)}
@@ -79,7 +79,7 @@ export function parseSupabaseBlocks(blocks: Block[]): React.ReactNode[] {
                     return (
                         <details key={uniqueKey} className={`mb-4 ${indentClass}`}>
                             <summary className="cursor-pointer font-medium">
-                                {renderTexts(block.rich_texts)}
+                                {renderTexts(block.rich_texts ?? [])}
                             </summary>
                             {block.has_children && block.children && (
                                 <div className="mt-2 pl-4">
@@ -111,7 +111,7 @@ export function parseSupabaseBlocks(blocks: Block[]): React.ReactNode[] {
                     { key: `${listType}-${startIndex}` },
                     items.map((item, idx) => (
                         <li key={`${item.id}-${idx}`} className={listType === 'ul' ? 'ml-6 mb-2 list-disc' : 'ml-6 mb-2 list-decimal'}>
-                            {renderTexts(item.rich_texts)}
+                            {renderTexts(item.rich_texts ?? [])}
                             {item.has_children && item.children && (
                                 <div className="mt-2">
                                     {parseSupabaseBlocks(item.children)}
