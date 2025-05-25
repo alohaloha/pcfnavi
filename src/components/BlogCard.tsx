@@ -76,7 +76,6 @@ export default function BlogCard({blog}: BlogCardProps) {
                         </span>
                     )}
                 </div>
-                {/* <p className="text-gray-500 text-sm px-4 pb-3 text-right">公開日：<RelativeTime date={new Date(blog.publishedAt)} /></p> */}
             </div>
         </Link>
     );
