@@ -8,13 +8,28 @@ interface Props {
 }
 
 export function RelativeTime({ date }: Props) {
-    const [display, setDisplay] = useState('');
+    const [display, setDisplay] = useState<string | null>(null);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     useEffect(() => {
+        setIsHydrated(true);
         if (date) {
             setDisplay(formatSmartDate(new Date(date)));
         }
     }, [date]);
+
+    // Show fallback date format before hydration to avoid mismatch
+    if (!isHydrated) {
+        return date ? (
+            <span>
+                {new Date(date).toLocaleDateString('ja-JP', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })}
+            </span>
+        ) : <span></span>;
+    }
 
     return <span>{display}</span>;
 }
