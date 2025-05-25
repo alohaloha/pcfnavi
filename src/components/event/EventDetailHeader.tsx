@@ -52,7 +52,7 @@ export function EventDetailHeader({ event }: EventDetailHeaderProps) {
                                 <div>
                                     <span className="font-medium">参加費：</span>
                                     <br />
-                                    {event.price.toLocaleString()}円
+                                    {event.price.toLocaleString('ja-JP')}円
                                 </div>
                             )}
                             {event.capacity && (
