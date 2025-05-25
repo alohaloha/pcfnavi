@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {BlogItem} from '@/lib/server/blog';
-import {RelativeTime} from "@/components/event/RelativeTime";
 
 interface BlogCardProps {
     blog: BlogItem;
@@ -67,8 +66,8 @@ export default function BlogCard({blog}: BlogCardProps) {
                     <span className="text-sm text-gray-500">公開日：
                         {blog.publishedAt && new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
                             year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
+                            month: '2-digit',
+                            day: '2-digit'
                         })}
                     </span>
                     {blog.featured && (
