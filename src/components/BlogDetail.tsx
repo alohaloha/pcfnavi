@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import {parseSupabaseBlocks} from '@/lib/supabase-parser';
 import type {BlogDetail} from '@/lib/server/blog';
@@ -10,13 +10,18 @@ interface BlogDetailProps {
 }
 
 export default function BlogDetail({blog}: BlogDetailProps) {
-    const formattedDate = blog.publishedAt
-        ? new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        })
-        : '';
+    const [formattedDate, setFormattedDate] = useState('');
+    
+    useEffect(() => {
+        if (blog.publishedAt) {
+            setFormattedDate(new Date(blog.publishedAt).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }));
+        }
+    }, [blog.publishedAt]);
+    
     console.log('BlogDetail', {cover: blog.cover, title: blog.title});
 
     const parsedBlocks = React.useMemo(() => {
