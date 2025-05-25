@@ -39,7 +39,7 @@ export function EventDetailHeader({ event }: EventDetailHeaderProps) {
                             <div>
                                 <span className="font-medium">開催日時：</span>
                                 <br />
-                                {formatEventDate(event.eventDate)}
+                                <span suppressHydrationWarning>{formatEventDate(event.eventDate)}</span>
                             </div>
                             {event.location && (
                                 <div>
