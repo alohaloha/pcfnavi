@@ -3,15 +3,15 @@
 import React from 'react';
 import Image from 'next/image';
 import {parseEventBlocks} from '@/lib/event-parser';
-import type {EventDetail} from '@/lib/server/event';
+import type {EventDetail} from '@/types/event';
 
 interface EventDetailProps {
     event: EventDetail;
 }
 
 export default function EventDetail({event}: EventDetailProps) {
-    const formattedDate = event.startAt
-        ? new Date(event.startAt).toLocaleDateString('ja-JP', {
+    const formattedDate = event.eventDate.start
+        ? new Date(event.eventDate.start).toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
