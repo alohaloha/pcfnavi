@@ -121,7 +121,7 @@ const GalleryPage = () => {
                                 height="315"
                                 src={item.embedUrl}
                                 title={item.title}
-                                frameBorder="0"
+                                style={{border: 0}}
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                                 loading="lazy"
@@ -133,7 +133,7 @@ const GalleryPage = () => {
                                 src={item.embedUrl}
                                 width="100%"
                                 height="315"
-                                frameBorder="0"
+                                style={{border: 0}}
                                 allow="autoplay; fullscreen; picture-in-picture"
                                 allowFullScreen
                                 title={item.title}
@@ -153,8 +153,6 @@ const GalleryPage = () => {
                                     width="100%"
                                     height="315px"
                                     style={{border: "none", overflow: "hidden"}}
-                                    scrolling="no"
-                                    frameBorder="0"
                                     allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                                     allowFullScreen
                                 ></iframe>
