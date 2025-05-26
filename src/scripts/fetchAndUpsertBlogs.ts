@@ -120,6 +120,10 @@ async function fetchAndUpsertBlogs() {
     }
 }
 
-fetchAndUpsertBlogs()
-    .then(() => console.log('Blogs fetched and upserted.'))
-    .catch(console.error);
+export { fetchAndUpsertBlogs as run };
+
+if (require.main === module) {
+    fetchAndUpsertBlogs()
+        .then(() => console.log('Blogs fetched and upserted.'))
+        .catch(console.error);
+}

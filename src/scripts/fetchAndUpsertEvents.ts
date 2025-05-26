@@ -146,6 +146,10 @@ async function fetchAndUpsertEvents() {
     }
 }
 
-fetchAndUpsertEvents()
-    .then(() => console.log('Events fetched and upserted.'))
-    .catch(console.error);
+export { fetchAndUpsertEvents as run };
+
+if (require.main === module) {
+    fetchAndUpsertEvents()
+        .then(() => console.log('Events fetched and upserted.'))
+        .catch(console.error);
+}
