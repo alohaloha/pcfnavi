@@ -26,7 +26,16 @@ export default function BlogCard({blog}: BlogCardProps) {
                         />
                     ) : (
                         <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                            <span className="text-gray-400">No Image</span>
+                            {/*<span className="text-gray-400">No Image</span>*/}
+                            <Image
+                                src="/images/ogp.png"
+                                alt="No Image"
+                                width={400}
+                                height={300}
+                                className="object-cover"
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                unoptimized
+                            />
                         </div>
                     )}
                     {blog.isNew && (
