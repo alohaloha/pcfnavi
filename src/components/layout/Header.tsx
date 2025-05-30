@@ -11,7 +11,7 @@ export function Header() {
             <div className="container flex h-16 items-center justify-between px-4 md:px-8 max-w-7xl mx-auto">
                 <Link href="/" className="font-display font-bold text-2xl">
                     <Image
-                        src="/images/header_logo.png"
+                        src="/images/header_logo.jpg"
                         alt="電くるなび"
                         height={160}
                         width={160}
