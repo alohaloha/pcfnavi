@@ -15,13 +15,13 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             title: '電くるなび - 電動車椅子サッカーの情報ポータルサイト',
             description: '電動車椅子サッカーの情報ポータルサイト',
-            images: [`${siteUrl}/images/ogp.jpg`],
+            images: [`${siteUrl}/images/ogp.png`],
         },
         twitter: {
             card: 'summary_large_image',
             title: '電くるなび - 電動車椅子サッカーの情報ポータルサイト',
             description: '電動車椅子サッカーの情報ポータルサイト',
-            images: [`${siteUrl}/images/ogp.jpg`],
+            images: [`${siteUrl}/images/ogp.png`],
         },
     };
 }

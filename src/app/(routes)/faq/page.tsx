@@ -8,13 +8,13 @@ export const metadata = {
     openGraph: {
         title: "よくある質問 | 電くるなび",
         description: "パワーチェアフットボールに関するよくある質問",
-        images: ["/images/ogp.jpg"],
+        images: ["/images/ogp.png"],
     },
     twitter: {
         card: "summary_large_image",
         title: "よくある質問 | 電くるなび",
         description: "パワーチェアフットボールに関するよくある質問",
-        images: ["/images/ogp.jpg"],
+        images: ["/images/ogp.png"],
     },
 };
 

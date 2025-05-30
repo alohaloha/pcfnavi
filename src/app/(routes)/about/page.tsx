@@ -8,13 +8,13 @@ export const metadata = {
     openGraph: {
         title: '電くるなびについて',
         description: '電くるなびの公式サイトの説明ページです。',
-        images: ['/images/ogp.jpg'],
+        images: ['/images/ogp.png'],
     },
     twitter: {
         card: 'summary_large_image',
         title: '電くるなびについて',
         description: '電くるなびの公式サイトの説明ページです。',
-        images: ['/images/ogp.jpg'],
+        images: ['/images/ogp.png'],
     },
 };
 

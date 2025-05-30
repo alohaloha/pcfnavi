@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
         openGraph: {
             title: 'ブログ | 電くるなび',
             description: '電動車椅子サッカーの情報ポータルサイト',
-            images: [`${siteUrl}/images/ogp.jpg`],
+            images: [`${siteUrl}/images/ogp.png`],
         },
     };
 }

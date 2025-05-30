@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "カレンダー | 電くるなび",
     description: "電くるなびのイベントカレンダーです。",
-    images: ["/images/ogp.jpg"],
+    images: ["/images/ogp.png"],
   },
   twitter: {
     card: "summary_large_image",
     title: "カレンダー | 電くるなび",
     description: "電くるなびのイベントカレンダーです。",
-    images: ["/images/ogp.jpg"],
+    images: ["/images/ogp.png"],
   },
 };
 

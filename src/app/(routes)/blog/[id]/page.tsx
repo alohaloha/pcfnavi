@@ -23,7 +23,7 @@ export async function generateMetadata({params,}: {
     const host = headersList.get('x-forwarded-host') || headersList.get('host');
     const protocol = host?.includes('localhost') ? 'http' : 'https';
     const siteUrl = host ? `${protocol}://${host}` : '';
-    const ogImage = blog?.cover ? blog.cover : `${siteUrl}/images/ogp.jpg`;
+    const ogImage = blog?.cover ? blog.cover : `${siteUrl}/images/ogp.png`;
 
     if (!blog?.title) {
         return {

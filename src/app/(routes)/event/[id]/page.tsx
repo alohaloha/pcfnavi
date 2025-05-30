@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: {
     const host = headersList.get('x-forwarded-host') || headersList.get('host');
     const protocol = host?.includes('localhost') ? 'http' : 'https';
     const siteUrl = host ? `${protocol}://${host}` : '';
-    const ogImage = event?.cover ? event.cover : `${siteUrl}/images/ogp.jpg`;
+    const ogImage = event?.cover ? event.cover : `${siteUrl}/images/ogp.png`;
     if (!event) {
         return {
             title: 'イベントが見つかりません',
