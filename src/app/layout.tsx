@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Rubik, Noto_Sans_JP, Inter } from "next/font/google";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -52,6 +53,7 @@ export default function RootLayout({
           {children}
         </div>
       {process.env.NEXT_PUBLIC_SHOW_HEADER === "true" && <Footer />}
+      <Analytics />
       </body>
     </html>
   );
