@@ -1,6 +1,7 @@
 import { notion } from '@/lib/notionClient';
 import { safeKVSet } from '@/lib/utils/safeKVSet';
 import {NextRequest, NextResponse} from 'next/server';
+import { revalidateTag } from 'next/cache';
 
 const dbs = {
     faq: process.env.NOTION_FAQ_DB_ID!,
@@ -48,6 +49,12 @@ export async function GET(request: NextRequest) {
         }
 
         await safeKVSet(`${key}:block`, blocks, `${key}ブロック`);
+        
+        // FAQのキャッシュを無効化
+        if (key === 'faq') {
+            revalidateTag('faq-list');
+            console.log('FAQ cache revalidated');
+        }
     }
 
     return NextResponse.json({ ok: true, synced: results });

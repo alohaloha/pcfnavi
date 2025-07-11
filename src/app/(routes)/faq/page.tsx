@@ -18,6 +18,9 @@ export const metadata = {
     },
 };
 
+// ISRの設定（5分ごとに再生成）
+export const revalidate = 300;
+
 export default async function FaqPage() {
     const faqList = await fetchFaqList();
 
