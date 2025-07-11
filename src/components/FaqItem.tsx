@@ -2,18 +2,47 @@ import {useState} from 'react'
 import {ChevronDown} from 'lucide-react'
 import {FaqDetail} from '@/lib/server/faq'
 import {parseNotionBlocks} from '@/lib/notionParser'
+import {RichText, NotionBlock} from '@/types/notion'
+
+// renderRichText関数を追加
+function renderRichText(text: RichText, key: number): React.ReactNode {
+    const {annotations, plain_text, href} = text;
+    const {bold, italic, strikethrough, underline, code} = annotations || {};
+
+    let className = '';
+    if (bold) className += 'font-bold ';
+    if (italic) className += 'italic ';
+    if (strikethrough) className += 'line-through ';
+    if (underline) className += 'underline ';
+
+    if (code) {
+        return <code key={key} className="bg-gray-100 px-1 rounded">{plain_text}</code>;
+    }
+
+    if (href) {
+        return (
+            <a key={key} href={href} className={`text-blue-600 hover:underline ${className}`} target="_blank"
+               rel="noopener noreferrer">
+                {plain_text}
+            </a>
+        );
+    }
+
+    return className ? <span key={key} className={className}>{plain_text}</span> : <span key={key}>{plain_text}</span>;
+}
 
 type FaqItemProps = {
     id: string;
     question: string;
     summary: string;
+    answerRichText?: RichText[];
     showBlocks: boolean;
     fetchDetail: (id: string) => Promise<FaqDetail>;
 }
 
-export default function FaqItem({id, question, summary, showBlocks, fetchDetail}: FaqItemProps) {
+export default function FaqItem({id, question, summary, answerRichText, showBlocks, fetchDetail}: FaqItemProps) {
     const [isOpen, setIsOpen] = useState(false)
-    const [detailBlocks, setDetailBlocks] = useState<any[] | null>(null)
+    const [detailBlocks, setDetailBlocks] = useState<NotionBlock[] | null>(null)
     const [isLoading, setIsLoading] = useState(false)
     const [showDetail, setShowDetail] = useState(false)
     if (id === '1de9c5c1-735d-8140-a1aa-d2091668bd14') console.log({ id, showBlocks});
@@ -63,7 +92,13 @@ export default function FaqItem({id, question, summary, showBlocks, fetchDetail}
             {isOpen && (
                 <div className="bg-gray-50 border-t p-4">
                     {/* 簡易回答 */}
-                    <p className="text-gray-700 mb-4">{summary}</p>
+                    <div className="text-gray-700 mb-4">
+                        {answerRichText && answerRichText.length > 0 ? (
+                            answerRichText.map((text: RichText, i: number) => renderRichText(text, i))
+                        ) : (
+                            <span>{summary}</span>
+                        )}
+                    </div>
 
                     {/* 詳細表示ボタンとロード中表示 */}
                     <div className="flex items-center space-x-4">

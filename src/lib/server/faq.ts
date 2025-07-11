@@ -1,12 +1,13 @@
 'use server'
 import {cache} from 'react';
 import {FaqCategoryName} from '../constants';
-import {NotionBlock} from '@/types/notion';
+import {NotionBlock, RichText} from '@/types/notion';
 
 export type FaqItem = {
     id: string;
     question: string;
     answer: string;
+    answer_rich_text?: RichText[];
     category: FaqCategoryName[];
     show_blocks: boolean;
 };
