@@ -4,12 +4,14 @@ import FaqItem from './FaqItem'
 import {FaqCategoryName} from '@/lib/constants'
 import {fetchFaqDetail} from "@/lib/server/faq";
 import {FaqCategoryArray} from "@/lib/constants";
+import {RichText} from '@/types/notion';
 
 type FaqListProps = {
     faqs: Array<{
         id: string;
         question: string;
         answer: string;
+        answer_rich_text?: RichText[];
         show_blocks: boolean;
         category: FaqCategoryName[];
     }>;
@@ -45,6 +47,7 @@ export default function FaqList({
                                     id={faq.id}
                                     question={faq.question}
                                     summary={faq.answer}
+                                    answerRichText={faq.answer_rich_text}
                                     showBlocks={faq.show_blocks}
                                     fetchDetail={fetchFaqDetail}
                                 />
